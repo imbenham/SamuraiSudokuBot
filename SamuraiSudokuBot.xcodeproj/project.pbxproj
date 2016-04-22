@@ -9,12 +9,36 @@
 /* Begin PBXBuildFile section */
 		360361051CC94A69005F6A9F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361041CC94A69005F6A9F /* AppDelegate.swift */; };
 		360361071CC94A69005F6A9F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361061CC94A69005F6A9F /* ViewController.swift */; };
-		3603610A1CC94A69005F6A9F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 360361081CC94A69005F6A9F /* Main.storyboard */; };
 		3603610D1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */; };
 		3603610F1CC94A69005F6A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3603610E1CC94A69005F6A9F /* Assets.xcassets */; };
 		360361121CC94A69005F6A9F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 360361101CC94A69005F6A9F /* LaunchScreen.storyboard */; };
 		3603611D1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3603611C1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift */; };
 		360361281CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361271CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift */; };
+		3638F2A51CC94FE8004D65C8 /* BackingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A11CC94FE8004D65C8 /* BackingCell.swift */; };
+		3638F2A61CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A21CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift */; };
+		3638F2A71CC94FE8004D65C8 /* Puzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A31CC94FE8004D65C8 /* Puzzle.swift */; };
+		3638F2AC1CC95205004D65C8 /* KeyObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2AB1CC95205004D65C8 /* KeyObjects.swift */; };
+		3638F2AE1CC952BA004D65C8 /* LinkedList_and_Nodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2AD1CC952BA004D65C8 /* LinkedList_and_Nodes.swift */; };
+		3638F2B61CC9537E004D65C8 /* SamuraiPuzzleGeneration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2B51CC9537E004D65C8 /* SamuraiPuzzleGeneration.swift */; };
+		3638F2B81CC9546D004D65C8 /* SamuraiMatrixExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2B71CC9546D004D65C8 /* SamuraiMatrixExtension.swift */; };
+		3638F2BA1CC9549D004D65C8 /* SudokuMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2B91CC9549D004D65C8 /* SudokuMatrix.swift */; };
+		3638F2BC1CC955A9004D65C8 /* PuzzleDifficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2BB1CC955A9004D65C8 /* PuzzleDifficulty.swift */; };
+		3638F2BF1CC9560E004D65C8 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2BE1CC9560E004D65C8 /* Utils.swift */; };
+		3638F2C21CC9576D004D65C8 /* PuzzleOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2C11CC9576D004D65C8 /* PuzzleOptionsController.swift */; };
+		3638F2C61CC957F5004D65C8 /* SamuraiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2C51CC957F5004D65C8 /* SamuraiViewController.swift */; };
+		3638F2C81CC9582F004D65C8 /* SudokuViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2C71CC9582F004D65C8 /* SudokuViewControllers.swift */; };
+		3638F2CA1CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2C91CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift */; };
+		3638F2CC1CC95935004D65C8 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2CB1CC95935004D65C8 /* CoreDataStack.swift */; };
+		3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2CE1CC95A2E004D65C8 /* PuzzleStore.swift */; };
+		36AD45AC1CC95C4D00CC4768 /* SudokuNumPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45AB1CC95C4D00CC4768 /* SudokuNumPad.swift */; };
+		36AD45AE1CC95C7200CC4768 /* SSBBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */; };
+		36AD45B11CC95D3F00CC4768 /* SudokuViewObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45B01CC95D3F00CC4768 /* SudokuViewObjects.swift */; };
+		36AD45B31CC95D5200CC4768 /* SudokuBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45B21CC95D5200CC4768 /* SudokuBoard.swift */; };
+		36AD45B51CC95D6700CC4768 /* SudokuBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45B41CC95D6700CC4768 /* SudokuBox.swift */; };
+		36AD45B71CC95D7C00CC4768 /* SudokuTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45B61CC95D7C00CC4768 /* SudokuTile.swift */; };
+		36AD45B91CC960D000CC4768 /* BackingCell+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */; };
+		36AD45BC1CC9616D00CC4768 /* SamuraiUIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */; };
+		36AD45C51CC9721D00CC4768 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36AD45C31CC9721D00CC4768 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +62,6 @@
 		360361011CC94A68005F6A9F /* SamuraiSudokuBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamuraiSudokuBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		360361041CC94A69005F6A9F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		360361061CC94A69005F6A9F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		360361091CC94A69005F6A9F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3603610C1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SamuraiSudokuBot.xcdatamodel; sourceTree = "<group>"; };
 		3603610E1CC94A69005F6A9F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		360361111CC94A69005F6A9F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -49,6 +72,31 @@
 		360361231CC94A69005F6A9F /* SamuraiSudokuBotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SamuraiSudokuBotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		360361271CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamuraiSudokuBotUITests.swift; sourceTree = "<group>"; };
 		360361291CC94A69005F6A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3638F2A11CC94FE8004D65C8 /* BackingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BackingCell.swift; path = ../BackingCell.swift; sourceTree = "<group>"; };
+		3638F2A21CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Puzzle+CoreDataProperties.swift"; path = "../Puzzle+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3638F2A31CC94FE8004D65C8 /* Puzzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Puzzle.swift; path = ../Puzzle.swift; sourceTree = "<group>"; };
+		3638F2AB1CC95205004D65C8 /* KeyObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyObjects.swift; sourceTree = "<group>"; };
+		3638F2AD1CC952BA004D65C8 /* LinkedList_and_Nodes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkedList_and_Nodes.swift; sourceTree = "<group>"; };
+		3638F2B51CC9537E004D65C8 /* SamuraiPuzzleGeneration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamuraiPuzzleGeneration.swift; sourceTree = "<group>"; };
+		3638F2B71CC9546D004D65C8 /* SamuraiMatrixExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamuraiMatrixExtension.swift; sourceTree = "<group>"; };
+		3638F2B91CC9549D004D65C8 /* SudokuMatrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuMatrix.swift; sourceTree = "<group>"; };
+		3638F2BB1CC955A9004D65C8 /* PuzzleDifficulty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleDifficulty.swift; sourceTree = "<group>"; };
+		3638F2BE1CC9560E004D65C8 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		3638F2C11CC9576D004D65C8 /* PuzzleOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleOptionsController.swift; sourceTree = "<group>"; };
+		3638F2C51CC957F5004D65C8 /* SamuraiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamuraiViewController.swift; sourceTree = "<group>"; };
+		3638F2C71CC9582F004D65C8 /* SudokuViewControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuViewControllers.swift; sourceTree = "<group>"; };
+		3638F2C91CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzlePlayDelegateProtocol.swift; sourceTree = "<group>"; };
+		3638F2CB1CC95935004D65C8 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		3638F2CE1CC95A2E004D65C8 /* PuzzleStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleStore.swift; sourceTree = "<group>"; };
+		36AD45AB1CC95C4D00CC4768 /* SudokuNumPad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuNumPad.swift; sourceTree = "<group>"; };
+		36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSBBackgroundView.swift; sourceTree = "<group>"; };
+		36AD45B01CC95D3F00CC4768 /* SudokuViewObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuViewObjects.swift; sourceTree = "<group>"; };
+		36AD45B21CC95D5200CC4768 /* SudokuBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuBoard.swift; sourceTree = "<group>"; };
+		36AD45B41CC95D6700CC4768 /* SudokuBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuBox.swift; sourceTree = "<group>"; };
+		36AD45B61CC95D7C00CC4768 /* SudokuTile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuTile.swift; sourceTree = "<group>"; };
+		36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BackingCell+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamuraiUIExtensions.swift; sourceTree = "<group>"; };
+		36AD45C41CC9721D00CC4768 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +127,7 @@
 		360360F81CC94A68005F6A9F = {
 			isa = PBXGroup;
 			children = (
+				36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */,
 				360361031CC94A69005F6A9F /* SamuraiSudokuBot */,
 				3603611B1CC94A69005F6A9F /* SamuraiSudokuBotTests */,
 				360361261CC94A69005F6A9F /* SamuraiSudokuBotUITests */,
@@ -101,11 +150,16 @@
 			children = (
 				360361041CC94A69005F6A9F /* AppDelegate.swift */,
 				360361061CC94A69005F6A9F /* ViewController.swift */,
-				360361081CC94A69005F6A9F /* Main.storyboard */,
 				3603610E1CC94A69005F6A9F /* Assets.xcassets */,
-				360361101CC94A69005F6A9F /* LaunchScreen.storyboard */,
 				360361131CC94A69005F6A9F /* Info.plist */,
 				3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */,
+				3638F2C01CC95749004D65C8 /* Controllers */,
+				3638F29F1CC94EE9004D65C8 /* Model */,
+				3638F2CD1CC959EB004D65C8 /* PuzzleStore */,
+				3638F2AA1CC951B6004D65C8 /* SudokuLogic */,
+				3638F2D01CC95A45004D65C8 /* UI */,
+				3638F2BD1CC955F0004D65C8 /* Utils */,
+				3638F2CB1CC95935004D65C8 /* CoreDataStack.swift */,
 			);
 			path = SamuraiSudokuBot;
 			sourceTree = "<group>";
@@ -126,6 +180,136 @@
 				360361291CC94A69005F6A9F /* Info.plist */,
 			);
 			path = SamuraiSudokuBotUITests;
+			sourceTree = "<group>";
+		};
+		3638F29F1CC94EE9004D65C8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2A31CC94FE8004D65C8 /* Puzzle.swift */,
+				3638F2A21CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift */,
+				3638F2A11CC94FE8004D65C8 /* BackingCell.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		3638F2AA1CC951B6004D65C8 /* SudokuLogic */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2B01CC952E0004D65C8 /* Algorithm */,
+				3638F2AF1CC952CE004D65C8 /* DataStructure */,
+			);
+			name = SudokuLogic;
+			sourceTree = "<group>";
+		};
+		3638F2AF1CC952CE004D65C8 /* DataStructure */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2AD1CC952BA004D65C8 /* LinkedList_and_Nodes.swift */,
+				3638F2AB1CC95205004D65C8 /* KeyObjects.swift */,
+			);
+			name = DataStructure;
+			sourceTree = "<group>";
+		};
+		3638F2B01CC952E0004D65C8 /* Algorithm */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2B21CC952FE004D65C8 /* Samurai */,
+				3638F2B11CC952F3004D65C8 /* Regular */,
+			);
+			name = Algorithm;
+			sourceTree = "<group>";
+		};
+		3638F2B11CC952F3004D65C8 /* Regular */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2B91CC9549D004D65C8 /* SudokuMatrix.swift */,
+				3638F2BB1CC955A9004D65C8 /* PuzzleDifficulty.swift */,
+			);
+			name = Regular;
+			sourceTree = "<group>";
+		};
+		3638F2B21CC952FE004D65C8 /* Samurai */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2B51CC9537E004D65C8 /* SamuraiPuzzleGeneration.swift */,
+				3638F2B71CC9546D004D65C8 /* SamuraiMatrixExtension.swift */,
+			);
+			name = Samurai;
+			sourceTree = "<group>";
+		};
+		3638F2BD1CC955F0004D65C8 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2BE1CC9560E004D65C8 /* Utils.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		3638F2C01CC95749004D65C8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2C41CC957B4004D65C8 /* Samurai */,
+				3638F2C31CC957A8004D65C8 /* Regular */,
+				3638F2C11CC9576D004D65C8 /* PuzzleOptionsController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		3638F2C31CC957A8004D65C8 /* Regular */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2C71CC9582F004D65C8 /* SudokuViewControllers.swift */,
+				3638F2C91CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift */,
+			);
+			name = Regular;
+			sourceTree = "<group>";
+		};
+		3638F2C41CC957B4004D65C8 /* Samurai */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2C51CC957F5004D65C8 /* SamuraiViewController.swift */,
+			);
+			name = Samurai;
+			sourceTree = "<group>";
+		};
+		3638F2CD1CC959EB004D65C8 /* PuzzleStore */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2CE1CC95A2E004D65C8 /* PuzzleStore.swift */,
+			);
+			name = PuzzleStore;
+			sourceTree = "<group>";
+		};
+		3638F2D01CC95A45004D65C8 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				36AD45C31CC9721D00CC4768 /* Main.storyboard */,
+				360361101CC94A69005F6A9F /* LaunchScreen.storyboard */,
+				36AD45AB1CC95C4D00CC4768 /* SudokuNumPad.swift */,
+				36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */,
+				36AD45AF1CC95CFF00CC4768 /* SudokuViews */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		36AD45AF1CC95CFF00CC4768 /* SudokuViews */ = {
+			isa = PBXGroup;
+			children = (
+				36AD45BA1CC9614100CC4768 /* SamuraiViews */,
+				36AD45B01CC95D3F00CC4768 /* SudokuViewObjects.swift */,
+				36AD45B21CC95D5200CC4768 /* SudokuBoard.swift */,
+				36AD45B41CC95D6700CC4768 /* SudokuBox.swift */,
+				36AD45B61CC95D7C00CC4768 /* SudokuTile.swift */,
+			);
+			name = SudokuViews;
+			sourceTree = "<group>";
+		};
+		36AD45BA1CC9614100CC4768 /* SamuraiViews */ = {
+			isa = PBXGroup;
+			children = (
+				36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */,
+			);
+			name = SamuraiViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,9 +416,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36AD45C51CC9721D00CC4768 /* Main.storyboard in Resources */,
 				360361121CC94A69005F6A9F /* LaunchScreen.storyboard in Resources */,
 				3603610F1CC94A69005F6A9F /* Assets.xcassets in Resources */,
-				3603610A1CC94A69005F6A9F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,8 +443,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3638F2AE1CC952BA004D65C8 /* LinkedList_and_Nodes.swift in Sources */,
+				3638F2BA1CC9549D004D65C8 /* SudokuMatrix.swift in Sources */,
+				36AD45B11CC95D3F00CC4768 /* SudokuViewObjects.swift in Sources */,
 				360361071CC94A69005F6A9F /* ViewController.swift in Sources */,
+				3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */,
+				3638F2BF1CC9560E004D65C8 /* Utils.swift in Sources */,
+				36AD45B51CC95D6700CC4768 /* SudokuBox.swift in Sources */,
+				3638F2C21CC9576D004D65C8 /* PuzzleOptionsController.swift in Sources */,
+				3638F2BC1CC955A9004D65C8 /* PuzzleDifficulty.swift in Sources */,
+				3638F2CA1CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift in Sources */,
+				36AD45BC1CC9616D00CC4768 /* SamuraiUIExtensions.swift in Sources */,
+				36AD45B71CC95D7C00CC4768 /* SudokuTile.swift in Sources */,
+				3638F2A71CC94FE8004D65C8 /* Puzzle.swift in Sources */,
+				36AD45AC1CC95C4D00CC4768 /* SudokuNumPad.swift in Sources */,
+				3638F2CC1CC95935004D65C8 /* CoreDataStack.swift in Sources */,
+				3638F2C61CC957F5004D65C8 /* SamuraiViewController.swift in Sources */,
+				36AD45B91CC960D000CC4768 /* BackingCell+CoreDataProperties.swift in Sources */,
+				3638F2A61CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift in Sources */,
+				3638F2A51CC94FE8004D65C8 /* BackingCell.swift in Sources */,
+				36AD45B31CC95D5200CC4768 /* SudokuBoard.swift in Sources */,
+				3638F2B81CC9546D004D65C8 /* SamuraiMatrixExtension.swift in Sources */,
+				36AD45AE1CC95C7200CC4768 /* SSBBackgroundView.swift in Sources */,
 				360361051CC94A69005F6A9F /* AppDelegate.swift in Sources */,
+				3638F2AC1CC95205004D65C8 /* KeyObjects.swift in Sources */,
+				3638F2B61CC9537E004D65C8 /* SamuraiPuzzleGeneration.swift in Sources */,
+				3638F2C81CC9582F004D65C8 /* SudokuViewControllers.swift in Sources */,
 				3603610D1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,20 +505,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		360361081CC94A69005F6A9F /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				360361091CC94A69005F6A9F /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		360361101CC94A69005F6A9F /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				360361111CC94A69005F6A9F /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		36AD45C31CC9721D00CC4768 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				36AD45C41CC9721D00CC4768 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -488,6 +696,7 @@
 				3603612E1CC94A69005F6A9F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3603612F1CC94A69005F6A9F /* Build configuration list for PBXNativeTarget "SamuraiSudokuBotTests" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +705,7 @@
 				360361311CC94A69005F6A9F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		360361321CC94A69005F6A9F /* Build configuration list for PBXNativeTarget "SamuraiSudokuBotUITests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +714,7 @@
 				360361341CC94A69005F6A9F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

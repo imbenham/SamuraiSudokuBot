@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <scenes>
+        <!--Samurai Sudoku Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="SamuraiSudokuController" customModule="SamuraiSudokuBot" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" customClass="SSBBackgroundView" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uc7-RC-Wgo" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="75" y="75" width="150" height="150"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ahP-jM-VE1" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="375" y="75" width="150" height="150"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mBS-WI-PhQ" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="375" y="375" width="150" height="150"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZWI-wg-8p2" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="75" y="375" width="150" height="150"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XsN-Mp-j1x" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="225" y="225" width="150" height="150"/>
+                                <color key="backgroundColor" red="1" green="0.80000001190000003" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d1v-9q-30Z" customClass="SudokuNumberPad" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="188" y="533" width="225" height="25"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ygw-Qb-VTE">
+                                <rect key="frame" x="433" y="533" width="50" height="50"/>
+                                <state key="normal" title="Note+"/>
+                            </button>
+                            <segmentedControl opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="GPu-Zm-OM5">
+                                <rect key="frame" x="250" y="39" width="101" height="29"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <segments>
+                                    <segment title="Play"/>
+                                    <segment title="Cheat"/>
+                                </segments>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="modeSelected:" destination="BYZ-38-t0r" eventType="valueChanged" id="pzJ-nc-7p9"/>
+                                </connections>
+                            </segmentedControl>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8c6-bE-Fb1">
+                                <rect key="frame" x="270" y="420" width="60" height="60"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="l3o-UQ-Gkz"/>
+                                    <constraint firstAttribute="height" constant="60" id="uXD-3R-Avk"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMi-ZO-cIg">
+                                <rect key="frame" x="8" y="8" width="57" height="30"/>
+                                <state key="normal" title="Settings"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T7x-dO-cej">
+                                <rect key="frame" x="118" y="533" width="50" height="50"/>
+                                <state key="normal" title="Clear"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="XsN-Mp-j1x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="47G-2d-k4m"/>
+                            <constraint firstItem="Uc7-RC-Wgo" firstAttribute="top" secondItem="GPu-Zm-OM5" secondAttribute="bottom" constant="8" id="BlG-BJ-186"/>
+                            <constraint firstItem="ahP-jM-VE1" firstAttribute="height" secondItem="Uc7-RC-Wgo" secondAttribute="height" id="G0c-bA-WRU"/>
+                            <constraint firstItem="d1v-9q-30Z" firstAttribute="height" secondItem="XsN-Mp-j1x" secondAttribute="height" multiplier="1/6" id="IYf-1d-hwe"/>
+                            <constraint firstItem="8c6-bE-Fb1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ija-fE-vSa"/>
+                            <constraint firstItem="RMi-ZO-cIg" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-12" id="LMF-hD-loe"/>
+                            <constraint firstItem="ZWI-wg-8p2" firstAttribute="trailing" secondItem="XsN-Mp-j1x" secondAttribute="leading" identifier="board4X" id="LOX-ca-rCy"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="RMi-ZO-cIg" secondAttribute="leading" constant="12" id="NLD-er-GD6"/>
+                            <constraint firstItem="ahP-jM-VE1" firstAttribute="width" secondItem="Uc7-RC-Wgo" secondAttribute="width" id="O1o-TO-HW9"/>
+                            <constraint firstItem="Uc7-RC-Wgo" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="1/4" id="Ow6-bf-GWB"/>
+                            <constraint firstItem="Uc7-RC-Wgo" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="1/4" id="Ssu-u4-uoU"/>
+                            <constraint firstItem="Uc7-RC-Wgo" firstAttribute="bottom" secondItem="XsN-Mp-j1x" secondAttribute="top" identifier="board1Y" id="Uss-pW-P9e"/>
+                            <constraint firstItem="T7x-dO-cej" firstAttribute="top" secondItem="d1v-9q-30Z" secondAttribute="top" id="aBr-Gl-bAv"/>
+                            <constraint firstItem="d1v-9q-30Z" firstAttribute="width" secondItem="XsN-Mp-j1x" secondAttribute="width" multiplier="3/2" id="bUC-CP-Nof"/>
+                            <constraint firstItem="d1v-9q-30Z" firstAttribute="leading" secondItem="T7x-dO-cej" secondAttribute="trailing" constant="20" id="coY-kF-8ra"/>
+                            <constraint firstItem="T7x-dO-cej" firstAttribute="height" secondItem="d1v-9q-30Z" secondAttribute="height" multiplier="2" id="e9a-5A-X97"/>
+                            <constraint firstItem="XsN-Mp-j1x" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="edN-Tt-zKt"/>
+                            <constraint firstItem="d1v-9q-30Z" firstAttribute="centerX" secondItem="XsN-Mp-j1x" secondAttribute="centerX" id="fUR-cB-sIP"/>
+                            <constraint firstItem="mBS-WI-PhQ" firstAttribute="height" secondItem="Uc7-RC-Wgo" secondAttribute="height" id="g7t-kl-4gP"/>
+                            <constraint firstItem="ZWI-wg-8p2" firstAttribute="height" secondItem="Uc7-RC-Wgo" secondAttribute="height" id="gR3-7o-ulQ"/>
+                            <constraint firstItem="T7x-dO-cej" firstAttribute="width" secondItem="d1v-9q-30Z" secondAttribute="height" multiplier="2/1" id="hRo-5f-NYo"/>
+                            <constraint firstItem="d1v-9q-30Z" firstAttribute="top" secondItem="ZWI-wg-8p2" secondAttribute="bottom" constant="8" id="lMB-Be-929"/>
+                            <constraint firstItem="XsN-Mp-j1x" firstAttribute="height" secondItem="Uc7-RC-Wgo" secondAttribute="height" id="lch-sv-CIK"/>
+                            <constraint firstItem="ygw-Qb-VTE" firstAttribute="top" secondItem="d1v-9q-30Z" secondAttribute="top" id="mKf-FC-Znq"/>
+                            <constraint firstItem="Uc7-RC-Wgo" firstAttribute="trailing" secondItem="XsN-Mp-j1x" secondAttribute="leading" identifier="board1X" id="mdV-dK-qfe"/>
+                            <constraint firstItem="mBS-WI-PhQ" firstAttribute="top" secondItem="XsN-Mp-j1x" secondAttribute="bottom" identifier="board3Y" id="mz8-xc-5n4"/>
+                            <constraint firstItem="ahP-jM-VE1" firstAttribute="bottom" secondItem="XsN-Mp-j1x" secondAttribute="top" identifier="board2Y" id="ohz-bi-QAY"/>
+                            <constraint firstItem="mBS-WI-PhQ" firstAttribute="leading" secondItem="XsN-Mp-j1x" secondAttribute="trailing" identifier="board3X" id="pcP-cN-Teh"/>
+                            <constraint firstItem="ygw-Qb-VTE" firstAttribute="height" secondItem="d1v-9q-30Z" secondAttribute="height" multiplier="2" id="qA0-Wm-tFI"/>
+                            <constraint firstItem="ZWI-wg-8p2" firstAttribute="width" secondItem="Uc7-RC-Wgo" secondAttribute="width" id="qU3-VT-Le9"/>
+                            <constraint firstItem="GPu-Zm-OM5" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qnm-H5-bHg"/>
+                            <constraint firstItem="ygw-Qb-VTE" firstAttribute="width" secondItem="d1v-9q-30Z" secondAttribute="height" multiplier="2/1" id="sVF-Ah-dSf"/>
+                            <constraint firstItem="XsN-Mp-j1x" firstAttribute="width" secondItem="Uc7-RC-Wgo" secondAttribute="width" id="tLZ-06-i3O"/>
+                            <constraint firstItem="mBS-WI-PhQ" firstAttribute="width" secondItem="Uc7-RC-Wgo" secondAttribute="width" id="uH8-Nb-Zo6"/>
+                            <constraint firstItem="8c6-bE-Fb1" firstAttribute="centerY" secondItem="mBS-WI-PhQ" secondAttribute="centerY" id="uIp-M3-rbO"/>
+                            <constraint firstItem="ZWI-wg-8p2" firstAttribute="top" secondItem="XsN-Mp-j1x" secondAttribute="bottom" identifier="board4Y" id="v1X-mN-wjE"/>
+                            <constraint firstItem="ygw-Qb-VTE" firstAttribute="leading" secondItem="d1v-9q-30Z" secondAttribute="trailing" constant="20" id="yFy-DZ-d9h"/>
+                            <constraint firstItem="ahP-jM-VE1" firstAttribute="leading" secondItem="XsN-Mp-j1x" secondAttribute="trailing" identifier="board2X" id="yKt-kU-Tr7"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="bgColor">
+                                <color key="value" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="drawColor">
+                                <color key="value" red="0.20000000000000001" green="0.79855809563758395" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="innerGradientColor">
+                                <color key="value" red="0.76619302293064828" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="outerGradientColor">
+                                <color key="value" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <connections>
+                        <outlet property="board1" destination="Uc7-RC-Wgo" id="w1l-dN-u91"/>
+                        <outlet property="board2" destination="ahP-jM-VE1" id="nmm-cH-RVn"/>
+                        <outlet property="board3" destination="mBS-WI-PhQ" id="ZcO-4g-hVx"/>
+                        <outlet property="board4" destination="ZWI-wg-8p2" id="fPA-5j-Jb0"/>
+                        <outlet property="clearButton" destination="T7x-dO-cej" id="XtG-97-KG2"/>
+                        <outlet property="containerHeight" destination="uXD-3R-Avk" id="B0A-bh-TkF"/>
+                        <outlet property="containerView" destination="8c6-bE-Fb1" id="D89-dX-4fR"/>
+                        <outlet property="containerWidth" destination="l3o-UQ-Gkz" id="taP-Q4-E4v"/>
+                        <outlet property="middleBoard" destination="XsN-Mp-j1x" id="nxZ-qK-VI7"/>
+                        <outlet property="noteButton" destination="ygw-Qb-VTE" id="wQH-B4-nPl"/>
+                        <outlet property="optionsButton" destination="RMi-ZO-cIg" id="MYH-Mv-VV8"/>
+                        <outletCollection property="xConstraints" destination="mdV-dK-qfe" collectionClass="NSMutableArray" id="avs-ui-Gdi"/>
+                        <outletCollection property="xConstraints" destination="yKt-kU-Tr7" collectionClass="NSMutableArray" id="f6g-Ni-eiS"/>
+                        <outletCollection property="xConstraints" destination="pcP-cN-Teh" collectionClass="NSMutableArray" id="ztg-4i-apC"/>
+                        <outletCollection property="xConstraints" destination="LOX-ca-rCy" collectionClass="NSMutableArray" id="tPy-Ag-Lse"/>
+                        <outletCollection property="yConstraints" destination="Uss-pW-P9e" collectionClass="NSMutableArray" id="i3k-b9-2hK"/>
+                        <outletCollection property="yConstraints" destination="ohz-bi-QAY" collectionClass="NSMutableArray" id="rrP-em-HKO"/>
+                        <outletCollection property="yConstraints" destination="mz8-xc-5n4" collectionClass="NSMutableArray" id="D5L-oB-EUd"/>
+                        <outletCollection property="yConstraints" destination="v1X-mN-wjE" collectionClass="NSMutableArray" id="UBx-Wp-xCn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="280" y="299"/>
+        </scene>
+    </scenes>
+</document>
