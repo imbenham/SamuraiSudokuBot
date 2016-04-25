@@ -10,6 +10,15 @@ import UIKit
 
 class Tile: SudokuItem {
     
+    override var controller: SudokuControllerDelegate? {
+        get {
+            return parentSquare?.controller
+        }
+        set {
+            parentSquare?.controller = newValue
+        }
+    }
+    
     var displayValue: TileValue {
         get {
             
@@ -137,7 +146,7 @@ class Tile: SudokuItem {
         
     }
     
-    convenience init (index: Int, withParent parent: UIView) {
+    convenience init (index: Int, withParent parent: SudokuItem) {
         self.init(index: index)
         self.parentSquare = parent
         // let tileIndex: TileIndex = (parent.index, self.index)

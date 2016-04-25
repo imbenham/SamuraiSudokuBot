@@ -10,8 +10,33 @@ import Foundation
 
 class Matrix {
     
-    static let sharedInstance: Matrix = Matrix()
-    // let puzzleStore: PuzzleStore = PuzzleStore.sharedInstance
+    private static var privateInstance: Matrix?
+    
+    class var sharedInstance: Matrix {
+        get {
+            guard let instance = privateInstance else {
+                privateInstance = Matrix()
+                return privateInstance!
+            }
+            
+            return instance
+        }
+    }
+    
+    class func tearDown() {
+        privateInstance = nil
+    }
+    
+    class func prepareMatrix() {
+        if privateInstance == nil {
+            privateInstance = Matrix()
+        }
+    }
+    
+    static func isReady() -> Bool {
+        return privateInstance != nil
+    }
+
     
     var matrix = SudokuMatrix<PuzzleKey>()
     typealias Choice = (Chosen: LinkedNode<PuzzleKey>, Root:Int)

@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
         }
         
         // initialize the matrix so it's ready to crank out puzzles
-        // Matrix.sharedInstance.puzzleStore = PuzzleStore.sharedInstance
+        // SamuraiMatrix.prepareMatrix()
         
         
         return true
@@ -71,6 +71,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
             saveCurrentPuzzleForController(puzzleController)
         }
         
+        
+        SamuraiMatrix.tearDown()
+        
+        
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
@@ -80,6 +84,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
             puzzleController.wakeFromBackground()
         }
         
+        if !SamuraiMatrix.isReady() {
+            SamuraiMatrix.prepareMatrix()
+        }
         
     }
     
@@ -119,6 +126,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
             
         }
         
+        dispatch_barrier_sync(concurrentPuzzleQueue){
+            SamuraiMatrix.tearDown()
+        }
     }
     
     func saveCurrentPuzzleForController(controller: PlayPuzzleDelegate) {

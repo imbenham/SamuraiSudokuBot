@@ -19,7 +19,6 @@ class SudokuBoard: SudokuItem, Nester {
         super.init(frame: frame)
         for index in 0...8 {
             let aBox = Box(index: index, withParent: self)
-            aBox.parentSquare = self
             boxes.append(aBox)
         }
     }
@@ -29,6 +28,7 @@ class SudokuBoard: SudokuItem, Nester {
         super.init(coder: aDecoder)
         for index in 0...8 {
             let aBox = Box(index: index)
+            aBox.parentSquare = self
             boxes.append(aBox)
         }
     }
@@ -37,11 +37,6 @@ class SudokuBoard: SudokuItem, Nester {
         self.prepareBoxes()
     }
     
-    override func didSetController() {
-        for box in boxes {
-            box.controller = self.controller
-        }
-    }
     
     func makeRow(row: Int)-> [Box] {
         switch row {
@@ -68,9 +63,8 @@ class SudokuBoard: SudokuItem, Nester {
     
     func prepareBoxes() {
         for box in boxes {
-            box.parentSquare = self
-            self.addSubview(box)
             
+            self.addSubview(box)
             
             box.userInteractionEnabled = true
             box.translatesAutoresizingMaskIntoConstraints = false
@@ -78,9 +72,7 @@ class SudokuBoard: SudokuItem, Nester {
             box.layer.borderColor = UIColor.blackColor().CGColor
             box.layer.borderWidth = 1.0
             
-            
         }
-        
         
         let constraints = BoxSetter().configureConstraintsForParentSquare(self)
         self.addConstraints(constraints)

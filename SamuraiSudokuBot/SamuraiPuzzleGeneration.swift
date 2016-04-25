@@ -15,7 +15,29 @@ import Foundation
 
 class SamuraiMatrix: Matrix {
     
-    static let sharedSamuraiInstance = SamuraiMatrix()
+    private static var privateInstance: SamuraiMatrix?
+    
+    override class var sharedInstance: SamuraiMatrix {
+        get {
+            guard let instance = privateInstance else {
+                privateInstance = SamuraiMatrix()
+                return privateInstance!
+            }
+            
+            return instance
+        }
+    }
+    
+    override class func tearDown() {
+        privateInstance = nil
+    }
+    
+    override class func prepareMatrix() {
+        if privateInstance == nil {
+            privateInstance = SamuraiMatrix()
+        }
+    }
+   
     
     var b1Start: LinkedNode<PuzzleKey>?
     var b2Start: LinkedNode<PuzzleKey>?

@@ -16,6 +16,15 @@ class Box: SudokuItem, Nester{
     
     var boxes: [Tile] = []
     
+    override var controller: SudokuControllerDelegate? {
+        get {
+            return parentSquare?.controller
+        }
+        set {
+            parentSquare?.controller = newValue
+        }
+    }
+    
     override init(index: Int) {
         super.init(index:index)
         if boxes.count == 0 {
@@ -29,7 +38,6 @@ class Box: SudokuItem, Nester{
     convenience init (index withIndex: Int, withParent parent: SudokuBoard){
         self.init(index: withIndex)
         self.parentSquare = parent
-        controller = parent.controller
     }
     
     
@@ -49,7 +57,6 @@ class Box: SudokuItem, Nester{
     
     override func didSetController() {
         for box in boxes {
-            box.controller = self.controller
             let tapRecognizer = UITapGestureRecognizer(target: controller, action: "tileTapped:")
             box.addGestureRecognizer(tapRecognizer)
             let longPressRecognizer = UILongPressGestureRecognizer(target: controller, action: "toggleNoteMode:")

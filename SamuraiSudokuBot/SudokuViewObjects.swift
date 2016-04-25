@@ -17,7 +17,7 @@ class SudokuItem: UIView {
             didSetController()
         }
     }
-    var parentSquare:UIView?
+    var parentSquare:SudokuItem?
     var defaultIndex = 0
     
     init(index: Int) {
