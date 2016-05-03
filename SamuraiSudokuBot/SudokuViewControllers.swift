@@ -24,7 +24,9 @@ extension UINavigationController {
 
 /* This is intended as an abstract superclass and should not be instantiated and used directly. */
 
-class SudokuController: UIViewController, SudokuControllerDelegate {
+class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelegate {
+    
+    var noteMode = false 
     
     let board: SudokuBoard = SudokuBoard(frame: CGRectZero)
     
@@ -39,32 +41,36 @@ class SudokuController: UIViewController, SudokuControllerDelegate {
         }
     }
     
-    var numPad = SudokuNumberPad(frame: CGRectZero)
+    @IBOutlet weak var numPad: SudokuNumberPad!
     
     var selectedTile: Tile? {
         didSet {
-            if let theTile = selectedTile {
-                if !theTile.selected {
-                    
-                    theTile.selected = true
-                }
+            
+            if noteMode {
+                noteMode = false
+            }
+            
+            if let selected = selectedTile {
+                selected.refreshLabel()
             }
             
             if let old = oldValue {
-                if old != selectedTile {
-                    if old.selected != false {
-                        old.selected = false
-                    }
-                }
+                old.refreshLabel()
             }
             
+            numPad.refresh()
         }
     }
-    
+
     
     var bannerPin: NSLayoutConstraint?
     var bannerLayoutComplete = false
     let spinner: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        numPad.delegate = self
+    }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -84,7 +90,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate {
         super.viewWillAppear(animated)
         if let selected = selectedTile  {
             if selected.symbolSet != .Standard {
-                selected.noteMode = false
+                noteMode = false
             }
         }
         
@@ -140,6 +146,13 @@ class SudokuController: UIViewController, SudokuControllerDelegate {
         
     }
     
+   func tileTapped(sender: AnyObject?) {
+      print("tile tapped!")
+      if let tile = (sender as! UIGestureRecognizer).view as? Tile {
+         selectedTile = tile
+      }
+    }
+    
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let path = keyPath {
@@ -164,6 +177,17 @@ class SudokuController: UIViewController, SudokuControllerDelegate {
         //initializing and laying out all of its sub-views
     }
     
+    func valueSelected(value: UIButton) {
+        let value = value.tag
+        if let selected = selectedTile {
+            if selected.displayValue.rawValue == value {
+                selected.setValue(0)
+            } else {
+                selected.setValue(value)
+            }
+        }
+        numPad.refresh()
+    }
 }
 
 
@@ -202,6 +226,8 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
             return self.board.frame.size.width * 1/9
         }
     }
+    
+    var alertController:UIAlertController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -315,7 +341,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
             noteButton!.hidden = false
         } else {
             noteButton!.hidden = true
-            selectedTile?.noteMode = false
+            noteMode = false
             
         }
         
@@ -520,5 +546,42 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         }
     }
     
+    
+    //MARK: PlayPuzzleDelegate
+    
+    func toggleNoteMode(sender: AnyObject?) {
+        if let press = sender as? UILongPressGestureRecognizer {
+            if press.state == .Began {
+                if let tile = (sender as! UIGestureRecognizer).view as? Tile {
+                    if tile.symbolSet != .Standard {
+                        return
+                    }
+                    if tile != selectedTile {
+                        selectedTile = tile
+                        noteMode = true
+                    }
+                    numPad.refresh()
+                }
+            }
+        } else {
+            if let selected = selectedTile {
+                if selected.symbolSet != .Standard {
+                    return
+                }
+                let nButton = sender as! UIButton
+                let nbBGColor = nButton.backgroundColor
+                let nbTextColor = nButton.titleColorForState(.Normal)
+                
+                nButton.backgroundColor = nbTextColor
+                nButton.setTitleColor(nbBGColor, forState: .Normal)
+                nButton.layer.borderColor = nbBGColor?.CGColor
+                
+                noteMode = !noteMode
+                numPad.refresh()
+            } else {
+                return
+            }
+        }
+    }
     
 }

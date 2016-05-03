@@ -8,16 +8,16 @@
 
 import UIKit
 
-@IBDesignable
+//@IBDesignable
 
 class SSBBackgroundView: UIView {
     
-    @IBInspectable var bgColor: UIColor = UIColor.init(colorLiteralRed: 1.0, green: 0.7, blue: 0.1, alpha: 0.9)
-    @IBInspectable var drawColor: UIColor = UIColor.blackColor()
-    @IBInspectable var patternSize:CGFloat = 130
+    var bgColor: UIColor = UIColor.init(colorLiteralRed: 1.0, green: 0.7, blue: 0.1, alpha: 0.9)
+    var drawColor: UIColor = UIColor.blackColor()
+    var patternSize:CGFloat = 130
     
-    @IBInspectable var innerGradientColor: UIColor = UIColor.blackColor()
-    @IBInspectable var outerGradientColor: UIColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+    var innerGradientColor: UIColor = UIColor.blackColor()
+    var outerGradientColor: UIColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
     
     override func drawRect(rect: CGRect) {
         

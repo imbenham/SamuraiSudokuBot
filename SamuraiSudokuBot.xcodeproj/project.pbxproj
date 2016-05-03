@@ -94,7 +94,7 @@
 		36AD45B21CC95D5200CC4768 /* SudokuBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuBoard.swift; sourceTree = "<group>"; };
 		36AD45B41CC95D6700CC4768 /* SudokuBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuBox.swift; sourceTree = "<group>"; };
 		36AD45B61CC95D7C00CC4768 /* SudokuTile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuTile.swift; sourceTree = "<group>"; };
-		36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BackingCell+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "BackingCell+CoreDataProperties.swift"; path = "../BackingCell+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamuraiUIExtensions.swift; sourceTree = "<group>"; };
 		36AD45C41CC9721D00CC4768 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -127,7 +127,6 @@
 		360360F81CC94A68005F6A9F = {
 			isa = PBXGroup;
 			children = (
-				36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */,
 				360361031CC94A69005F6A9F /* SamuraiSudokuBot */,
 				3603611B1CC94A69005F6A9F /* SamuraiSudokuBotTests */,
 				360361261CC94A69005F6A9F /* SamuraiSudokuBotUITests */,
@@ -185,6 +184,7 @@
 		3638F29F1CC94EE9004D65C8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */,
 				3638F2A31CC94FE8004D65C8 /* Puzzle.swift */,
 				3638F2A21CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift */,
 				3638F2A11CC94FE8004D65C8 /* BackingCell.swift */,

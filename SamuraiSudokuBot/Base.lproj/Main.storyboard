@@ -37,7 +37,7 @@
                                 <rect key="frame" x="375" y="25" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4gs-Yy-Sja" customClass="MiddleBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4gs-Yy-Sja" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
                                 <rect key="frame" x="225" y="175" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -48,16 +48,18 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S18-Kj-wer">
                                 <rect key="frame" x="131" y="483" width="37" height="38"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Clear"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CPe-6L-xh3">
                                 <rect key="frame" x="20" y="235" width="57" height="30"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.79855809560000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Settings"/>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="izV-yP-q3P">
                                 <rect key="frame" x="275" y="400" width="50" height="50"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="QXa-Gi-xBG"/>
                                     <constraint firstAttribute="height" constant="50" id="Xfy-H3-uJJ"/>
@@ -66,7 +68,11 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fle-88-0fn">
                                 <rect key="frame" x="433" y="483" width="38" height="38"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Note+"/>
+                                <connections>
+                                    <action selector="handleNoteButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2gU-aV-I4h"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.76619302290000002" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -136,6 +142,7 @@
                         <outlet property="containerWidth" destination="QXa-Gi-xBG" id="EPM-T0-DK9"/>
                         <outlet property="middleBoard" destination="4gs-Yy-Sja" id="Beu-rZ-Gov"/>
                         <outlet property="noteButton" destination="fle-88-0fn" id="Drv-CM-OaY"/>
+                        <outlet property="numPad" destination="dOO-5u-UbC" id="hgo-eJ-3Bn"/>
                         <outlet property="optionsButton" destination="CPe-6L-xh3" id="pAU-2i-7MY"/>
                         <outletCollection property="xConstraints" destination="129-Mr-y2e" collectionClass="NSMutableArray" id="ieE-8T-tbX"/>
                         <outletCollection property="yConstraints" destination="TRx-u3-dBx" collectionClass="NSMutableArray" id="tj5-MZ-kwT"/>

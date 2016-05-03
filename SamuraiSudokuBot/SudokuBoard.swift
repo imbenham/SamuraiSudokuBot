@@ -14,6 +14,17 @@ class SudokuBoard: SudokuItem, Nester {
     
     var boxes: [Box] = []
     
+    var readyCount = 0
+    
+    var ready: Bool {
+        return readyCount == 9
+    }
+    
+    override var controller: SudokuControllerDelegate? {
+        didSet {
+        }
+    }
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,21 +32,22 @@ class SudokuBoard: SudokuItem, Nester {
             let aBox = Box(index: index, withParent: self)
             boxes.append(aBox)
         }
+    
     }
     
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         for index in 0...8 {
-            let aBox = Box(index: index)
-            aBox.parentSquare = self
+            let aBox = Box(index: index, withParent: self)
             boxes.append(aBox)
         }
+    
     }
     
-    override func layoutSubviews() {
-        self.prepareBoxes()
-    }
+   /* override func layoutSubviews() {
+        
+    }*/
     
     
     func makeRow(row: Int)-> [Box] {
@@ -62,6 +74,7 @@ class SudokuBoard: SudokuItem, Nester {
     
     
     func prepareBoxes() {
+        print("preparing boxes")
         for box in boxes {
             
             self.addSubview(box)
@@ -72,6 +85,7 @@ class SudokuBoard: SudokuItem, Nester {
             box.layer.borderColor = UIColor.blackColor().CGColor
             box.layer.borderWidth = 1.0
             
+            box.prepareBoxes()
         }
         
         let constraints = BoxSetter().configureConstraintsForParentSquare(self)
@@ -82,8 +96,15 @@ class SudokuBoard: SudokuItem, Nester {
     
     
     func tilesReady() {
-        if let cntrlr = self.controller {
-            cntrlr.boardReady()
+        readyCount += 1
+        print("tiles ready")
+        print("\(controller)")
+        
+        if ready {
+            if let cntrlr = self.controller {
+                cntrlr.boardReady()
+            }
+
         }
     }
     

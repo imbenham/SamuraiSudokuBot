@@ -12,11 +12,7 @@ import UIKit
 class SudokuItem: UIView {
     
     
-    weak var controller: SudokuControllerDelegate? {
-        didSet {
-            didSetController()
-        }
-    }
+    weak var controller: SudokuControllerDelegate? 
     var parentSquare:SudokuItem?
     var defaultIndex = 0
     

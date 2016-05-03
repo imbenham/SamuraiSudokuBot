@@ -10,11 +10,11 @@ import UIKit
 
 class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     
-    @IBOutlet var board1: SudokuBoard!
-    @IBOutlet var board2: SudokuBoard!
-    @IBOutlet var board3: SudokuBoard!
-    @IBOutlet var board4: SudokuBoard!
-    @IBOutlet var middleBoard: MiddleBoard!
+    @IBOutlet weak var board1: SudokuBoard!
+    @IBOutlet weak var board2: SudokuBoard!
+    @IBOutlet weak var board3: SudokuBoard!
+    @IBOutlet weak var board4: SudokuBoard!
+    @IBOutlet weak var middleBoard: SudokuBoard!
     
     
     @IBOutlet var xConstraints: [NSLayoutConstraint]!
@@ -30,12 +30,19 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         }
     }*/
     
-    @IBOutlet var containerView: UIView!
-    @IBOutlet var containerWidth: NSLayoutConstraint!
-    @IBOutlet var containerHeight: NSLayoutConstraint!
-    @IBOutlet var noteButton: UIButton!
-    @IBOutlet var optionsButton: UIButton!
-    @IBOutlet var clearButton: UIButton!
+    @IBOutlet weak var containerView: UIView!
+    @IBOutlet weak var containerWidth: NSLayoutConstraint!
+    @IBOutlet weak var containerHeight: NSLayoutConstraint!
+    @IBOutlet weak var noteButton: UIButton!
+    @IBOutlet weak var optionsButton: UIButton!
+    @IBOutlet weak var clearButton: UIButton!
+    
+    
+   
+    @IBAction func handleNoteButtonTap(sender: AnyObject) {
+        self.toggleNoteMode(sender)
+    }
+    
     var backgroundView: SSBBackgroundView {
         get {
             return self.view as! SSBBackgroundView
@@ -45,12 +52,16 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         }
     }
     
+    var boards: [SudokuBoard] {
+        return [board1, board2, board3, board4, middleBoard]
+    }
+    
     var containerSubviews: (front: UIView, back: UIView)!
     
     let hintButton = UIButton()
     let playAgainButton = UIButton()
     
-    
+    var alertController: UIAlertController?
     
     
     let longFetchLabel = UILabel()
@@ -72,6 +83,29 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     var puzzle: Puzzle?
     var difficulty: PuzzleDifficulty = .Medium
     
+    override var noteMode: Bool  {
+        didSet {
+            noteButton.selected = !noteButton.selected
+            let nbBGColor = noteButton.backgroundColor
+            let nbTextColor = noteButton.titleColorForState(.Normal)
+            
+            noteButton.backgroundColor = nbTextColor
+            noteButton.setTitleColor(nbBGColor, forState: .Normal)
+            noteButton.layer.borderColor = nbBGColor?.CGColor
+            if noteMode {
+                if let selectedTile = selectedTile {
+                    if selectedTile.displayValue.rawValue != 0 {
+                        selectedTile.addNote(selectedTile.displayValue.rawValue)
+                        selectedTile.clearValue()
+                        selectedTile.refreshLabel()
+                    }
+                }
+            }
+           
+            numPad.refresh()
+        }
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,12 +114,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         
         for board in boards {
             board.controller = self
+            board.prepareBoxes()
         }
         
-        for board in outerBoards {
-            board.layer.zPosition = 1
+        for button in numPad.buttons {
+            button.addTarget(self, action: #selector(valueSelected(_:)), forControlEvents: .TouchUpInside)
         }
-        
         
     }
     
@@ -94,7 +128,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     override func viewDidLayoutSubviews() {
         
         
-        for board in [board1, board2, board3, board4] {
+        for board in outerBoards {
             board.layer.borderColor = UIColor.blackColor().CGColor
             board.layer.borderWidth = 2.0
             board.layer.zPosition = 1.0
@@ -154,7 +188,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
             
         }
         
-        
+        numPad.delegate = self
         
     }
     
@@ -165,14 +199,15 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     
     override func boardReady() {
         readyCount += 1
-        
+        print("\(readyCount)")
         if readyCount == 5 {
-            //fetchPuzzle()
+            print("fetching puzzle")
+            fetchPuzzle()
         }
     }
     
     func fetchPuzzle() {
-        print("fetchingcfrom controller!")
+        print("fetching from controller!")
         bannerView.userInteractionEnabled = false
         
         for board in boards {
@@ -214,13 +249,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
                 self.longFetchLabel.hidden = true
             }
             
-            
-            /*
-             if let time = dict?["time"] as? Double {
-             self.storedTime = time
-             }
-             */
-            
             self.puzzleReady()
             
         }
@@ -228,5 +256,94 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         PuzzleStore.sharedInstance.getPuzzleForController(self, withCompletionHandler: handler)
     }
     
+    //MARK: PlayPuzzleDelegate
+    
+    func toggleNoteMode(sender: AnyObject?) {
+        print("note mode toggled!")
+        if let press = sender as? UILongPressGestureRecognizer {
+            if press.state == .Began {
+                if let tile = (sender as! UIGestureRecognizer).view as? Tile {
+                    if tile.symbolSet != .Standard {
+                        return
+                    }
+                    if tile != selectedTile {
+                        selectedTile = tile
+                        noteMode = true
+                    } else {
+                        noteMode = false
+                    }
+                }
+            }
+        } else {
+            if let selected = selectedTile {
+                if selected.symbolSet != .Standard {
+                    noteMode = false
+                    return
+                }
+               
+                noteMode = !noteMode
+            } else {
+                noteMode = false
+                return
+            }
+        }
+    }
+    
+    //MARK: NumPadDelegate methods
+    override func valueSelected(value: UIButton) {
+        let value = value.tag
+        if noteMode {
+            noteValueChanged(value)
+            numPad.refresh()
+            return
+        }
+        
+        if let selected = selectedTile {
+            if selected.displayValue.rawValue == value {
+                selected.setValue(0)
+            } else {
+                selected.setValue(value)
+                print("setting value to: \(value)")
+            }
+        }
+        
+        checkSolution()
+        
+        numPad.refresh()
+        
+        
+        
+    }
+    
+    func noteValueChanged(value: Int) {
+        if let selected = selectedTile {
+            if selected.noteValues.contains(value) {
+                selected.removeNoteValue(value)
+            } else {
+                selected.addNoteValue(value)
+            }
+        }
+    }
+    
+    
+    func noteValues() -> [Int]? {
+        let selected = selectedTile
+        if selected == nil {
+            return nil
+        }
+        if selected?.noteMode == false {
+            return nil
+        } else {
+            return selected?.noteValues
+        }
+    }
+
+    var currentValue: Int {
+        guard let selected = selectedTile else {
+            return 0
+        }
+        
+        return selected.displayValue.rawValue
+    }
 }
 

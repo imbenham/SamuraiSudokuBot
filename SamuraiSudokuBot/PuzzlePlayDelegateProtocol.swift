@@ -89,7 +89,7 @@ extension BannerViewDelegate {
     
 }
 
-protocol SudokuControllerDelegate: BannerViewDelegate, NumPadDelegate {
+protocol SudokuControllerDelegate: class, BannerViewDelegate {
     var topAnchorBoard: SudokuBoard {get}
     var bottomAnchorBoard: SudokuBoard {get}
     var board: SudokuBoard {get}
@@ -101,17 +101,18 @@ protocol SudokuControllerDelegate: BannerViewDelegate, NumPadDelegate {
     var nilTiles:[Tile] {get}
     var nonNilTiles:[Tile] {get}
     var selectedTile:Tile? {get set}
+    var noteMode:Bool {get set}
     
-    var numPad: SudokuNumberPad {get set}
+    weak var numPad: SudokuNumberPad! {get}
     
     
     func tileAtIndex(index: TileIndex, forBoard board: SudokuBoard?) -> Tile?
-    func tileTapped(sender: AnyObject)
     func boardSelectedTileChanged()
     //func setUpButtons()
     func setUpBoard()
     func boardReady()
     
+    func tileTapped(sender: AnyObject?)
     
     func refreshNoteButton()
     
@@ -164,18 +165,7 @@ extension SudokuControllerDelegate {
         }
     }
     
-    func tileTapped(sender: AnyObject) {
-        if let tile = (sender as! UIGestureRecognizer).view as? Tile {
-            if tile != selectedTile {
-                selectedTile?.selected = false
-                tile.selected = !tile.selected
-                selectedTile = tile
-            }
-            numPad.refresh()
-        }
-        
-    }
-    
+       
     func tileAtIndex(index: TileIndex, forBoard board: SudokuBoard?)->Tile? {
         if let suppliedBoard = board {
             return suppliedBoard.tileAtIndex(index)
@@ -230,31 +220,17 @@ extension SudokuControllerDelegate {
     }
     
     //MARK: NumPadDelegate
-    var currentValue: Int? {
+    var currentValue: Int {
         get {
             if selectedTile?.noteMode == true {
-                return nil
+                return 0
             }
             if let sel = selectedTile {
                 let val = sel.displayValue.rawValue
-                if val == 0 {
-                    return nil
-                }
                 return val
             }
-            return nil
+            return 0
         }
-    }
-    
-    func valueSelected(value: Int) {
-        if let selected = selectedTile {
-            if selected.displayValue.rawValue == value {
-                selected.setValue(0)
-            } else {
-                selected.setValue(value)
-            }
-        }
-        numPad.refresh()
     }
     
     func noteValueChanged(value: Int) {
@@ -267,10 +243,6 @@ extension SudokuControllerDelegate {
         return nil
     }
     
-    func noteMode() -> Bool {
-        //override me for puzzle-play functionality
-        return false
-    }
     
     func refreshNoteButton() {
         // override me for puzzle-play functionality
@@ -285,7 +257,7 @@ extension SudokuControllerDelegate {
 
 
 
-protocol PlayPuzzleDelegate:SudokuControllerDelegate {
+protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     var puzzle:Puzzle? {get set}
     var difficulty: PuzzleDifficulty {get set}
     var wrongTiles: [Tile] {get}
@@ -295,7 +267,7 @@ protocol PlayPuzzleDelegate:SudokuControllerDelegate {
     
     // required UI elements
     var longFetchLabel: UILabel {get}
-    var spinner:UIActivityIndicatorView {get}
+    var spinner: UIActivityIndicatorView {get}
     var hintButton: UIButton {get}
     var optionsButton: UIButton! {get}
     var playAgainButton: UIButton {get}
@@ -305,7 +277,8 @@ protocol PlayPuzzleDelegate:SudokuControllerDelegate {
     var containerWidth: NSLayoutConstraint! {get set}
     var containerHeight: NSLayoutConstraint! {get set}
     var clearButton: UIButton! {get set}
-    
+    var alertController: UIAlertController? {get set}
+   
     
     //func tileWithBackingCell(cell: BackingCell) -> Tile?
     
@@ -422,44 +395,7 @@ extension PlayPuzzleDelegate {
         
     }
     
-    func toggleNoteMode(sender: AnyObject?) {
-        if let press = sender as? UILongPressGestureRecognizer {
-            if press.state == .Began {
-                if let tile = (sender as! UIGestureRecognizer).view as? Tile {
-                    if tile.symbolSet != .Standard {
-                        return
-                    }
-                    if tile != selectedTile {
-                        selectedTile?.noteMode = false
-                        selectedTile?.selected = false
-                        tile.noteMode = true
-                        selectedTile = tile
-                    } else {
-                        tile.noteMode = !tile.noteMode
-                    }
-                    numPad.refresh()
-                }
-            }
-        } else {
-            if let selected = selectedTile {
-                if selected.symbolSet != .Standard {
-                    return
-                }
-                let nButton = sender as! UIButton
-                let nbBGColor = nButton.backgroundColor
-                let nbTextColor = nButton.titleColorForState(.Normal)
-                
-                nButton.backgroundColor = nbTextColor
-                nButton.setTitleColor(nbBGColor, forState: .Normal)
-                nButton.layer.borderColor = nbBGColor?.CGColor
-                
-                selected.noteMode = !selected.noteMode
-                numPad.refresh()
-            } else {
-                return
-            }
-        }
-    }
+    
     
     func refreshNoteButton() {
         if let noteButton = noteButton {
@@ -637,15 +573,18 @@ extension PlayPuzzleDelegate {
         let wrongsCount = wrongs.count
         
         if nilsCount < 2 && wrongsCount == 0 {
-            let alert = UIAlertController(title: "Try harder.", message: "I think you can do this...", preferredStyle: .Alert)
+            alertController = UIAlertController(title: "Try harder.", message: "I think you can do this...", preferredStyle: .Alert)
+            guard let alertController = alertController else {
+                return
+            }
             
             let oKay =  UIAlertAction(title: "OK", style: .Cancel) {
                 (_) in
                 self.activateInterface()
             }
-            alert.addAction(oKay)
+            alertController.addAction(oKay)
             
-            vc.presentViewController(alert, animated: true, completion: nil)
+            vc.presentViewController(alertController, animated: true, completion: nil)
             
             return
         }
@@ -780,7 +719,11 @@ extension PlayPuzzleDelegate {
             return
         }
         
-        let puzzleSelectAlert = UIAlertController(title: "New Game", message: "Select a difficulty level, or choose replay puzzle", preferredStyle: .Alert)
+        alertController = UIAlertController(title: "New Game", message: "Select a difficulty level, or choose replay puzzle", preferredStyle: .Alert)
+        
+        guard let puzzleSelectAlert = alertController else{
+            return
+        }
         
         let easy = UIAlertAction(title: "Easy", style: UIAlertActionStyle.Default) { (_) in
             self.newPuzzleOfDifficulty(.Easy)
@@ -860,13 +803,12 @@ extension PlayPuzzleDelegate {
             return
         }
         
-        let alert = UIAlertController(title: "Are you sure?", message: "This will cause all of the values you've entered to be removed and cannot be undone.", preferredStyle: .Alert)
+        alertController = UIAlertController(title: "Are you sure?", message: "This will cause all of the values you've entered to be removed and cannot be undone.", preferredStyle: .Alert)
         let oKay = UIAlertAction(title: "Clear", style: .Default) { (_) in
             let nils = self.startingNilTiles
             
             for tile in nils {
                 tile.backingCell!.notesArray = []
-                tile.noteMode = false
                 tile.setValue(0)
                 tile.labelColor = tile.defaultTextColor
             }
@@ -879,10 +821,10 @@ extension PlayPuzzleDelegate {
             self.activateInterface()
         }
         
-        alert.addAction(oKay)
-        alert.addAction(cancel)
+        alertController!.addAction(oKay)
+        alertController!.addAction(cancel)
         
-        vc.presentViewController(alert, animated: true) { (_) in
+        vc.presentViewController(alertController!, animated: true) { (_) in
             self.deactivateInterface()
         }
         
@@ -891,8 +833,10 @@ extension PlayPuzzleDelegate {
     //MARK: handling puzzle completion
     
     func checkSolution() {
-        if nilTiles.count == 0 && wrongTiles.count == 0 {
-            puzzleSolved()
+        if nilTiles.count == 0 {
+            if wrongTiles.count == 0 {
+                puzzleSolved()
+            }
         }
     }
     
@@ -909,14 +853,14 @@ extension PlayPuzzleDelegate {
             tile.backgroundColor = tile.defaultBackgroundColor
         }
         
-        let alertController = UIAlertController(title: "Puzzle Solved", message: "Well done!", preferredStyle: .Alert)
+        alertController = UIAlertController(title: "Puzzle Solved", message: "Well done!", preferredStyle: .Alert)
         
         let newPuzz = UIAlertAction(title: "Play Again!", style: .Default) {(_) in
             self.clearAll()
             self.fetchPuzzle()
         }
         
-        alertController.addAction(newPuzz)
+        alertController!.addAction(newPuzz)
         
         
         if difficulty != .Insane {
@@ -932,7 +876,7 @@ extension PlayPuzzleDelegate {
                 self.clearAll()
                 self.fetchPuzzle()
             }
-            alertController.addAction(harderPuzz)
+            alertController!.addAction(harderPuzz)
         }
         
         
@@ -940,7 +884,7 @@ extension PlayPuzzleDelegate {
         let OKAction = UIAlertAction(title: "OK", style: .Default) { (_) in
             vc.navigationController!.popViewControllerAnimated(true)
         }
-        alertController.addAction(OKAction)
+        alertController!.addAction(OKAction)
         
         
         func flashBoxAnimationsWithBoxes(boxes: [Box]) {
@@ -966,7 +910,7 @@ extension PlayPuzzleDelegate {
                                     }
                                 }) { finished in
                                     if finished {
-                                        vc.presentViewController(alertController, animated: true, completion: nil)
+                                        vc.presentViewController(self.alertController!, animated: true, completion: nil)
                                     }
                                 }
                                 
@@ -1008,8 +952,8 @@ extension PlayPuzzleDelegate {
         let optionSheet = storyboard.instantiateViewControllerWithIdentifier("options") as! PuzzleOptionsViewController
         optionSheet.modalTransitionStyle = .FlipHorizontal
         vc.presentViewController(optionSheet, animated: true) {
-            if let selected = self.selectedTile {
-                selected.noteMode = false
+            if self.selectedTile != nil {
+                self.noteMode = false
             }
         }
     }
@@ -1019,7 +963,7 @@ extension PlayPuzzleDelegate {
             return
         }
         deactivateInterface()
-        let helpAlert = UIAlertController(title: "Tough, eh?", message: "Request a hint to reveal one cell", preferredStyle: .Alert)
+        alertController = UIAlertController(title: "Tough, eh?", message: "Request a hint to reveal one cell", preferredStyle: .Alert)
         
         
         let hintPlease = UIAlertAction(title: "Hint, please!", style: .Default) { (_) in
@@ -1027,75 +971,25 @@ extension PlayPuzzleDelegate {
             self.activateInterface()
         }
         
-        helpAlert.addAction(hintPlease)
+        alertController!.addAction(hintPlease)
         
         let givesUp = UIAlertAction(title: "I give up.", style: .Default) { (_) in
             self.giveUp()
         }
         
-        helpAlert.addAction(givesUp)
+        alertController!.addAction(givesUp)
         
         let cancel =  UIAlertAction(title: "Cancel", style: .Cancel) {
             _ in
             self.activateInterface()
         }
         
-        helpAlert.addAction(cancel)
+       alertController!.addAction(cancel)
         
-        vc.presentViewController(helpAlert, animated: true) {
+        vc.presentViewController(alertController!, animated: true) {
             _ in
             self.deactivateInterface()
         }
-    }
-    
-    
-    
-    //MARK: NumPadDelegate methods
-    func valueSelected(value: Int) {
-        if let selected = selectedTile {
-            if selected.displayValue.rawValue == value {
-                selected.setValue(0)
-            } else {
-                selected.setValue(value)
-            }
-        }
-        numPad.refresh()
-        
-        if nilTiles.count == 0 {
-            checkSolution()
-        }
-        
-    }
-    
-    func noteValueChanged(value: Int) {
-        if let selected = selectedTile {
-            if selected.noteValues.contains(value) {
-                selected.removeNoteValue(value)
-            } else {
-                selected.addNoteValue(value)
-            }
-        }
-    }
-    
-    
-    func noteValues() -> [Int]? {
-        let selected = selectedTile
-        if selected == nil {
-            return nil
-        }
-        if selected?.noteMode == false {
-            return nil
-        } else {
-            return selected?.noteValues
-        }
-    }
-    
-    func noteMode() -> Bool {
-        if let selected = selectedTile {
-            return selected.noteMode
-        }
-        
-        return false
     }
     
 }

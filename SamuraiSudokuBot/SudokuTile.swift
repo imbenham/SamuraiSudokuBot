@@ -55,12 +55,13 @@ class Tile: SudokuItem {
     var labelColor = UIColor.blackColor()
     let defaultTextColor = UIColor.blackColor()
     let chosenTextColor = UIColor.redColor()
-    var selected = false {
-        didSet {
-            if !selected {
-                noteMode = false
+    var selected:Bool  {
+        get {
+            if let controller = controller {
+                return controller.selectedTile == self
             }
-            refreshLabel()
+            
+            return false
         }
     }
     var symbolSet: SymbolSet {
@@ -91,22 +92,11 @@ class Tile: SudokuItem {
     let wrongColor = UIColor(red: 1.0, green: 0.0, blue: 0, alpha: 0.3)
     var selectedColor = UIColor(red: 0.1, green: 0.1, blue: 0.9, alpha: 0.2)
     let noteBackground = UIView()
-    var noteMode = false {
-        didSet {
-            if noteMode == true {
-                if displayValue != .Nil {
-                    addNoteValue(displayValue.rawValue)
-                }
-                self.selected = true
-                
-            } else {
-                if noteValues.count > 0 {
-                    setValue(0)
-                }
-            }
-            refreshBackground()
-            controller?.refreshNoteButton()
+    var noteMode:Bool {
+        if let controller = controller as? PlayPuzzleDelegate {
+            return controller.noteMode
         }
+        return false
     }
     var noteValues: [Int] {
         get {
@@ -189,6 +179,13 @@ class Tile: SudokuItem {
         refreshLabel()
     }
     
+    func addNote(note: Int) {
+        self.backingCell?.notesArray.append(note)
+    }
+    
+    func clearValue() {
+        backingCell?.assignedValue = 0
+    }
     
     func getValueText()->String {
         return self.displayValue != .Nil ? symbolSet.getSymbolForTyleValue(displayValue) : ""

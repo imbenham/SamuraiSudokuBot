@@ -52,7 +52,7 @@ class PuzzleStore: NSObject {
             dispatch_async(concurrentPuzzleQueue) {
                 self.completionHandler = handler
                 self.difficulty = controller.difficulty
-                SamuraiMatrix.sharedSamuraiInstance.generatePuzzle()
+                SamuraiMatrix.sharedInstance.generatePuzzle()
                 
             }
             

@@ -11,26 +11,19 @@ import Foundation
 import UIKit
 
 
-@IBDesignable
+//@IBDesignable
 
 class SudokuNumberPad: UIView {
     
-    var buttons: [UIButton] = []
-    var current: UIButton? = nil {
-        didSet {
-            if let oldCurrent = oldValue {
-                if oldCurrent == current {
-                    return
-                }
-                //oldCurrent.backgroundColor = UIColor.clearColor()
-                oldCurrent.setTitleColor(defaultTitleColor, forState: .Normal)
-            }
-            if let someVal = current {
-                //someVal.backgroundColor = UIColor.clearColor()
-                someVal.setTitleColor(currentTitleColor, forState: .Normal)
-            }
+    let buttons: [UIButton] = {
+        var buttons: [UIButton] = []
+        for num in 1...9 {
+            let button = UIButton()
+            button.tag = num
+            buttons.append(button)
         }
-    }
+        return buttons
+    }()
     
     var symbolSet: SymbolSet {
         get {
@@ -54,10 +47,10 @@ class SudokuNumberPad: UIView {
     
     // customization points
     
-    @IBInspectable var currentColor = UIColor.blackColor()
-    @IBInspectable var defaultColor = UIColor.whiteColor()
-    @IBInspectable var defaultTitleColor = UIColor(red: 51/255, green: 204/255, blue: 51/255, alpha: 1)
-    @IBInspectable var currentTitleColor = UIColor.whiteColor()
+    var currentColor = UIColor.blackColor()
+    var defaultColor = UIColor.whiteColor()
+    var defaultTitleColor = UIColor(red: 51/255, green: 204/255, blue: 51/255, alpha: 1)
+    var currentTitleColor = UIColor.whiteColor()
     
     override func drawRect(rect: CGRect) {
         let rectHeight = rect.size.width/9
@@ -76,10 +69,11 @@ class SudokuNumberPad: UIView {
         let selectedImage = configs.backgroundImageForSize(buttonSize, selected: true)
         
         for index in 1...9 {
+            
             let buttonFrame = CGRect(x: rectHeight * CGFloat((index - 1)), y: 0, width: buttonSize.width, height: buttonSize.height)
-            let button = UIButton.init(frame: buttonFrame)
+            let button = buttons[index-1]
+            button.frame = buttonFrame
             button.tag = index
-            button.addTarget(self, action: #selector(SudokuNumberPad.buttonTapped(_:)), forControlEvents: .TouchUpInside)
             button.setBackgroundImage(buttonImage, forState: .Normal)
             button.setBackgroundImage(selectedImage, forState: .Selected)
             button.setTitleColor(defaultTitleColor, forState: .Normal)
@@ -89,7 +83,6 @@ class SudokuNumberPad: UIView {
             button.setAttributedTitle(attribString, forState: .Normal)
             button.setAttributedTitle(attribString, forState: .Selected)
             
-            buttons.append(button)
             button.layer.cornerRadius = button.frame.size.width / 2
             button.clipsToBounds = true
             
@@ -122,7 +115,6 @@ class SudokuNumberPad: UIView {
     
     
     
-    
     func constrainButton(button: UIButton, atIndex index: Int) {
         button.translatesAutoresizingMaskIntoConstraints = false
         let buttonY = NSLayoutConstraint(item: button, attribute: .CenterY, relatedBy: .Equal, toItem: self, attribute: .CenterY, multiplier: 1, constant: 0)
@@ -144,37 +136,25 @@ class SudokuNumberPad: UIView {
         self.addConstraints(constraints)
     }
     
-    func buttonTapped(sender: UIButton) {
-        let val = sender.tag
-        if let del = self.delegate {
-            if del.noteMode() {
-                del.noteValueChanged(val)
-                noteModeRefreshButton(sender)
-                return
-            }
-            del.valueSelected(val)
-        }
-    }
-    
     func refresh() {
         if self.delegate == nil {
             return
         }
         
-        if let existingValue = self.delegate!.currentValue {
-            if let nowCurrent = current {
-                if nowCurrent == existingValue {
-                    return
-                }
+        print("\(self.delegate!.currentValue)")
+        for button in buttons {
+            if self.delegate?.currentValue == button.tag {
+                print("setting button selected")
+                button.selected = true
+            } else {
+                button.selected = false
             }
-            current = buttons[existingValue-1]
-        } else {
-            if current != nil {
-                current = nil
-            }
+            
+            self.userInteractionEnabled = true
         }
         
-        if !delegate!.noteMode() {
+        
+        /*if !delegate!.noteMode {
             var allButtons = buttons
             if let cur = current {
                 allButtons.removeAtIndex(cur.tag-1)
@@ -185,12 +165,12 @@ class SudokuNumberPad: UIView {
             }
         } else {
             configureForNoteMode()
-        }
+        }*/
     }
     
     func configureForNoteMode() {
         if let del = delegate {
-            if !del.noteMode() {
+            if !del.noteMode {
                 return
             }
         }
@@ -234,11 +214,14 @@ class SudokuNumberPad: UIView {
 
 
 protocol NumPadDelegate {
-    var currentValue: Int? {get}
+    var currentValue: Int {get}
+    var noteMode: Bool {get set}
     
-    func valueSelected(value: Int)
+    func valueSelected(value: UIButton)
     func noteValueChanged(value: Int)
     
     func noteValues() -> [Int]?
-    func noteMode() -> Bool
+   
+    
 }
+

@@ -22,7 +22,9 @@ class Box: SudokuItem, Nester{
         }
         set {
             parentSquare?.controller = newValue
+            didSetController()
         }
+    
     }
     
     override init(index: Int) {
@@ -49,19 +51,27 @@ class Box: SudokuItem, Nester{
         }
     }
     
-    override func layoutSubviews() {
+   /* override func layoutSubviews() {
         
         self.prepareBoxes()
-    }
+    }*/
     
     
     override func didSetController() {
-        for box in boxes {
-            let tapRecognizer = UITapGestureRecognizer(target: controller, action: "tileTapped:")
-            box.addGestureRecognizer(tapRecognizer)
-            let longPressRecognizer = UILongPressGestureRecognizer(target: controller, action: "toggleNoteMode:")
-            tapRecognizer.requireGestureRecognizerToFail(longPressRecognizer)
-            box.addGestureRecognizer(longPressRecognizer)
+        print("did set ctrller called")
+        if let ctrl = controller as? SudokuController {
+            for box in boxes {
+                let tapRecognizer = UITapGestureRecognizer(target: ctrl, action: #selector(SudokuController.tileTapped(_:)))
+                box.addGestureRecognizer(tapRecognizer)
+                if let controller = controller as? BasicSudokuController {
+                    let longPressRecognizer = UILongPressGestureRecognizer(target: controller, action: #selector(BasicSudokuController.toggleNoteMode(_:)))
+                    tapRecognizer.requireGestureRecognizerToFail(longPressRecognizer)
+                    box.addGestureRecognizer(longPressRecognizer)
+                }
+                
+                
+            }
+            
         }
     }
     
@@ -96,6 +106,22 @@ class Box: SudokuItem, Nester{
             box.layer.borderColor = UIColor.lightGrayColor().CGColor
             box.layer.borderWidth = 1
             box.translatesAutoresizingMaskIntoConstraints = false
+            
+            if let ctrl = controller as? SudokuController {
+                for box in boxes {
+                    let tapRecognizer = UITapGestureRecognizer(target: ctrl, action: #selector(SudokuController.tileTapped(_:)))
+                    box.addGestureRecognizer(tapRecognizer)
+                    if let controller = controller as? BasicSudokuController {
+                        let longPressRecognizer = UILongPressGestureRecognizer(target: controller, action: #selector(BasicSudokuController.toggleNoteMode(_:)))
+                        tapRecognizer.requireGestureRecognizerToFail(longPressRecognizer)
+                        box.addGestureRecognizer(longPressRecognizer)
+                    }
+                    
+                    
+                }
+                
+            }
+
         }
         
         let constraints:[NSLayoutConstraint] = BoxSetter().configureConstraintsForParentSquare(self)

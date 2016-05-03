@@ -63,7 +63,7 @@ class MiddleBoard: SudokuBoard {
         boxes = []
         
         for index in 0...8 {
-            let aBox = MiddleBox(index: index, withParent: self)
+            let aBox = Box(index: index, withParent: self)
             aBox.parentSquare = self
             boxes.append(aBox)
         }
@@ -74,7 +74,7 @@ class MiddleBoard: SudokuBoard {
         super.init(coder: aDecoder)
         boxes = []
         for index in 0...8 {
-            let aBox = MiddleBox(index: index)
+            let aBox = Box(index: index)
             boxes.append(aBox)
         }
         

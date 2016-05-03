@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
         }
         
         // initialize the matrix so it's ready to crank out puzzles
-        // SamuraiMatrix.prepareMatrix()
+       // SamuraiMatrix.prepareMatrix()
         
         
         return true
