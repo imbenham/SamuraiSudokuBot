@@ -39,6 +39,7 @@
 		36AD45B91CC960D000CC4768 /* BackingCell+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */; };
 		36AD45BC1CC9616D00CC4768 /* SamuraiUIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */; };
 		36AD45C51CC9721D00CC4768 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36AD45C31CC9721D00CC4768 /* Main.storyboard */; };
+		36D032811CE0CEA500ADCC4B /* OptionMenuFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,7 @@
 		36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "BackingCell+CoreDataProperties.swift"; path = "../BackingCell+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamuraiUIExtensions.swift; sourceTree = "<group>"; };
 		36AD45C41CC9721D00CC4768 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionMenuFooter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -248,9 +250,9 @@
 		3638F2C01CC95749004D65C8 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				36A117851CDE8CCD00456D01 /* PopoverMenus */,
 				3638F2C41CC957B4004D65C8 /* Samurai */,
 				3638F2C31CC957A8004D65C8 /* Regular */,
-				3638F2C11CC9576D004D65C8 /* PuzzleOptionsController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -288,8 +290,17 @@
 				36AD45AB1CC95C4D00CC4768 /* SudokuNumPad.swift */,
 				36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */,
 				36AD45AF1CC95CFF00CC4768 /* SudokuViews */,
+				36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */,
 			);
 			name = UI;
+			sourceTree = "<group>";
+		};
+		36A117851CDE8CCD00456D01 /* PopoverMenus */ = {
+			isa = PBXGroup;
+			children = (
+				3638F2C11CC9576D004D65C8 /* PuzzleOptionsController.swift */,
+			);
+			name = PopoverMenus;
 			sourceTree = "<group>";
 		};
 		36AD45AF1CC95CFF00CC4768 /* SudokuViews */ = {
@@ -449,6 +460,7 @@
 				360361071CC94A69005F6A9F /* ViewController.swift in Sources */,
 				3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */,
 				3638F2BF1CC9560E004D65C8 /* Utils.swift in Sources */,
+				36D032811CE0CEA500ADCC4B /* OptionMenuFooter.swift in Sources */,
 				36AD45B51CC95D6700CC4768 /* SudokuBox.swift in Sources */,
 				3638F2C21CC9576D004D65C8 /* PuzzleOptionsController.swift in Sources */,
 				3638F2BC1CC955A9004D65C8 /* PuzzleDifficulty.swift in Sources */,

@@ -34,6 +34,7 @@ class Tile: SudokuItem {
                 }
                 return .Nil
             } else {
+                userInteractionEnabled = false
                 return TileValue(rawValue:Int(bc.value.intValue))!
             }
             
@@ -103,7 +104,7 @@ class Tile: SudokuItem {
             guard let backingCell = backingCell else {
                 return []
             }
-            return backingCell.notesArray
+            return backingCell.notesArray.sort(<)
         }
     }
     
@@ -192,16 +193,23 @@ class Tile: SudokuItem {
     }
     
     func setValue(value: Int) {
+        backingCell?.assignedValue = value
         if displayValue != .Nil {
             backingCell?.notesArray = []
         }
-        backingCell?.assignedValue = value
+        
         refreshLabel()
         
     }
     
     func refreshLabel() {
-        if backingCell!.revealed.boolValue {
+        guard let backingCell = backingCell else {
+            valueLabel.text = ""
+            refreshBackground()
+            configureNoteViews()
+            return
+        }
+        if backingCell.revealed.boolValue {
             valueLabel.textColor = chosenTextColor
             userInteractionEnabled = false
         } else {
@@ -214,9 +222,10 @@ class Tile: SudokuItem {
         configureNoteViews()
     }
     
-    func refreshBackground() {
+    private func refreshBackground() {
         if noteMode {
             if selected {
+                print("changin background")
                 self.backgroundColor = noteModeColor
                 for lv in noteLabels {
                     lv.layer.borderWidth = 0.25

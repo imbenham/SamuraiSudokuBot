@@ -64,7 +64,7 @@ class SudokuNumberPad: UIView {
         
         let buttonSize = CGSize(width: canvasRect.height, height: canvasRect.height)
         
-        let configs = Utils.sharedUtils.ButtonConfigs
+        let configs = Utils.ButtonConfigs
         let buttonImage = configs.backgroundImageForSize(buttonSize, selected: false)
         let selectedImage = configs.backgroundImageForSize(buttonSize, selected: true)
         
@@ -77,6 +77,7 @@ class SudokuNumberPad: UIView {
             button.setBackgroundImage(buttonImage, forState: .Normal)
             button.setBackgroundImage(selectedImage, forState: .Selected)
             button.setTitleColor(defaultTitleColor, forState: .Normal)
+            button.setTitleColor(currentTitleColor, forState: .Normal)
             button.setBackgroundImage(selectedImage, forState: .Highlighted)
             
             let attribString = configs.getAttributedTitle(symbolSet.getSymbolForValue(index))
@@ -141,63 +142,54 @@ class SudokuNumberPad: UIView {
             return
         }
         
-        print("\(self.delegate!.currentValue)")
-        for button in buttons {
-            if self.delegate?.currentValue == button.tag {
-                print("setting button selected")
-                button.selected = true
-            } else {
-                button.selected = false
-            }
-            
-            self.userInteractionEnabled = true
-        }
-        
-        
-        /*if !delegate!.noteMode {
-            var allButtons = buttons
-            if let cur = current {
-                allButtons.removeAtIndex(cur.tag-1)
-            }
+        if !delegate!.noteMode {
+            let allButtons = buttons
+           
             for button in allButtons {
-                // button.backgroundColor = defaultColor
-                button.setTitleColor(defaultTitleColor, forState: .Normal)
+                button.selected = self.delegate?.currentValue == button.tag ? true : false
+                button.userInteractionEnabled = true
             }
         } else {
             configureForNoteMode()
-        }*/
+        }
+        self.userInteractionEnabled = true
     }
     
     func configureForNoteMode() {
-        if let del = delegate {
-            if !del.noteMode {
-                return
+       
+        guard let delegate = delegate where delegate.noteMode, let selected = delegate.noteValues() else {
+            print("returning wihtout doing anything")
+            print("\(self.delegate!.noteValues())")
+            if !self.delegate!.noteMode {
+                print("no note mode")
             }
+            return
         }
-        var allButtons = buttons
-        if let vals = delegate!.noteValues() {
-            for val in vals {
-                let button = buttonWithTag(val)!
-                //button.backgroundColor = noteModeColor
-                button.setTitleColor(currentTitleColor, forState: .Normal)
-                allButtons.removeAtIndex(allButtons.indexOf(button)!)
+        
+        let notes = Set(selected)
+        
+        var initial: ([UIButton], [UIButton]) = ([], [])
+        
+        let twoSets: (include: [UIButton], excldue: [UIButton]) = buttons.reduce(initial, combine: {
+            if notes.contains($1.tag) {
+                initial.0.append($1)
+            } else {
+                initial.1.append($1)
             }
+            return initial
+        })
+        
+        print(twoSets)
+        
+        for button in twoSets.include {
+            button.selected = true
         }
-        for button in allButtons {
-            // button.backgroundColor = defaultColor
-            button.setTitleColor(defaultTitleColor, forState: .Normal)
-            
+        
+        for button in twoSets.excldue {
+            button.selected = false
         }
     }
-    
-    
-    func noteModeRefreshButton(button: UIButton) {
-        if let vals = delegate?.noteValues() {
-            //button.backgroundColor = vals.contains(button.tag) ? noteModeColor : defaultColor
-            let color =  vals.contains(button.tag) ? currentTitleColor : defaultTitleColor
-            button.setTitleColor(color, forState: .Normal)
-        }
-    }
+
     
     func buttonWithTag(tag:Int) -> UIButton? {
         for button in buttons {
@@ -207,21 +199,6 @@ class SudokuNumberPad: UIView {
         }
         return nil
     }
-    
-    
-    
 }
 
-
-protocol NumPadDelegate {
-    var currentValue: Int {get}
-    var noteMode: Bool {get set}
-    
-    func valueSelected(value: UIButton)
-    func noteValueChanged(value: Int)
-    
-    func noteValues() -> [Int]?
-   
-    
-}
 

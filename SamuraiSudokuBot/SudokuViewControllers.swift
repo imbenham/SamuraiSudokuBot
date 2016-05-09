@@ -26,7 +26,7 @@ extension UINavigationController {
 
 class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelegate {
     
-    var noteMode = false 
+    var noteMode = false
     
     let board: SudokuBoard = SudokuBoard(frame: CGRectZero)
     
@@ -38,6 +38,19 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     var bottomAnchorBoard: SudokuBoard {
         get {
             return board
+        }
+    }
+    
+    var tiles:[Tile] {
+        get {
+            return board.tiles
+        }
+    }
+    
+    // hackish solution to lack of optional properties in Swift protocols. 
+    var boards: [SudokuBoard] {
+        get {
+            return [board]
         }
     }
     
@@ -147,8 +160,10 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     }
     
    func tileTapped(sender: AnyObject?) {
-      print("tile tapped!")
+    print("tile was tapperooed")
       if let tile = (sender as! UIGestureRecognizer).view as? Tile {
+        
+        print("box: \((tile.parentSquare! as! Box).index) tile: \(tile.index)")
          selectedTile = tile
       }
     }
@@ -176,6 +191,74 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         //this function is called by the board on its controller once the board is finished
         //initializing and laying out all of its sub-views
     }
+
+    
+    //MARK: PlayPuzzleDelegate
+    
+    func toggleNoteMode(sender: AnyObject?) {
+        print("note mode toggled!")
+        if let press = sender as? UILongPressGestureRecognizer {
+            if press.state == .Began {
+                if let tile = (sender as! UIGestureRecognizer).view as? Tile {
+                    if tile.symbolSet != .Standard {
+                        return
+                    }
+                    if tile != selectedTile {
+                        selectedTile = tile
+                        noteMode = true
+                    } else {
+                        noteMode = false
+                    }
+                }
+            }
+        } else {
+            if let selected = selectedTile {
+                if selected.symbolSet != .Standard {
+                    noteMode = false
+                    return
+                }
+                
+                noteMode = !noteMode
+            } else {
+                noteMode = false
+                return
+            }
+        }
+    }
+    
+    
+    
+    //MARK: NumPadDelegate methods
+
+    func noteValueChanged(value: Int) {
+        if let selected = selectedTile {
+            if selected.noteValues.contains(value) {
+                selected.removeNoteValue(value)
+            } else {
+                selected.addNoteValue(value)
+            }
+        }
+    }
+    
+    
+    
+    func noteValues() -> [Int]? {
+        print("Using SamController implementation")
+        guard noteMode, let selected = selectedTile else {
+            return nil
+        }
+        
+        return selected.noteValues
+    }
+    
+    var currentValue: Int {
+        guard let selected = selectedTile else {
+            return 0
+        }
+        
+        return selected.displayValue.rawValue
+    }
+
     
     func valueSelected(value: UIButton) {
         let value = value.tag
@@ -188,6 +271,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         }
         numPad.refresh()
     }
+    
 }
 
 
@@ -200,7 +284,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     let longFetchLabel = UILabel()
     var clearButton:UIButton! = UIButton(tag: 0)
-    var hintButton: UIButton = UIButton(tag: 1)
+    var hintButton: UIButton! = UIButton(tag: 1)
     let optionsButton: UIButton! = UIButton(tag: 2)
     let playAgainButton: UIButton = UIButton(tag: 3)
     var noteButton:UIButton! =  UIButton(tag: 5)
@@ -208,18 +292,6 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     var containerWidth: NSLayoutConstraint!
     var containerHeight: NSLayoutConstraint!
-    
-    var tiles: [Tile] {
-        get {
-            var mutableTiles = [Tile]()
-            let boxList = self.board.boxes
-            for box in boxList {
-                let containedTiles = box.boxes
-                mutableTiles.appendContentsOf(containedTiles)
-            }
-            return mutableTiles
-        }
-    }
     
     var numPadHeight: CGFloat {
         get {
@@ -549,7 +621,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     //MARK: PlayPuzzleDelegate
     
-    func toggleNoteMode(sender: AnyObject?) {
+    override func toggleNoteMode(sender: AnyObject?) {
         if let press = sender as? UILongPressGestureRecognizer {
             if press.state == .Began {
                 if let tile = (sender as! UIGestureRecognizer).view as? Tile {

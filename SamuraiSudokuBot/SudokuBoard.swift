@@ -20,8 +20,40 @@ class SudokuBoard: SudokuItem, Nester {
         return readyCount == 9
     }
     
+    var tiles: [Tile] {
+        get {
+            var tiles: [Tile] = []
+            for box in boxes {
+                tiles += box.boxes
+            }
+            return tiles
+        }
+    }
+    
     override var controller: SudokuControllerDelegate? {
         didSet {
+        }
+    }
+    
+    var isMiddle = false {
+        didSet {
+            let boxSet: [Box] = [boxes[0], boxes[2], boxes[6], boxes[8]]
+            if isMiddle {
+                for box in boxSet {
+                    box.userInteractionEnabled = false
+                    box.hidden = true
+                    for tile in box.boxes {
+                        tile.backgroundColor = UIColor.orangeColor()
+                        tile.hidden = true
+                    }
+                    
+                }
+            } else {
+                for box in boxSet {
+                    box.userInteractionEnabled = true
+                    box.hidden = false
+                }
+            }
         }
     }
     
@@ -74,7 +106,6 @@ class SudokuBoard: SudokuItem, Nester {
     
     
     func prepareBoxes() {
-        print("preparing boxes")
         for box in boxes {
             
             self.addSubview(box)
@@ -97,8 +128,6 @@ class SudokuBoard: SudokuItem, Nester {
     
     func tilesReady() {
         readyCount += 1
-        print("tiles ready")
-        print("\(controller)")
         
         if ready {
             if let cntrlr = self.controller {
@@ -142,12 +171,7 @@ extension SudokuBoard {
     
     
     func getNilTiles() -> [Tile] {
-        var nilTiles = [Tile]()
-        for item in boxes {
-            let box = item
-            nilTiles += box.getNilTiles()
-        }
-        return nilTiles
+        return tiles.filter(({$0.displayValue == .Nil}))
     }
     
 }

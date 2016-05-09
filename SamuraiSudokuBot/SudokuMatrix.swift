@@ -257,7 +257,7 @@ class Matrix {
         
         puzz = filtered.Givens
         
-        let puzzSolution = filtered.Solution
+        let puzzSolution:[PuzzleCell] = filtered.Solution
         
         PuzzleStore.sharedInstance.puzzleReady(puzz, solution: puzzSolution)
         
@@ -306,10 +306,10 @@ class Matrix {
             
             var givens = puzzle.givens
             var solution = puzzle.solution
-            let target = rawDifficultyForPuzzle
+            let target = rawDifficultyForPuzzle - 100
             var cycles = 0
             var score = scorePuzzle(givens)
-            while score > target {
+            while solution.count > 7 {  // target > solution
                 cycles += 1
                 print("cycles: \(cycles)")
                 print(score)
@@ -319,6 +319,7 @@ class Matrix {
                 
                 score = scorePuzzle(givens)
             }
+            
             
             return (givens, solution)
         }

@@ -58,80 +58,17 @@ extension SudokuItem {
 }
 
 class MiddleBoard: SudokuBoard {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        boxes = []
-        
-        for index in 0...8 {
-            let aBox = Box(index: index, withParent: self)
-            aBox.parentSquare = self
-            boxes.append(aBox)
-        }
-    }
     
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        boxes = []
-        for index in 0...8 {
-            let aBox = Box(index: index)
-            boxes.append(aBox)
-        }
-        
-    }
-    
-    override func prepareBoxes() {
-        super.prepareBoxes()
-        
-        backgroundColor = UIColor.clearColor()
-    }
-    
-    
-}
+    override var tiles: [Tile] {
+        get {
 
-class MiddleBox: Box {
-    override init(index: Int) {
-        super.init(index:index)
-        
-        if [0, 2, 6, 8].filter({$0 == index}).count > 0  {
-            boxes = []
+            var tiles: [Tile] = []
+            for box in [boxes[1], boxes[3], boxes[4], boxes[5], boxes[7]] {
+                tiles += box.boxes
+            }
+    
+            return tiles
         }
-        
     }
     
-    convenience init (index withIndex: Int, withParent parent: SudokuBoard){
-        self.init(index: withIndex)
-        
-        if [0, 2, 6, 8].filter({$0 == index}).count > 0  {
-            boxes = []
-        }
-        
-        self.parentSquare = parent
-        controller = parent.controller
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
-        if [0, 2, 6, 8].filter({$0 == self.index}).count > 0  {
-            boxes = []
-        }
-        
-        
-    }
-    
-    override func layoutSubviews() {
-        self.prepareBoxes()
-    }
-    
-    override func prepareBoxes() {
-        
-        if [0, 2, 6, 8].filter({$0 == self.index}).count == 0  {
-            super.prepareBoxes()
-            
-            
-        }
-        
-        
-    }
 }

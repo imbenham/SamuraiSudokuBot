@@ -8,22 +8,23 @@
 
 import UIKit
 
-class PuzzleOptionsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class PuzzleOptionsViewController: UITableViewController {
     
-    let tableView = UITableView(frame: CGRectZero, style: .Grouped)
-    let baseView = UIView(frame: CGRectZero)
-    let saveButton = UIButton()
-    var selectedIndex:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)  {
+    var selectedIndex:NSIndexPath = NSIndexPath(forRow: 100, inSection: 100) {
         willSet {
             if selectedIndex != newValue {
+                print("hello")
                 let cell = tableView.cellForRowAtIndexPath(selectedIndex)
                 cell?.accessoryType = .None
+                cell?.textLabel?.textColor = Utils.Palette.green
             }
         }
         didSet {
             if selectedIndex != oldValue {
+                print("there")
                 let cell = tableView.cellForRowAtIndexPath(selectedIndex)
                 cell?.accessoryType = .Checkmark
+                cell?.textLabel?.textColor = UIColor.blackColor()
             }
         }
     }
@@ -47,70 +48,56 @@ class PuzzleOptionsViewController: UIViewController, UITableViewDataSource, UITa
         
     }
     
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        view.addSubview(tableView)
-        view.addSubview(baseView)
-        baseView.addSubview(saveButton)
-        saveButton.addTarget(self, action: #selector(PuzzleOptionsViewController.saveAndDismiss), forControlEvents: .TouchUpInside)
-        saveButton.setTitle("Save", forState: .Normal)
-        saveButton.layer.borderColor = UIColor.darkGrayColor().CGColor
-        saveButton.layer.borderWidth = 2.0
-        saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        saveButton.layer.cornerRadius = 5.0
-        saveButton.backgroundColor = UIColor.whiteColor()
-        saveButton.showsTouchWhenHighlighted = true
-        baseView.backgroundColor = UIColor.lightGrayColor()
         
         
-        self.layoutTableView()
-        tableView.delegate = self
-        tableView.dataSource = self
+        let theme = Utils.Palette.green
         
+        tableView.backgroundView = nil
+        tableView.backgroundColor = UIColor.blackColor()
+        tableView.tintColor = UIColor.whiteColor()
+        tableView.layer.borderColor = theme.CGColor
+        tableView.layer.borderWidth = 5.0
+        
+        tableView.registerClass(OptionMenuFooter.self, forHeaderFooterViewReuseIdentifier: "OptionFooter")
+        
+        
+        
+    }
+    
+ 
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         let defaults = NSUserDefaults.standardUserDefaults()
         let selected = defaults.integerForKey(symbolSetKey)
         
         let index = NSIndexPath(forRow: selected, inSection: 0)
         selectedIndex = index
         
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
-    
-    func layoutTableView() {
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        baseView.translatesAutoresizingMaskIntoConstraints = false
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        let basePin = NSLayoutConstraint(item: baseView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1, constant: 0)
-        let baseWidth = NSLayoutConstraint(item: baseView, attribute: .Width, relatedBy: .Equal, toItem: view, attribute: .Width, multiplier: 1, constant: 0)
-        let baseHeight = NSLayoutConstraint(item: baseView, attribute: .Height, relatedBy: .Equal, toItem: view, attribute: .Height, multiplier: 1/12, constant: 0)
-        
-        let tvWidth = NSLayoutConstraint(item: tableView, attribute: .Width, relatedBy: .Equal, toItem: view, attribute: .Width, multiplier: 1, constant: 0)
-        let topPin = NSLayoutConstraint(item: tableView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1, constant: 0)
-        let bottomPin = NSLayoutConstraint(item: tableView, attribute: .Bottom, relatedBy: .Equal, toItem: baseView, attribute: .Top, multiplier: 1, constant: 0)
-        
-        let buttonHeight = NSLayoutConstraint(item: saveButton, attribute: .Height, relatedBy: .Equal, toItem: baseView, attribute: .Height, multiplier: 4/5, constant: 0)
-        let buttonWidth = NSLayoutConstraint(item: saveButton, attribute: .Width, relatedBy: .Equal, toItem: baseView, attribute: .Width, multiplier: 1/6, constant: 0)
-        let buttonVertCenter = NSLayoutConstraint(item: saveButton, attribute: .CenterY, relatedBy: .Equal, toItem: baseView, attribute: .CenterY, multiplier: 1, constant: 0)
-        let buttonPin = NSLayoutConstraint(item: saveButton, attribute: .Trailing, relatedBy: .Equal, toItem: baseView, attribute: .Trailing, multiplier: 1, constant: -8)
-        
-        let constraints = [basePin, baseWidth, baseHeight, tvWidth, topPin, bottomPin, buttonHeight, buttonWidth, buttonVertCenter, buttonPin]
-        
-        self.view.addConstraints(constraints)
-        
+        tableView.selectRowAtIndexPath(selectedIndex, animated: false, scrollPosition: UITableViewScrollPosition.None)
     }
     
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    
+    override func numberOfSectionsInTableView(_: UITableView) -> Int {
         return 2
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
         switch section {
         case 0:
@@ -120,7 +107,7 @@ class PuzzleOptionsViewController: UIViewController, UITableViewDataSource, UITa
         }
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section{
         case 0:
             return 3
@@ -130,10 +117,14 @@ class PuzzleOptionsViewController: UIViewController, UITableViewDataSource, UITa
         }
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         cell.textLabel?.font = UIFont(name: "futura", size: UIFont.labelFontSize())
+        
+        let theme = Utils.Palette.green
+        cell.textLabel?.textColor = selectedIndex == indexPath ? UIColor.blackColor() : theme
+        
         
         switch indexPath.section {
         case 0:
@@ -149,23 +140,55 @@ class PuzzleOptionsViewController: UIViewController, UITableViewDataSource, UITa
             cell.textLabel?.text = timedStatusString
         }
         
-        if indexPath == selectedIndex {
-            cell.accessoryType = .Checkmark
+       
+        cell.backgroundColor = UIColor.blackColor()
+        let selectedBG = UIView()
+        selectedBG.backgroundColor = theme
+        cell.selectedBackgroundView = selectedBG
+        
+        cell.layer.borderColor = theme.CGColor
+        
+        if indexPath.row % 2 == 0 {
+            cell.layer.borderWidth = 1.0
+        } else {
+            cell.layer.borderWidth = 0
         }
+        
         return cell
         
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 0 {
             selectedIndex = indexPath
         } else {
             timedStatus = !timedStatus
         }
-        
     }
     
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == self.tableView.numberOfSections - 1 {
+            return 50.0
+        }
+        return 0
+    }
+    
+    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if section == self.tableView.numberOfSections - 1 {
+            let footerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier("OptionFooter") as! OptionMenuFooter
+            footerView.saveButton.addTarget(self, action: #selector(PuzzleOptionsViewController.saveAndDismiss), forControlEvents: .TouchUpInside)
+            footerView.userInteractionEnabled = true
+            return footerView
+           
+        }
+        return nil
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        var frame = view.frame
+        frame = CGRectInset(frame, 10, 0)
+        view.frame = frame
+    }
     // saving changes
     
     func saveAndDismiss() {

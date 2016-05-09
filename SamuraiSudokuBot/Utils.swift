@@ -11,8 +11,10 @@ import UIKit
 
 
 struct Utils {
-    static let sharedUtils = Utils()
     
+    static let ButtonConfigs = ButtonConfig()
+    static let Palette = ColorPalette()
+
     struct ButtonConfig {
         
         var selectedColor = UIColor(red: 51/255, green: 204/255, blue: 51/255, alpha: 1)
@@ -65,7 +67,7 @@ struct Utils {
         }
         
         func getAttributedTitle(title: String) -> NSAttributedString {
-            let size: CGFloat = title == "Options" ? 15.0 : 20.0
+            let size: CGFloat = 20.0
             let font = UIFont(name: "Futura", size: size)!
             let attribs = [NSFontAttributeName:font, NSStrokeColorAttributeName:selectedColor, NSStrokeWidthAttributeName: 3.0, NSForegroundColorAttributeName:baseColor, NSTextEffectAttributeName: NSTextEffectLetterpressStyle]
             return NSAttributedString(string: title, attributes: attribs)
@@ -73,7 +75,11 @@ struct Utils {
         
     }
     
-    let ButtonConfigs = ButtonConfig()
+    struct ColorPalette {
+        let green = UIColor(red: 51/255, green: 204/255, blue: 51/255, alpha: 1)
+    }
+    
+   
 }
 
 // row/column -> TileIndex ((Box: 0-8, Tile: 0-8))

@@ -58,7 +58,7 @@ class Box: SudokuItem, Nester{
     
     
     override func didSetController() {
-        print("did set ctrller called")
+    
         if let ctrl = controller as? SudokuController {
             for box in boxes {
                 let tapRecognizer = UITapGestureRecognizer(target: ctrl, action: #selector(SudokuController.tileTapped(_:)))

@@ -14,34 +14,59 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     @IBOutlet weak var board2: SudokuBoard!
     @IBOutlet weak var board3: SudokuBoard!
     @IBOutlet weak var board4: SudokuBoard!
-    @IBOutlet weak var middleBoard: SudokuBoard!
+    @IBOutlet weak var middleBoard: MiddleBoard!
     
     
     @IBOutlet var xConstraints: [NSLayoutConstraint]!
     @IBOutlet var yConstraints: [NSLayoutConstraint]!
-  /*
-    @IBAction func modeSelected(sender: AnyObject) {
-        if let sender = sender as? UISegmentedControl {
-            if sender.selectedSegmentIndex == 0 {
-                print("Play selected")
-            } else {
-                print("Cheat selected")
-            }
-        }
-    }*/
-    
-    @IBOutlet weak var containerView: UIView!
-    @IBOutlet weak var containerWidth: NSLayoutConstraint!
-    @IBOutlet weak var containerHeight: NSLayoutConstraint!
+
     @IBOutlet weak var noteButton: UIButton!
     @IBOutlet weak var optionsButton: UIButton!
     @IBOutlet weak var clearButton: UIButton!
     
-    
+    @IBOutlet weak var undoButton: UIButton!
+    @IBOutlet weak var hintButton: UIButton!
    
     @IBAction func handleNoteButtonTap(sender: AnyObject) {
         self.toggleNoteMode(sender)
     }
+    
+    @IBAction func handleOptionsButtonTap(sender: AnyObject) {
+        
+        
+        let poController = PuzzleOptionsViewController(style: .Grouped)
+        poController.modalPresentationStyle = .Popover
+        poController.preferredContentSize = CGSizeMake(300, 350)
+        
+        let sender = sender as! UIButton
+        let ppc = poController.popoverPresentationController
+        ppc?.sourceView = sender
+        ppc?.sourceRect = sender.bounds
+        ppc?.permittedArrowDirections = .Left
+        ppc?.backgroundColor = Utils.Palette.green
+        
+    
+        
+        presentViewController(poController, animated: true, completion: nil)
+        
+        
+    }
+   
+    
+    @IBAction func handleUndoButtonTap(sender: AnyObject) {
+        print("undo button tapped")
+    }
+
+    @IBAction func handleHintButtonTap(sender: AnyObject) {
+        showHelpMenu(sender)
+    }
+    
+    
+    @IBAction func handleClearButtonTap(sender: AnyObject) {
+        clearSolution()
+    }
+    
+    
     
     var backgroundView: SSBBackgroundView {
         get {
@@ -52,14 +77,19 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         }
     }
     
-    var boards: [SudokuBoard] {
-        return [board1, board2, board3, board4, middleBoard]
+    override var boards: [SudokuBoard] {
+        return [middleBoard, board1, board2, board3, board4]
     }
     
-    var containerSubviews: (front: UIView, back: UIView)!
-    
-    let hintButton = UIButton()
-    let playAgainButton = UIButton()
+    override var tiles: [Tile] {
+        get {
+            var tiles: [Tile] = []
+            for board in boards {
+                tiles += board.tiles
+            }
+            return tiles
+        }
+    }
     
     var alertController: UIAlertController?
     
@@ -73,10 +103,21 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     
     var readyCount = 0
     
+    var needsRefresh = false
+    
+    var lastOffset: CGFloat = 0 {
+        willSet {
+            if lastOffset == newValue {
+                needsRefresh = false
+            } else {
+                needsRefresh = true
+            }
+        }
+    }
+    
     var offset: CGFloat {
         get {
-            
-            return board1.frame.size.width * 1/3 + 0.5
+            return middleBoard.frame.size.width/3
         }
     }
     
@@ -86,19 +127,23 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     override var noteMode: Bool  {
         didSet {
             noteButton.selected = !noteButton.selected
-            let nbBGColor = noteButton.backgroundColor
+            let nbBGColor = noteMode ? UIColor.clearColor() : noteButton.backgroundColor
             let nbTextColor = noteButton.titleColorForState(.Normal)
             
-            noteButton.backgroundColor = nbTextColor
-            noteButton.setTitleColor(nbBGColor, forState: .Normal)
+            noteButton.backgroundColor = nbBGColor
+            noteButton.setTitleColor(nbTextColor, forState: .Normal)
             noteButton.layer.borderColor = nbBGColor?.CGColor
             if noteMode {
                 if let selectedTile = selectedTile {
                     if selectedTile.displayValue.rawValue != 0 {
                         selectedTile.addNote(selectedTile.displayValue.rawValue)
                         selectedTile.clearValue()
-                        selectedTile.refreshLabel()
                     }
+                    selectedTile.refreshLabel()
+                }
+            } else {
+                if let selectedTile = selectedTile {
+                    selectedTile.refreshLabel()
                 }
             }
            
@@ -110,7 +155,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        containerSubviews = (hintButton, playAgainButton)
         
         for board in boards {
             board.controller = self
@@ -121,59 +165,79 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
             button.addTarget(self, action: #selector(valueSelected(_:)), forControlEvents: .TouchUpInside)
         }
         
+        numPad.delegate = self
+
+        lastOffset = offset
+        
     }
-    
-    
     
     override func viewDidLayoutSubviews() {
         
         
         for board in outerBoards {
             board.layer.borderColor = UIColor.blackColor().CGColor
-            board.layer.borderWidth = 2.0
-            board.layer.zPosition = 1.0
+
         }
         
-        middleBoard.layer.zPosition = 0
+        view.sendSubviewToBack(middleBoard)
         middleBoard.layer.borderColor = UIColor.blackColor().CGColor
         middleBoard.layer.borderWidth = 2.0
+    
+        middleBoard.isMiddle = true
         
-        //TODO configure container view and subviews
+        let configs = Utils.ButtonConfigs
         
-        //TODO configure notes and clear buttons
+        hintButton.setAttributedTitle(configs.getAttributedTitle("?"), forState: .Normal)
+        clearButton.setAttributedTitle(configs.getAttributedTitle("Clear"), forState: .Normal)
+        noteButton.setAttributedTitle(configs.getAttributedTitle("Note+"), forState: .Normal)
+        optionsButton.setAttributedTitle(configs.getAttributedTitle("Options"), forState: .Normal)
         
-        let configs = Utils.sharedUtils.ButtonConfigs
         
-        
-        for button in [clearButton, noteButton, optionsButton] {
+        for button in [clearButton, noteButton, optionsButton, hintButton, undoButton] {
             let size = button.frame.size
             button.setBackgroundImage(configs.backgroundImageForSize(size, selected: false), forState: .Normal)
             button.setBackgroundImage(configs.backgroundImageForSize(size, selected: true), forState: .Selected)
             button.setBackgroundImage(configs.backgroundImageForSize(size, selected:true), forState: .Highlighted)
             
-            button.layer.cornerRadius = clearButton.frame.size.height/2
+            button.layer.cornerRadius = button.frame.size.height/2
             button.clipsToBounds = true
             
             button.layer.borderColor = configs.baseColor.CGColor
             button.layer.borderWidth = 2.0
-
+            
+            button.titleLabel?.numberOfLines = 1
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
+            button.titleEdgeInsets = button == optionsButton ? UIEdgeInsetsMake(0, 5.0, 8.0, 5.0) : UIEdgeInsetsMake(0, 5.0, 0, 5.0)
+        
+            
+            
         }
         
-        clearButton.setAttributedTitle(configs.getAttributedTitle("Clear"), forState: .Normal)
-        noteButton.setAttributedTitle(configs.getAttributedTitle("Note+"), forState: .Normal)
-        optionsButton.setAttributedTitle(configs.getAttributedTitle("Options"), forState: .Normal)
         
+        lastOffset = offset
+        view.setNeedsUpdateConstraints()
     }
     
     
     override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        lastOffset = offset
+        view.setNeedsUpdateConstraints()
+    }
+    
+
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
         
+        guard needsRefresh else {
+            return
+        }
         
         for constraint in xConstraints {
             if let identifier = constraint.identifier where (identifier == "board1X" || identifier == "board4X") {
-                constraint.constant += offset
+                constraint.constant = offset
             } else {
-                constraint.constant -= offset
+                constraint.constant = offset * -1
             }
             
             
@@ -181,33 +245,25 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         
         for constraint in yConstraints {
             if let identifier = constraint.identifier where (identifier == "board1Y" || identifier == "board2Y") {
-                constraint.constant += offset
+                constraint.constant = offset
             } else {
-                constraint.constant -= offset
+                constraint.constant = offset * -1
             }
             
         }
         
-        numPad.delegate = self
-        
+
     }
-    
-    override func viewWillAppear(animated: Bool) {
-        return
-    }
-    
     
     override func boardReady() {
         readyCount += 1
-        print("\(readyCount)")
         if readyCount == 5 {
-            print("fetching puzzle")
             fetchPuzzle()
         }
     }
     
     func fetchPuzzle() {
-        print("fetching from controller!")
+        
         bannerView.userInteractionEnabled = false
         
         for board in boards {
@@ -258,7 +314,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     
     //MARK: PlayPuzzleDelegate
     
-    func toggleNoteMode(sender: AnyObject?) {
+    override func toggleNoteMode(sender: AnyObject?) {
         print("note mode toggled!")
         if let press = sender as? UILongPressGestureRecognizer {
             if press.state == .Began {
@@ -289,6 +345,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         }
     }
     
+ 
+    
     //MARK: NumPadDelegate methods
     override func valueSelected(value: UIButton) {
         let value = value.tag
@@ -308,14 +366,13 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         }
         
         checkSolution()
-        
         numPad.refresh()
         
         
         
     }
     
-    func noteValueChanged(value: Int) {
+    override func noteValueChanged(value: Int) {
         if let selected = selectedTile {
             if selected.noteValues.contains(value) {
                 selected.removeNoteValue(value)
@@ -326,24 +383,24 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     }
     
     
-    func noteValues() -> [Int]? {
-        let selected = selectedTile
-        if selected == nil {
+    
+    override func noteValues() -> [Int]? {
+        print("Using SamController implementation")
+        guard noteMode, let selected = selectedTile else {
             return nil
         }
-        if selected?.noteMode == false {
-            return nil
-        } else {
-            return selected?.noteValues
-        }
+        
+        return selected.noteValues
     }
 
-    var currentValue: Int {
+    override var currentValue: Int {
         guard let selected = selectedTile else {
             return 0
         }
         
         return selected.displayValue.rawValue
     }
+    
+   
 }
 
