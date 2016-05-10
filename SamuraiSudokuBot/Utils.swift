@@ -73,6 +73,15 @@ struct Utils {
             return NSAttributedString(string: title, attributes: attribs)
         }
         
+        func getAttributedBodyText(text: String) -> NSAttributedString {
+            let size = UIFont.systemFontSize()
+            let font = UIFont(name: "Futura", size: size)!
+            
+            let attribs = [NSFontAttributeName:font, NSForegroundColorAttributeName:selectedColor]
+            
+            return NSAttributedString(string:text, attributes: attribs)
+        }
+        
     }
     
     struct ColorPalette {

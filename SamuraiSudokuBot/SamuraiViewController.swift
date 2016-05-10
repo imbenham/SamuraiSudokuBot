@@ -33,22 +33,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     
     @IBAction func handleOptionsButtonTap(sender: AnyObject) {
         
-        
-        let poController = PuzzleOptionsViewController(style: .Grouped)
-        poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(300, 350)
-        
-        let sender = sender as! UIButton
-        let ppc = poController.popoverPresentationController
-        ppc?.sourceView = sender
-        ppc?.sourceRect = sender.bounds
-        ppc?.permittedArrowDirections = .Left
-        ppc?.backgroundColor = Utils.Palette.green
-        
-    
-        
-        presentViewController(poController, animated: true, completion: nil)
-        
+        showOptions(sender)
         
     }
    

@@ -8,12 +8,11 @@
 
 import UIKit
 
-class PuzzleOptionsViewController: UITableViewController {
+class PuzzleOptionsViewController: PopUpTableViewController {
     
     var selectedIndex:NSIndexPath = NSIndexPath(forRow: 100, inSection: 100) {
         willSet {
             if selectedIndex != newValue {
-                print("hello")
                 let cell = tableView.cellForRowAtIndexPath(selectedIndex)
                 cell?.accessoryType = .None
                 cell?.textLabel?.textColor = Utils.Palette.green
@@ -21,7 +20,6 @@ class PuzzleOptionsViewController: UITableViewController {
         }
         didSet {
             if selectedIndex != oldValue {
-                print("there")
                 let cell = tableView.cellForRowAtIndexPath(selectedIndex)
                 cell?.accessoryType = .Checkmark
                 cell?.textLabel?.textColor = UIColor.blackColor()
@@ -55,20 +53,8 @@ class PuzzleOptionsViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        
-        
-        let theme = Utils.Palette.green
-        
-        tableView.backgroundView = nil
-        tableView.backgroundColor = UIColor.blackColor()
-        tableView.tintColor = UIColor.whiteColor()
-        tableView.layer.borderColor = theme.CGColor
-        tableView.layer.borderWidth = 5.0
         
         tableView.registerClass(OptionMenuFooter.self, forHeaderFooterViewReuseIdentifier: "OptionFooter")
-        
-        
         
     }
     
@@ -119,12 +105,10 @@ class PuzzleOptionsViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
-        cell.textLabel?.font = UIFont(name: "futura", size: UIFont.labelFontSize())
+        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         
         let theme = Utils.Palette.green
         cell.textLabel?.textColor = selectedIndex == indexPath ? UIColor.blackColor() : theme
-        
         
         switch indexPath.section {
         case 0:
@@ -140,21 +124,7 @@ class PuzzleOptionsViewController: UITableViewController {
             cell.textLabel?.text = timedStatusString
         }
         
-       
-        cell.backgroundColor = UIColor.blackColor()
-        let selectedBG = UIView()
-        selectedBG.backgroundColor = theme
-        cell.selectedBackgroundView = selectedBG
-        
-        cell.layer.borderColor = theme.CGColor
-        
-        if indexPath.row % 2 == 0 {
-            cell.layer.borderWidth = 1.0
-        } else {
-            cell.layer.borderWidth = 0
-        }
-        
-        return cell
+       return cell
         
     }
     
@@ -184,11 +154,7 @@ class PuzzleOptionsViewController: UITableViewController {
         return nil
     }
     
-    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        var frame = view.frame
-        frame = CGRectInset(frame, 10, 0)
-        view.frame = frame
-    }
+    
     // saving changes
     
     func saveAndDismiss() {

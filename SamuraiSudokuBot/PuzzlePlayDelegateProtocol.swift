@@ -877,51 +877,45 @@ extension PlayPuzzleDelegate {
     
     func showOptions(sender: AnyObject) {
         
-        guard let vc = self as? UIViewController, storyboard = vc.storyboard else {
+        guard let vc = self as? UIViewController else {
             return
         }
         
-        let optionSheet = storyboard.instantiateViewControllerWithIdentifier("options") as! PuzzleOptionsViewController
-        optionSheet.modalTransitionStyle = .FlipHorizontal
-        vc.presentViewController(optionSheet, animated: true) {
-            if self.selectedTile != nil {
-                self.noteMode = false
-            }
-        }
+        let poController = PuzzleOptionsViewController(style: .Grouped)
+        poController.modalPresentationStyle = .Popover
+        poController.preferredContentSize = CGSizeMake(300, 350)
+        
+        let sender = sender as! UIButton
+        let ppc = poController.popoverPresentationController
+        ppc?.sourceView = sender
+        ppc?.sourceRect = sender.bounds
+        ppc?.permittedArrowDirections = .Left
+        ppc?.backgroundColor = Utils.Palette.green
+        
+        
+        vc.presentViewController(poController, animated: true, completion: nil)
+        
     }
     
     func showHelpMenu(sender: AnyObject) {
         guard let vc = self as? UIViewController else {
             return
         }
-        deactivateInterface()
-        alertController = UIAlertController(title: "Tough, eh?", message: "Request a hint to reveal one cell", preferredStyle: .Alert)
+        
+        let poController = HelpMenuController(style: .Grouped)
+        poController.modalPresentationStyle = .Popover
+        poController.preferredContentSize = CGSizeMake(225, 225)
+        
+        let sender = sender as! UIButton
+        let ppc = poController.popoverPresentationController
+        ppc?.sourceView = sender
+        ppc?.sourceRect = sender.bounds
+        ppc?.permittedArrowDirections = .Down
+        ppc?.backgroundColor = Utils.Palette.green
         
         
-        let hintPlease = UIAlertAction(title: "Hint, please!", style: .Default) { (_) in
-            self.showHint()
-            self.activateInterface()
-        }
+        vc.presentViewController(poController, animated: true, completion: nil)
         
-        alertController!.addAction(hintPlease)
-        
-        let givesUp = UIAlertAction(title: "I give up.", style: .Default) { (_) in
-            self.giveUp()
-        }
-        
-        alertController!.addAction(givesUp)
-        
-        let cancel =  UIAlertAction(title: "Cancel", style: .Cancel) {
-            _ in
-            self.activateInterface()
-        }
-        
-       alertController!.addAction(cancel)
-        
-        vc.presentViewController(alertController!, animated: true) {
-            _ in
-            self.deactivateInterface()
-        }
     }
     
 }

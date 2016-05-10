@@ -40,6 +40,9 @@
 		36AD45BC1CC9616D00CC4768 /* SamuraiUIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */; };
 		36AD45C51CC9721D00CC4768 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36AD45C31CC9721D00CC4768 /* Main.storyboard */; };
 		36D032811CE0CEA500ADCC4B /* OptionMenuFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */; };
+		36D032831CE131B600ADCC4B /* PopUpTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032821CE131B500ADCC4B /* PopUpTableViewController.swift */; };
+		36D032851CE137A000ADCC4B /* HelpMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032841CE137A000ADCC4B /* HelpMenuController.swift */; };
+		36D032871CE14B3700ADCC4B /* SSBInstructionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +102,9 @@
 		36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamuraiUIExtensions.swift; sourceTree = "<group>"; };
 		36AD45C41CC9721D00CC4768 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionMenuFooter.swift; sourceTree = "<group>"; };
+		36D032821CE131B500ADCC4B /* PopUpTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopUpTableViewController.swift; sourceTree = "<group>"; };
+		36D032841CE137A000ADCC4B /* HelpMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpMenuController.swift; sourceTree = "<group>"; };
+		36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSBInstructionSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +297,7 @@
 				36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */,
 				36AD45AF1CC95CFF00CC4768 /* SudokuViews */,
 				36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */,
+				36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -299,6 +306,8 @@
 			isa = PBXGroup;
 			children = (
 				3638F2C11CC9576D004D65C8 /* PuzzleOptionsController.swift */,
+				36D032841CE137A000ADCC4B /* HelpMenuController.swift */,
+				36D032821CE131B500ADCC4B /* PopUpTableViewController.swift */,
 			);
 			name = PopoverMenus;
 			sourceTree = "<group>";
@@ -463,10 +472,12 @@
 				36D032811CE0CEA500ADCC4B /* OptionMenuFooter.swift in Sources */,
 				36AD45B51CC95D6700CC4768 /* SudokuBox.swift in Sources */,
 				3638F2C21CC9576D004D65C8 /* PuzzleOptionsController.swift in Sources */,
+				36D032851CE137A000ADCC4B /* HelpMenuController.swift in Sources */,
 				3638F2BC1CC955A9004D65C8 /* PuzzleDifficulty.swift in Sources */,
 				3638F2CA1CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift in Sources */,
 				36AD45BC1CC9616D00CC4768 /* SamuraiUIExtensions.swift in Sources */,
 				36AD45B71CC95D7C00CC4768 /* SudokuTile.swift in Sources */,
+				36D032871CE14B3700ADCC4B /* SSBInstructionSheet.swift in Sources */,
 				3638F2A71CC94FE8004D65C8 /* Puzzle.swift in Sources */,
 				36AD45AC1CC95C4D00CC4768 /* SudokuNumPad.swift in Sources */,
 				3638F2CC1CC95935004D65C8 /* CoreDataStack.swift in Sources */,
@@ -482,6 +493,7 @@
 				3638F2B61CC9537E004D65C8 /* SamuraiPuzzleGeneration.swift in Sources */,
 				3638F2C81CC9582F004D65C8 /* SudokuViewControllers.swift in Sources */,
 				3603610D1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld in Sources */,
+				36D032831CE131B600ADCC4B /* PopUpTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
