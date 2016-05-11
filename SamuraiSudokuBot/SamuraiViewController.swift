@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
+class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPresentationControllerDelegate {
     
     @IBOutlet weak var board1: SudokuBoard!
     @IBOutlet weak var board2: SudokuBoard!
@@ -172,10 +172,18 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         
         let configs = Utils.ButtonConfigs
         
-        hintButton.setAttributedTitle(configs.getAttributedTitle("?"), forState: .Normal)
-        clearButton.setAttributedTitle(configs.getAttributedTitle("Clear"), forState: .Normal)
-        noteButton.setAttributedTitle(configs.getAttributedTitle("Note+"), forState: .Normal)
-        optionsButton.setAttributedTitle(configs.getAttributedTitle("Options"), forState: .Normal)
+        let hintTitle = configs.getAttributedTitle("?")
+        hintButton.setAttributedTitle(hintTitle, forState: .Normal)
+        hintButton.setAttributedTitle(hintTitle, forState: .Selected)
+        let clearTitle = configs.getAttributedTitle("Clear")
+        clearButton.setAttributedTitle(clearTitle, forState: .Normal)
+        clearButton.setAttributedTitle(clearTitle, forState: .Selected)
+        let noteTitle = configs.getAttributedTitle("Note+")
+        noteButton.setAttributedTitle(noteTitle, forState: .Normal)
+        noteButton.setAttributedTitle(noteTitle, forState: .Selected)
+        let optionsTitle = configs.getAttributedTitle("Options")
+        optionsButton.setAttributedTitle(optionsTitle, forState: .Normal)
+        optionsButton.setAttributedTitle(optionsTitle, forState: .Selected)
         
         
         for button in [clearButton, noteButton, optionsButton, hintButton, undoButton] {
@@ -248,8 +256,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
     }
     
     func fetchPuzzle() {
-        
-        bannerView.userInteractionEnabled = false
         
         for board in boards {
             board.userInteractionEnabled = false
@@ -386,6 +392,13 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate {
         return selected.displayValue.rawValue
     }
     
-   
+    // MARK: POPOVERpresentationControllerDelegate
+    func popoverPresentationControllerDidDismissPopover(popoverPresentationController: UIPopoverPresentationController) {
+        if let button = popoverPresentationController.sourceView as? UIButton {
+            button.selected = false
+        }
+    }
+    
+    
 }
 

@@ -161,7 +161,6 @@
 				360361131CC94A69005F6A9F /* Info.plist */,
 				3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */,
 				3638F2C01CC95749004D65C8 /* Controllers */,
-				3638F29F1CC94EE9004D65C8 /* Model */,
 				3638F2CD1CC959EB004D65C8 /* PuzzleStore */,
 				3638F2AA1CC951B6004D65C8 /* SudokuLogic */,
 				3638F2D01CC95A45004D65C8 /* UI */,
@@ -232,6 +231,7 @@
 			children = (
 				3638F2B91CC9549D004D65C8 /* SudokuMatrix.swift */,
 				3638F2BB1CC955A9004D65C8 /* PuzzleDifficulty.swift */,
+				3638F29F1CC94EE9004D65C8 /* Model */,
 			);
 			name = Regular;
 			sourceTree = "<group>";

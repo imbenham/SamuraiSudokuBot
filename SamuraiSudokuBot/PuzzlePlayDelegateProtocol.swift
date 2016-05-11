@@ -9,7 +9,7 @@
 import Foundation
 import iAd
 
-protocol BannerViewDelegate: class {
+/*protocol BannerViewDelegate: class {
     var bannerView: ADBannerView {get}
     var bannerPin: NSLayoutConstraint? {get set}
     var bannerLayoutComplete: Bool {get set}
@@ -87,7 +87,7 @@ extension BannerViewDelegate {
     }
     
     
-}
+}*/
 
 protocol NumPadDelegate {
     var currentValue: Int {get}
@@ -101,7 +101,7 @@ protocol NumPadDelegate {
     
 }
 
-protocol SudokuControllerDelegate: class, BannerViewDelegate, NumPadDelegate {
+protocol SudokuControllerDelegate: class, NumPadDelegate {
     var topAnchorBoard: SudokuBoard {get}
     var bottomAnchorBoard: SudokuBoard {get}
     var board: SudokuBoard {get}
@@ -210,17 +210,17 @@ extension SudokuControllerDelegate {
     func goToBackground() {
         deactivateInterface()
         
-        if canDisplayBannerAds {
+        /*if canDisplayBannerAds {
             bannerView.removeFromSuperview()
             canDisplayBannerAds = false
             bannerLayoutComplete = false
             layoutAnimated(false)
-        }
+        }*/
     }
     
     
     //MARK: BannerViewDelegate
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    /*func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
         if banner.bannerLoaded {
             return true
         } else {
@@ -228,7 +228,7 @@ extension SudokuControllerDelegate {
             layoutAnimated(true)
             return false
         }
-    }
+    }*/
     
     //MARK: NumPadDelegate
     var currentValue: Int {
@@ -380,10 +380,10 @@ extension PlayPuzzleDelegate {
         
         activateInterface()
         
-        if self.puzzle != nil && !canDisplayBannerAds {
+        /*if self.puzzle != nil && !canDisplayBannerAds {
             bannerLayoutComplete = false
             canDisplayBannerAds = true
-        }
+        }*/
     }
     
     
@@ -475,11 +475,11 @@ extension PlayPuzzleDelegate {
         }
         
         activateInterface()
-        if !canDisplayBannerAds {
+        /*if !canDisplayBannerAds {
             bannerView.userInteractionEnabled = true
             bannerLayoutComplete = false
             canDisplayBannerAds = true
-        }
+        }*/
         
         
     }
@@ -886,12 +886,16 @@ extension PlayPuzzleDelegate {
         poController.preferredContentSize = CGSizeMake(300, 350)
         
         let sender = sender as! UIButton
+        sender.selected = true
         let ppc = poController.popoverPresentationController
         ppc?.sourceView = sender
         ppc?.sourceRect = sender.bounds
         ppc?.permittedArrowDirections = .Left
         ppc?.backgroundColor = Utils.Palette.green
         
+        if let popD = vc as? UIPopoverPresentationControllerDelegate {
+            ppc?.delegate = popD
+        }
         
         vc.presentViewController(poController, animated: true, completion: nil)
         
@@ -907,12 +911,16 @@ extension PlayPuzzleDelegate {
         poController.preferredContentSize = CGSizeMake(225, 225)
         
         let sender = sender as! UIButton
+        sender.selected = true
         let ppc = poController.popoverPresentationController
         ppc?.sourceView = sender
         ppc?.sourceRect = sender.bounds
         ppc?.permittedArrowDirections = .Down
         ppc?.backgroundColor = Utils.Palette.green
         
+        if let popD = vc as? UIPopoverPresentationControllerDelegate {
+            ppc?.delegate = popD
+        }
         
         vc.presentViewController(poController, animated: true, completion: nil)
         

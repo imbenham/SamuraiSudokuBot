@@ -88,10 +88,10 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if  !canDisplayBannerAds {
+        /*if  !canDisplayBannerAds {
             canDisplayBannerAds = true
             bannerView.userInteractionEnabled = true
-        }
+        }*/
         
         activateInterface()
         
@@ -112,13 +112,13 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        if canDisplayBannerAds {
+        /*if canDisplayBannerAds {
             let delegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             delegate.banner = nil
             canDisplayBannerAds = false
             bannerLayoutComplete = false
             layoutAnimated(false)
-        }
+        }*/
         
     }
     
@@ -335,7 +335,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         setUpButtons()
         configureButtons()
         
-        if self.canDisplayBannerAds  && !bannerLayoutComplete {
+       /* if self.canDisplayBannerAds  && !bannerLayoutComplete {
             view.addSubview(bannerView)
             
             bannerView.translatesAutoresizingMaskIntoConstraints = false
@@ -364,7 +364,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
             containerView.removeConstraints()
             setUpButtons()
             
-        }
+        }*/
         
         longFetchLabel.layer.backgroundColor = UIColor.blackColor().CGColor
         longFetchLabel.textColor = UIColor.whiteColor()
@@ -381,10 +381,10 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         
         super.viewDidAppear(animated)
         
-        if self.puzzle != nil && !canDisplayBannerAds {
+        /*if self.puzzle != nil && !canDisplayBannerAds {
             canDisplayBannerAds = true
             bannerView.userInteractionEnabled = true
-        }
+        }*/
         
         if self.puzzle == nil {
             let middleTile = self.board.tileAtIndex((5,4))
@@ -422,13 +422,13 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        if canDisplayBannerAds {
+        /*if canDisplayBannerAds {
             let delegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             delegate.banner = nil
             canDisplayBannerAds = false
             bannerLayoutComplete = false
             layoutAnimated(false)
-        }
+        }*/
         
         deactivateInterface()
         if !gameOver {

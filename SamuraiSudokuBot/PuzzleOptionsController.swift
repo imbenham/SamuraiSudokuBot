@@ -167,8 +167,13 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         
         defaults.synchronize()
         
+        let ppd = self.presentingViewController as? PlayPuzzleDelegate
+        
         presentingViewController!.dismissViewControllerAnimated(true) {
-            
+            if let ppd = ppd {
+                ppd.optionsButton.selected = false
+            }
+
         }
         
     }

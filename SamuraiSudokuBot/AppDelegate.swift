@@ -11,11 +11,9 @@ import CoreData
 import iAd
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    
-    var banner: ADBannerView?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -55,8 +53,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
         }
         
         
-        
-        banner = nil
         
         PuzzleStore.sharedInstance.operationQueue.cancelAllOperations()
         
@@ -134,47 +130,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ADBannerViewDelegate {
     func saveCurrentPuzzleForController(controller: PlayPuzzleDelegate) {
         // save using core data
     }
-    
-    
-    
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
-        let rootView = window!.rootViewController as! SudokuController
-        
-        rootView.bannerViewDidLoadAd(banner)
-        
-    }
-    
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
-        let rootView = window!.rootViewController as! SudokuController
-        rootView.bannerView(banner, didFailToReceiveAdWithError: error)
-        
-    }
-    
-    
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
-        
-        if let puzzleController = window!.rootViewController  as? PlayPuzzleDelegate {
-            return puzzleController.bannerViewActionShouldBegin(banner, willLeaveApplication: willLeave)
-        } else {
-            if let sudokuContrl = window!.rootViewController  as? SudokuControllerDelegate {
-                return sudokuContrl.bannerViewActionShouldBegin(banner, willLeaveApplication: willLeave)
-            }
-        }
-        return false
-    }
-    
-    
-    
-    func bannerViewActionDidFinish(banner: ADBannerView!) {
-        if let puzzleController =  window!.rootViewController as? PlayPuzzleDelegate {
-            puzzleController.bannerViewActionDidFinish(banner)
-        } else {
-            /* if let sudokuContrl = window!.rootViewController  as? SudokuController {
-             return sudokuContrl.bannerViewActionDidFinish(banner)
-             }*/
-        }
-        
-    }
-    
     
 }

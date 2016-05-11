@@ -26,6 +26,7 @@ class HelpMenuController: PopUpTableViewController {
         }
     }
     
+    let instructionView = SSBInstructionSheet(frame: CGRectZero)
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell =  super.tableView(tableView, cellForRowAtIndexPath: indexPath)
@@ -69,17 +70,21 @@ class HelpMenuController: PopUpTableViewController {
             return
         }
         
+        
+        
         switch indexPath.row {
         case 0:
             pvc.dismissViewControllerAnimated(true) {
                 if let ppd = pvc as? PlayPuzzleDelegate {
                     ppd.showHint()
+                    ppd.hintButton.selected = false
                 }
             }
         case 1:
             pvc.dismissViewControllerAnimated(true) {
                 if let ppd = pvc as? PlayPuzzleDelegate {
                     ppd.giveUp()
+                    ppd.hintButton.selected = false
                 }
             }
         default:
@@ -98,7 +103,7 @@ class HelpMenuController: PopUpTableViewController {
         let beginningRect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(1, 1, 0, 3))
         
         
-        let instructionView = SSBInstructionSheet(frame: beginningRect)
+        instructionView.frame = beginningRect
         instructionView.backgroundColor = UIColor.blackColor()
         
         let animations: () -> () = {
@@ -109,15 +114,16 @@ class HelpMenuController: PopUpTableViewController {
 
         
         let animations2: () -> () = {
-            instructionView.frame = endingRect
+            self.instructionView.frame = endingRect
         }
         
         UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: animations) { (completed: Bool) -> () in
             if completed {
-                self.tableView.addSubview(instructionView)
+                self.tableView.addSubview(self.instructionView)
                 UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseInOut, animations: animations2, completion: nil)
             }
                 
         }
     }
+    
 }
