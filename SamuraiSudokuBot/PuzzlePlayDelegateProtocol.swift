@@ -268,6 +268,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     var noteButton: UIButton! {get set}
     var clearButton: UIButton! {get set}
     var alertController: UIAlertController? {get set}
+    var puzzleMenuAnchor: UIView! {get}
    
     
     //func tileWithBackingCell(cell: BackingCell) -> Tile?
@@ -280,6 +281,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     
     
     // initial puzzle loading
+    func showChoosePuzzleController()
     func prepareForLongFetch()
     func fetchPuzzle()
     func puzzleReady()
@@ -388,6 +390,30 @@ extension PlayPuzzleDelegate {
     
     
     //MARK: initial puzzle loading
+    
+    func showChoosePuzzleController() {
+        guard let vc = self as? SudokuController else{
+            return
+        }
+        
+        let poController = ChoosePuzzleController(style: .Grouped)
+        poController.modalPresentationStyle = .Popover
+        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 1/4, vc.view.frame.height * 1/4)
+    
+        
+        let ppc = poController.popoverPresentationController
+        ppc?.permittedArrowDirections = .Up
+        ppc?.backgroundColor = UIColor.clearColor()
+        ppc?.sourceView = puzzleMenuAnchor
+        ppc?.sourceRect = puzzleMenuAnchor.bounds
+        
+        if let popD = vc as? UIPopoverPresentationControllerDelegate {
+            ppc?.delegate = popD
+        }
+        
+        vc.presentViewController(poController, animated: true, completion: nil)
+    }
+    
     func prepareForLongFetch() {
         guard let vc = self as? UIViewController else {
             return

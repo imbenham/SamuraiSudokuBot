@@ -89,6 +89,14 @@
                                     <action selector="handleUndoButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="x2n-u9-RdG"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vNL-fq-fjd">
+                                <rect key="frame" x="272" y="9" width="56" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="10" id="e2J-1y-vL5"/>
+                                    <constraint firstAttribute="width" constant="12" id="zyp-Sv-uzT"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.76619302290000002" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -100,6 +108,7 @@
                             <constraint firstItem="Kig-aV-nT2" firstAttribute="leading" secondItem="WQH-kb-pww" secondAttribute="centerX" id="4uB-Ra-TIh"/>
                             <constraint firstItem="S18-Kj-wer" firstAttribute="height" secondItem="dOO-5u-UbC" secondAttribute="height" multiplier="3/2" id="5fJ-CH-zTN"/>
                             <constraint firstItem="MtK-4M-xr9" firstAttribute="height" secondItem="S18-Kj-wer" secondAttribute="height" multiplier="4/5" id="6XE-dT-phT"/>
+                            <constraint firstItem="vNL-fq-fjd" firstAttribute="bottom" secondItem="Jib-cP-aYm" secondAttribute="top" constant="-40" id="78H-pc-BSI"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="top" secondItem="4gs-Yy-Sja" secondAttribute="bottom" identifier="board4Y" id="7tH-xQ-VkA"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="centerX" secondItem="4gs-Yy-Sja" secondAttribute="centerX" id="B4R-KI-Yej"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="width" secondItem="4gs-Yy-Sja" secondAttribute="width" id="BA3-9D-UJs"/>
@@ -108,6 +117,7 @@
                             <constraint firstItem="fle-88-0fn" firstAttribute="height" secondItem="dOO-5u-UbC" secondAttribute="height" multiplier="3/2" id="FPX-d3-Pvi"/>
                             <constraint firstItem="MtK-4M-xr9" firstAttribute="centerX" secondItem="4gs-Yy-Sja" secondAttribute="centerX" id="FRi-aV-Id2"/>
                             <constraint firstItem="Kig-aV-nT2" firstAttribute="height" secondItem="MtK-4M-xr9" secondAttribute="height" id="G5i-tz-LeX"/>
+                            <constraint firstItem="vNL-fq-fjd" firstAttribute="centerX" secondItem="4gs-Yy-Sja" secondAttribute="centerX" id="L3G-mW-M8I"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="leading" secondItem="S18-Kj-wer" secondAttribute="trailing" constant="20" id="LGX-CI-dJO"/>
                             <constraint firstItem="Kig-aV-nT2" firstAttribute="width" secondItem="MtK-4M-xr9" secondAttribute="width" id="Lyu-Hd-YOb"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="width" secondItem="4gs-Yy-Sja" secondAttribute="width" multiplier="1.5" id="M3O-HY-X3Q"/>
@@ -163,6 +173,7 @@
                         <outlet property="noteButton" destination="fle-88-0fn" id="Drv-CM-OaY"/>
                         <outlet property="numPad" destination="dOO-5u-UbC" id="hgo-eJ-3Bn"/>
                         <outlet property="optionsButton" destination="CPe-6L-xh3" id="pAU-2i-7MY"/>
+                        <outlet property="puzzleMenuAnchor" destination="vNL-fq-fjd" id="VFx-SS-maN"/>
                         <outlet property="undoButton" destination="Kig-aV-nT2" id="rje-IE-No4"/>
                         <outletCollection property="xConstraints" destination="129-Mr-y2e" collectionClass="NSMutableArray" id="ieE-8T-tbX"/>
                         <outletCollection property="yConstraints" destination="TRx-u3-dBx" collectionClass="NSMutableArray" id="tj5-MZ-kwT"/>

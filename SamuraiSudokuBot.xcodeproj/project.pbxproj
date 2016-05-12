@@ -43,6 +43,7 @@
 		36D032831CE131B600ADCC4B /* PopUpTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032821CE131B500ADCC4B /* PopUpTableViewController.swift */; };
 		36D032851CE137A000ADCC4B /* HelpMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032841CE137A000ADCC4B /* HelpMenuController.swift */; };
 		36D032871CE14B3700ADCC4B /* SSBInstructionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */; };
+		36EBF10E1CE41E7E005F9B8E /* ChoosePuzzleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF10D1CE41E7E005F9B8E /* ChoosePuzzleController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,7 @@
 		36D032821CE131B500ADCC4B /* PopUpTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopUpTableViewController.swift; sourceTree = "<group>"; };
 		36D032841CE137A000ADCC4B /* HelpMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpMenuController.swift; sourceTree = "<group>"; };
 		36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSBInstructionSheet.swift; sourceTree = "<group>"; };
+		36EBF10D1CE41E7E005F9B8E /* ChoosePuzzleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChoosePuzzleController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				3638F2C11CC9576D004D65C8 /* PuzzleOptionsController.swift */,
+				36EBF10D1CE41E7E005F9B8E /* ChoosePuzzleController.swift */,
 				36D032841CE137A000ADCC4B /* HelpMenuController.swift */,
 				36D032821CE131B500ADCC4B /* PopUpTableViewController.swift */,
 			);
@@ -469,6 +472,7 @@
 				360361071CC94A69005F6A9F /* ViewController.swift in Sources */,
 				3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */,
 				3638F2BF1CC9560E004D65C8 /* Utils.swift in Sources */,
+				36EBF10E1CE41E7E005F9B8E /* ChoosePuzzleController.swift in Sources */,
 				36D032811CE0CEA500ADCC4B /* OptionMenuFooter.swift in Sources */,
 				36AD45B51CC95D6700CC4768 /* SudokuBox.swift in Sources */,
 				3638F2C21CC9576D004D65C8 /* PuzzleOptionsController.swift in Sources */,

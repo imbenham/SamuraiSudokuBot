@@ -9,6 +9,7 @@
 import UIKit
 
 class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPresentationControllerDelegate {
+    @IBOutlet weak var puzzleMenuAnchor: UIView!
     
     @IBOutlet weak var board1: SudokuBoard!
     @IBOutlet weak var board2: SudokuBoard!
@@ -106,7 +107,13 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
     }
     
-    var puzzle: Puzzle?
+    var puzzle: Puzzle? {
+        didSet {
+            if puzzle == nil {
+                showChoosePuzzleController()
+            }
+        }
+    }
     var difficulty: PuzzleDifficulty = .Medium
     
     override var noteMode: Bool  {
@@ -140,6 +147,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        puzzleMenuAnchor.backgroundColor = UIColor.clearColor()
+        puzzleMenuAnchor.userInteractionEnabled = false
         
         for board in boards {
             board.controller = self
@@ -216,6 +225,14 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         super.viewDidAppear(animated)
         lastOffset = offset
         view.setNeedsUpdateConstraints()
+        
+        if readyCount == 5 && self.presentedViewController == nil {
+            //fetchPuzzle()
+            // give protocol a default function for popping the play menu and call it here
+            
+            showChoosePuzzleController()
+        }
+
     }
     
 
@@ -250,9 +267,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     override func boardReady() {
         readyCount += 1
-        if readyCount == 5 {
-            fetchPuzzle()
-        }
     }
     
     func fetchPuzzle() {
@@ -399,6 +413,13 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
     }
     
+    func popoverPresentationControllerShouldDismissPopover(popoverPresentationController: UIPopoverPresentationController) -> Bool {
+        if self.presentedViewController!.isKindOfClass(ChoosePuzzleController) && puzzle == nil {
+            return false
+        } else {
+            return true
+        }
+    }
     
 }
 

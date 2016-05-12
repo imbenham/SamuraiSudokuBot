@@ -289,6 +289,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     let playAgainButton: UIButton = UIButton(tag: 3)
     var noteButton:UIButton! =  UIButton(tag: 5)
     var containerSubviews: (front: UIView, back: UIView)!
+    var puzzleMenuAnchor: UIView! = UIView()
     
     var containerWidth: NSLayoutConstraint!
     var containerHeight: NSLayoutConstraint!
