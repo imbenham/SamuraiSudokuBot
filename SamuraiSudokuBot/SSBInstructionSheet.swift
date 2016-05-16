@@ -10,7 +10,7 @@ import UIKit
 
 class SSBInstructionSheet: UIView {
     
-    var text = Utils.ButtonConfigs.getAttributedBodyText("A samurai sudoku puzzle consists of five boards: one board in the middle, with four exterior boards overlapping and sharing one 9x9 box each with the middle board.  To solve a samurai sudoku puzzle you must complete the grid such that each cell in the grid has a value, each 9x9 box in each board contains the digits 1-9 (or has one of each possible symbol), each row in each board contains 1-9, and each column in each board contains 1-9. Tiles shared between boards belong to both boards and count towards satisfying the above-described constraints for both boards.")
+    var text = Utils.ButtonConfigs().getAttributedBodyText("A samurai sudoku puzzle consists of five boards: one board in the middle, with four exterior boards overlapping and sharing one 9x9 box each with the middle board.  To solve a samurai sudoku puzzle you must complete the grid such that each cell in the grid has a value, each 9x9 box in each board contains the digits 1-9 (or has one of each possible symbol), each row in each board contains 1-9, and each column in each board contains 1-9. Tiles shared between boards belong to both boards and count towards satisfying the above-described constraints for both boards.")
     
     let textview = UITextView()
     let exitButton = UIButton(type: .System)
@@ -39,7 +39,7 @@ class SSBInstructionSheet: UIView {
     
     override func layoutSubviews() {
         
-        exitButton.setAttributedTitle(Utils.ButtonConfigs.getAttributedTitle("  X  "), forState: .Normal)
+        exitButton.setAttributedTitle(Utils.ButtonConfigs().getAttributedTitle("  X  "), forState: .Normal)
         
         textview.backgroundColor = UIColor.blackColor()
         textview.attributedText = text

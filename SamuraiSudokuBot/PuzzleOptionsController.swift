@@ -10,35 +10,27 @@ import UIKit
 
 class PuzzleOptionsViewController: PopUpTableViewController {
     
-    var selectedIndex:NSIndexPath = NSIndexPath(forRow: 100, inSection: 100) {
+    override var selectedIndex:NSIndexPath? {
         willSet {
-            if selectedIndex != newValue {
-                let cell = tableView.cellForRowAtIndexPath(selectedIndex)
+            if selectedIndex != newValue && selectedIndex != nil {
+                let cell = tableView.cellForRowAtIndexPath(selectedIndex!)
                 cell?.accessoryType = .None
-                cell?.textLabel?.textColor = Utils.Palette.green
+                cell?.textLabel?.textColor = Utils.Palette.getTheme()
             }
         }
         didSet {
             if selectedIndex != oldValue {
-                let cell = tableView.cellForRowAtIndexPath(selectedIndex)
-                cell?.accessoryType = .Checkmark
-                cell?.textLabel?.textColor = UIColor.blackColor()
+                if let selectedIndex = selectedIndex {
+                    let cell = tableView.cellForRowAtIndexPath(selectedIndex)
+                    cell?.accessoryType = .Checkmark
+                    cell?.textLabel?.textColor = UIColor.blackColor()
+
+                }
             }
         }
     }
     
-    var timedStatus = true {
-        didSet {
-            let indexPath = NSIndexPath(forRow: 0, inSection: 1)
-            let cell = tableView.cellForRowAtIndexPath(indexPath)
-            cell?.textLabel!.text = timedStatusString
-        }
-    }
-    var timedStatusString: String {
-        get {
-            return timedStatus ? "On" : "Off"
-        }
-    }
+    var selectedColor = Utils.Palette.getSelectedIndex()
     
     required init?(coder aDecoder: NSCoder) {
         
@@ -55,6 +47,7 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         super.viewDidLoad()
         
         tableView.registerClass(OptionMenuFooter.self, forHeaderFooterViewReuseIdentifier: "OptionFooter")
+        tableView.registerClass(ColorPickerCell.self, forCellReuseIdentifier: "ColorPickerCell")
         
     }
     
@@ -69,7 +62,7 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         let defaults = NSUserDefaults.standardUserDefaults()
-        let selected = defaults.integerForKey(symbolSetKey)
+        let selected = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
         
         let index = NSIndexPath(forRow: selected, inSection: 0)
         selectedIndex = index
@@ -89,7 +82,7 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         case 0:
             return "Change Symbol Set"
         default:
-            return "Timer"
+            return "Choose Color"
         }
     }
     
@@ -105,9 +98,9 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        let cell = indexPath.section == 0 ? super.tableView(tableView, cellForRowAtIndexPath: indexPath) : tableView.dequeueReusableCellWithIdentifier("ColorPickerCell", forIndexPath: indexPath)
         
-        let theme = Utils.Palette.green
+        let theme = Utils.Palette.getTheme()
         cell.textLabel?.textColor = selectedIndex == indexPath ? UIColor.blackColor() : theme
         
         switch indexPath.section {
@@ -121,7 +114,24 @@ class PuzzleOptionsViewController: PopUpTableViewController {
                 cell.textLabel?.text = "Flags:🇨🇭-🇲🇽"
             }
         default:
-            cell.textLabel?.text = timedStatusString
+            let cell = cell as! ColorPickerCell
+            
+            cell.selectedTab = selectedColor
+            
+            for tab in cell.tabs {
+                
+                if tab.gestureRecognizers == nil {
+                    let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tabSelected(_:)))
+                    gestureRecognizer.cancelsTouchesInView = true
+                    tab.addGestureRecognizer(gestureRecognizer)
+                } else if tab.gestureRecognizers!.count == 0 {
+                    let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tabSelected(_:)))
+                    gestureRecognizer.cancelsTouchesInView = true
+                    tab.addGestureRecognizer(gestureRecognizer)
+                }
+                
+            }
+            
         }
         
        return cell
@@ -131,9 +141,15 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 0 {
             selectedIndex = indexPath
-        } else {
-            timedStatus = !timedStatus
+            updateSymbols()
         }
+    }
+    
+    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+        if indexPath.section == 1 {
+            return tableView.indexPathForSelectedRow
+        }
+        return indexPath
     }
     
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -155,16 +171,66 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     }
     
     
-    // saving changes
+    func tabSelected(sender: AnyObject) {
+        guard let gr = sender as? UITapGestureRecognizer, let tab = gr.view, let cell = tab.superview as? ColorPickerCell else{
+            return
+        }
+        
+        cell.selectedTab = tab.tag
+        
+        selectedColor = tab.tag
+
+        updateColor()
+        
+        
+    }
     
-    func saveAndDismiss() {
+    func updateColor() {
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        let colorID = Utils.Constants.Identifiers.colorTheme
+        
+        defaults.setInteger(selectedColor, forKey: colorID)
+        
+        let color = Utils.Palette.getTheme()
+        tableView.backgroundColor = color
+        tableView.layer.borderColor = color.CGColor
+        
+        tableView.reloadData()
+        
+        tableView.selectRowAtIndexPath(selectedIndex, animated: false, scrollPosition: .None)
+        
+        if let poc = self.popoverPresentationController {
+            poc.backgroundColor = color
+        }
+    }
+    
+    func updateSymbols() {
+        guard let selectedIndex = selectedIndex else {
+            let ppd = self.presentingViewController as? PlayPuzzleDelegate
+            presentingViewController!.dismissViewControllerAnimated(true) {
+                if let ppd = ppd {
+                    ppd.optionsButton.selected = false
+                }
+                
+            }
+            return
+        }
         
         let selected = selectedIndex.row
         let defaults = NSUserDefaults.standardUserDefaults()
         
-        defaults.setInteger(selected, forKey: "symbolSet")
-        defaults.setBool(timedStatus, forKey: "timed")
+        defaults.setInteger(selected, forKey: Utils.Constants.Identifiers.symbolSetKey)
+    }
+    
+    // saving changes
+    
+    func saveAndDismiss() {
+     
         
+        let defaults = NSUserDefaults.standardUserDefaults()
+    
         defaults.synchronize()
         
         let ppd = self.presentingViewController as? PlayPuzzleDelegate

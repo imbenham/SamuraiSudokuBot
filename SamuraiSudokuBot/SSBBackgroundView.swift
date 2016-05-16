@@ -21,6 +21,12 @@ class SSBBackgroundView: UIView {
     
     override func drawRect(rect: CGRect) {
         
+        let mainColor = Utils.Palette.getTheme()
+        
+        outerGradientColor = mainColor
+        drawColor = mainColor
+        
+        innerGradientColor = Utils.Palette.getThemeInnerGradient()
         
         let drawSize = CGSize(width: patternSize, height: patternSize)
         

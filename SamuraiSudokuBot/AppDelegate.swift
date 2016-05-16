@@ -21,13 +21,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.frame = UIScreen.mainScreen().bounds
         
         let defaults = NSUserDefaults.standardUserDefaults()
-        let number:Int = 0
         
-        if defaults.objectForKey(symbolSetKey) == nil {
-            defaults.setInteger(number, forKey: symbolSetKey)
+        let colorID = Utils.Constants.Identifiers.colorTheme
+        let symbID = Utils.Constants.Identifiers.symbolSetKey
+        
+        if defaults.objectForKey(symbID) == nil {
+            defaults.setInteger(0, forKey: symbID)
         }
-        if defaults.objectForKey(timedKey) == nil {
-            defaults.setBool(false, forKey: timedKey)
+        if defaults.objectForKey(colorID) == nil {
+            defaults.setInteger(0, forKey: colorID)
         }
         
         // initialize the matrix so it's ready to crank out puzzles

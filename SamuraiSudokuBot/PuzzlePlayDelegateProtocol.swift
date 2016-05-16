@@ -281,7 +281,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     
     
     // initial puzzle loading
-    func showChoosePuzzleController()
+    func showChoosePuzzleController(gaveUp gaveUp: Bool, successfullyCompleted: Bool)
     func prepareForLongFetch()
     func fetchPuzzle()
     func puzzleReady()
@@ -299,7 +299,6 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func giveUp()
     
     func replayCurrent()
-    func playAgain(sender: AnyObject)
     func newPuzzleOfDifficulty(difficulty: PuzzleDifficulty, replay:Bool)
     
     
@@ -391,21 +390,27 @@ extension PlayPuzzleDelegate {
     
     //MARK: initial puzzle loading
     
-    func showChoosePuzzleController() {
+    func showChoosePuzzleController(gaveUp gaveUp: Bool = false, successfullyCompleted: Bool = false) {
         guard let vc = self as? SudokuController else{
             return
         }
         
-        let poController = ChoosePuzzleController(style: .Grouped)
+        guard gaveUp == false || successfullyCompleted == false else {
+            fatalError("gaveUp and successfullyCompleted cannot both be true")
+        }
+        
+        let poController = ChoosePuzzleController(style: .Plain, successfullyCompleted:successfullyCompleted, gaveUp: gaveUp)
         poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 1/4, vc.view.frame.height * 1/4)
-    
+        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 1/4, vc.view.frame.height * 1/5)
+        poController.puzzleController = self
+        
         
         let ppc = poController.popoverPresentationController
         ppc?.permittedArrowDirections = .Up
         ppc?.backgroundColor = UIColor.clearColor()
         ppc?.sourceView = puzzleMenuAnchor
         ppc?.sourceRect = puzzleMenuAnchor.bounds
+        
         
         if let popD = vc as? UIPopoverPresentationControllerDelegate {
             ppc?.delegate = popD
@@ -467,7 +472,6 @@ extension PlayPuzzleDelegate {
             for cell in self.puzzle!.initialsArray(){
                 let tile = self.board.tileAtIndex(cell.convertToTileIndex())
                 tile.backingCell = cell
-                
             }
             
             self.board.userInteractionEnabled = true
@@ -475,8 +479,6 @@ extension PlayPuzzleDelegate {
                 vc.navigationController?.navigationBarHidden = false
                 self.longFetchLabel.hidden = true
             }
-            
-            
             
             self.puzzleReady()
             
@@ -487,17 +489,10 @@ extension PlayPuzzleDelegate {
     
     
     func puzzleReady() {
-        for tile in givens {
-            tile.userInteractionEnabled = false
-        }
+        
         
         if startingNilTiles.count != 0 {
             selectedTile = startingNilTiles[0]
-        }
-        
-        
-        for tile in startingNilTiles {
-            tile.userInteractionEnabled = true
         }
         
         activateInterface()
@@ -605,41 +600,6 @@ extension PlayPuzzleDelegate {
         
     }
     
-    func giveUp() {
-        
-        deactivateInterface()
-        var lastTile: Tile?
-        if !nilTiles.isEmpty {
-            lastTile = nilTiles[nilTiles.count-1]
-        }
-        
-        let completion: (()->()) = {
-            for wrongTile in self.wrongTiles {
-                self.animateDiscoveredTile(wrongTile, wrong: true)
-                wrongTile.userInteractionEnabled = false
-            }
-
-            self.board.userInteractionEnabled = false
-            self.board.alpha = 1.0
-            for tile in self.tiles {
-                tile.userInteractionEnabled = false
-            }
-        }
-        
-        for nilTile in nilTiles {
-            if lastTile == nil {
-                animateDiscoveredTile(nilTile, handler: completion)
-                
-            } else {
-                if nilTile == lastTile {
-                    animateDiscoveredTile(nilTile, handler: completion)
-                    
-                } else {
-                    animateDiscoveredTile(nilTile)
-                }
-            }
-        }
-    }
     
     
     
@@ -665,63 +625,8 @@ extension PlayPuzzleDelegate {
         }
         
     }
-    
-    func playAgain(sender: AnyObject) {
-        
-        guard let vc = self as? UIViewController else {
-            return
-        }
-        
-        alertController = UIAlertController(title: "New Game", message: "Select a difficulty level, or choose replay puzzle", preferredStyle: .Alert)
-        
-        guard let puzzleSelectAlert = alertController else{
-            return
-        }
-        
-        let easy = UIAlertAction(title: "Easy", style: UIAlertActionStyle.Default) { (_) in
-            self.newPuzzleOfDifficulty(.Easy)
-        }
-        let medium = UIAlertAction(title: "Medium", style: .Default) { (_) in
-            self.newPuzzleOfDifficulty(.Medium)
-        }
-        let hard = UIAlertAction(title: "Hard", style: .Default) { (_) in
-            self.newPuzzleOfDifficulty(.Hard)
-        }
-        let insane = UIAlertAction(title: "Insane", style: .Default) { (_) in
-            self.newPuzzleOfDifficulty(.Insane)
-        }
-        
-        for action in [easy, medium, hard, insane] {
-            puzzleSelectAlert.addAction(action)
-        }
-        
-        
-        if difficulty != .Easy {
-            let pStore = PuzzleStore.sharedInstance
-            let current = pStore.getPuzzleDifficulty()
-            pStore.setPuzzleDifficulty(.Easy)
-            let min = pStore.getPuzzleDifficulty()
-            let newLevel = current - 10 < min ? PuzzleDifficulty.Easy : PuzzleDifficulty.Custom(current-10)
-            
-            let easier = UIAlertAction(title: "Slightly easier", style: .Default) { (_) in
-                self.difficulty = newLevel
-                self.clearPuzzle()
-                self.fetchPuzzle()
-            }
-            
-            puzzleSelectAlert.addAction(easier)
-        }
-        
-        let replay = UIAlertAction(title: "Re-play puzzle", style: .Default) { (_) in
-            self.newPuzzleOfDifficulty(self.difficulty, replay: true)
-        }
-        
-        puzzleSelectAlert.addAction(replay)
-        
-        vc.presentViewController(puzzleSelectAlert, animated: true, completion: nil)
-    }
-    
-    
+
+
     func newPuzzleOfDifficulty(difficulty: PuzzleDifficulty, replay:Bool = false) {
         if replay {
             replayCurrent()
@@ -780,6 +685,45 @@ extension PlayPuzzleDelegate {
     
     //MARK: handling puzzle completion
     
+    func giveUp() {
+        
+        deactivateInterface()
+        var lastTile: Tile?
+        if !nilTiles.isEmpty {
+            lastTile = nilTiles[nilTiles.count-1]
+        }
+        
+        let completion: (()->()) = {
+            for wrongTile in self.wrongTiles {
+                self.animateDiscoveredTile(wrongTile, wrong: true)
+                wrongTile.userInteractionEnabled = false
+            }
+            
+            self.board.userInteractionEnabled = false
+            self.board.alpha = 1.0
+            for tile in self.tiles {
+                tile.userInteractionEnabled = false
+            }
+            
+            self.showChoosePuzzleController(gaveUp: true)
+        }
+        
+        for nilTile in nilTiles {
+            if lastTile == nil {
+                animateDiscoveredTile(nilTile, handler: completion)
+                
+            } else {
+                if nilTile == lastTile {
+                    animateDiscoveredTile(nilTile, handler: completion)
+                    
+                } else {
+                    animateDiscoveredTile(nilTile)
+                }
+            }
+        }
+    }
+
+    
     func checkSolution() {
         print(nilTiles.count)
         if nilTiles.count == 0 {
@@ -801,44 +745,6 @@ extension PlayPuzzleDelegate {
             tile.backgroundColor = tile.defaultBackgroundColor
         }
         
-        alertController = UIAlertController(title: "Puzzle Solved", message: "Well done!", preferredStyle: .Alert)
-        
-        guard let alertController = self.alertController, let vc = self as? SudokuController else {
-            return
-        }
-        
-        
-        let newPuzz = UIAlertAction(title: "Play Again!", style: .Default) {(_) in
-            self.clearPuzzle()
-            self.fetchPuzzle()
-        }
-        
-        alertController.addAction(newPuzz)
-        
-        
-        if difficulty != .Insane {
-            let pStore = PuzzleStore.sharedInstance
-            let current = pStore.getPuzzleDifficulty()
-            pStore.setPuzzleDifficulty(.Insane)
-            let max = pStore.getPuzzleDifficulty()
-            let newLevel = current + 10 > max ? PuzzleDifficulty.Insane : PuzzleDifficulty.Custom(current+10)
-            
-            
-            let harderPuzz = UIAlertAction(title: "Slightly tougher", style: .Default) { (_) in
-                self.clearPuzzle()
-                self.difficulty = newLevel
-                self.fetchPuzzle()
-            }
-            alertController.addAction(harderPuzz)
-        }
-        
-        
-        
-        let OKAction = UIAlertAction(title: "OK", style: .Default) { (_) in
-            self.clearPuzzle()
-            self.fetchPuzzle()
-        }
-        alertController.addAction(OKAction)
         
         var doneCount = 0
         func flashBoxAnimationsWithBoxes(boxes: [Box]) {
@@ -866,7 +772,7 @@ extension PlayPuzzleDelegate {
                                     if finished {
                                         doneCount += 1
                                         if doneCount == self.boards.count {
-                                            vc.presentViewController(self.alertController!, animated: true, completion: nil)
+                                            self.showChoosePuzzleController(successfullyCompleted: true)
                                             
                                         }
                                     }
@@ -917,7 +823,7 @@ extension PlayPuzzleDelegate {
         ppc?.sourceView = sender
         ppc?.sourceRect = sender.bounds
         ppc?.permittedArrowDirections = .Left
-        ppc?.backgroundColor = Utils.Palette.green
+        ppc?.backgroundColor = Utils.Palette.getTheme()
         
         if let popD = vc as? UIPopoverPresentationControllerDelegate {
             ppc?.delegate = popD
@@ -942,7 +848,7 @@ extension PlayPuzzleDelegate {
         ppc?.sourceView = sender
         ppc?.sourceRect = sender.bounds
         ppc?.permittedArrowDirections = .Down
-        ppc?.backgroundColor = Utils.Palette.green
+        ppc?.backgroundColor = Utils.Palette.getTheme()
         
         if let popD = vc as? UIPopoverPresentationControllerDelegate {
             ppc?.delegate = popD

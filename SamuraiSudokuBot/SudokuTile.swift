@@ -68,7 +68,7 @@ class Tile: SudokuItem {
     var symbolSet: SymbolSet {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let symType = defaults.integerForKey(symbolSetKey)
+            let symType = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
             switch symType {
             case 0:
                 return .Standard
@@ -85,6 +85,14 @@ class Tile: SudokuItem {
     let noteModeColor = UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 0.3)
     var backingCell: BackingCell? {
         didSet {
+            if let bc = backingCell {
+                labelColor = UIColor.blackColor()
+                if bc.puzzleSolution != nil {
+                    userInteractionEnabled = true
+                } else if bc.puzzleInitial != nil {
+                    userInteractionEnabled = false
+                }
+            }
             refreshLabel()
         }
     }

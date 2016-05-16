@@ -31,7 +31,7 @@ class OptionMenuFooter: UITableViewHeaderFooterView {
        
         saveButton.frame = CGRectMake(frame.width/2-(1/2 * frame.height), 0, frame.height, frame.height) //CGRectMake((self.frame.width / 2) - ((self.frame.height * 4/5) / 2), (self.frame.height * 1/5)/2, self.frame.height * 4/5, self.frame.height * 4/5)
         
-        let configs = Utils.ButtonConfigs
+        let configs = Utils.ButtonConfigs()
                 
         let title = configs.getAttributedTitle("Save")
         let background = configs.backgroundImageForSize(saveButton.frame.size, selected: true)

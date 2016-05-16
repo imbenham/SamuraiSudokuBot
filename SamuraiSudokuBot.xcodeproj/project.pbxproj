@@ -15,7 +15,6 @@
 		3603611D1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3603611C1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift */; };
 		360361281CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361271CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift */; };
 		3638F2A51CC94FE8004D65C8 /* BackingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A11CC94FE8004D65C8 /* BackingCell.swift */; };
-		3638F2A61CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A21CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift */; };
 		3638F2A71CC94FE8004D65C8 /* Puzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A31CC94FE8004D65C8 /* Puzzle.swift */; };
 		3638F2AC1CC95205004D65C8 /* KeyObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2AB1CC95205004D65C8 /* KeyObjects.swift */; };
 		3638F2AE1CC952BA004D65C8 /* LinkedList_and_Nodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2AD1CC952BA004D65C8 /* LinkedList_and_Nodes.swift */; };
@@ -30,6 +29,7 @@
 		3638F2CA1CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2C91CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift */; };
 		3638F2CC1CC95935004D65C8 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2CB1CC95935004D65C8 /* CoreDataStack.swift */; };
 		3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2CE1CC95A2E004D65C8 /* PuzzleStore.swift */; };
+		369A9FD01CE92E4300D81B68 /* ColorPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369A9FCF1CE92E4300D81B68 /* ColorPickerCell.swift */; };
 		36AD45AC1CC95C4D00CC4768 /* SudokuNumPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45AB1CC95C4D00CC4768 /* SudokuNumPad.swift */; };
 		36AD45AE1CC95C7200CC4768 /* SSBBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */; };
 		36AD45B11CC95D3F00CC4768 /* SudokuViewObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AD45B01CC95D3F00CC4768 /* SudokuViewObjects.swift */; };
@@ -44,6 +44,9 @@
 		36D032851CE137A000ADCC4B /* HelpMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032841CE137A000ADCC4B /* HelpMenuController.swift */; };
 		36D032871CE14B3700ADCC4B /* SSBInstructionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */; };
 		36EBF10E1CE41E7E005F9B8E /* ChoosePuzzleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF10D1CE41E7E005F9B8E /* ChoosePuzzleController.swift */; };
+		36EBF1101CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF10F1CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift */; };
+		36EBF1121CE4DD66005F9B8E /* PopOverMenuFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF1111CE4DD66005F9B8E /* PopOverMenuFooter.swift */; };
+		36EBF1181CE7E103005F9B8E /* Puzzle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF1171CE7E103005F9B8E /* Puzzle+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,7 +81,6 @@
 		360361271CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamuraiSudokuBotUITests.swift; sourceTree = "<group>"; };
 		360361291CC94A69005F6A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3638F2A11CC94FE8004D65C8 /* BackingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BackingCell.swift; path = ../BackingCell.swift; sourceTree = "<group>"; };
-		3638F2A21CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Puzzle+CoreDataProperties.swift"; path = "../Puzzle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3638F2A31CC94FE8004D65C8 /* Puzzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Puzzle.swift; path = ../Puzzle.swift; sourceTree = "<group>"; };
 		3638F2AB1CC95205004D65C8 /* KeyObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyObjects.swift; sourceTree = "<group>"; };
 		3638F2AD1CC952BA004D65C8 /* LinkedList_and_Nodes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkedList_and_Nodes.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 		3638F2C91CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzlePlayDelegateProtocol.swift; sourceTree = "<group>"; };
 		3638F2CB1CC95935004D65C8 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		3638F2CE1CC95A2E004D65C8 /* PuzzleStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleStore.swift; sourceTree = "<group>"; };
+		369A9FCF1CE92E4300D81B68 /* ColorPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPickerCell.swift; sourceTree = "<group>"; };
 		36AD45AB1CC95C4D00CC4768 /* SudokuNumPad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuNumPad.swift; sourceTree = "<group>"; };
 		36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSBBackgroundView.swift; sourceTree = "<group>"; };
 		36AD45B01CC95D3F00CC4768 /* SudokuViewObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuViewObjects.swift; sourceTree = "<group>"; };
@@ -107,6 +110,9 @@
 		36D032841CE137A000ADCC4B /* HelpMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpMenuController.swift; sourceTree = "<group>"; };
 		36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSBInstructionSheet.swift; sourceTree = "<group>"; };
 		36EBF10D1CE41E7E005F9B8E /* ChoosePuzzleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChoosePuzzleController.swift; sourceTree = "<group>"; };
+		36EBF10F1CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChoosePuzzleMenuHeader.swift; sourceTree = "<group>"; };
+		36EBF1111CE4DD66005F9B8E /* PopOverMenuFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopOverMenuFooter.swift; sourceTree = "<group>"; };
+		36EBF1171CE7E103005F9B8E /* Puzzle+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Puzzle+CoreDataProperties.swift"; path = "../Puzzle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,7 +201,7 @@
 			children = (
 				36AD45B81CC960D000CC4768 /* BackingCell+CoreDataProperties.swift */,
 				3638F2A31CC94FE8004D65C8 /* Puzzle.swift */,
-				3638F2A21CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift */,
+				36EBF1171CE7E103005F9B8E /* Puzzle+CoreDataProperties.swift */,
 				3638F2A11CC94FE8004D65C8 /* BackingCell.swift */,
 			);
 			name = Model;
@@ -299,7 +305,10 @@
 				36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */,
 				36AD45AF1CC95CFF00CC4768 /* SudokuViews */,
 				36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */,
+				36EBF10F1CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift */,
+				36EBF1111CE4DD66005F9B8E /* PopOverMenuFooter.swift */,
 				36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */,
+				369A9FCF1CE92E4300D81B68 /* ColorPickerCell.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -471,6 +480,7 @@
 				36AD45B11CC95D3F00CC4768 /* SudokuViewObjects.swift in Sources */,
 				360361071CC94A69005F6A9F /* ViewController.swift in Sources */,
 				3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */,
+				369A9FD01CE92E4300D81B68 /* ColorPickerCell.swift in Sources */,
 				3638F2BF1CC9560E004D65C8 /* Utils.swift in Sources */,
 				36EBF10E1CE41E7E005F9B8E /* ChoosePuzzleController.swift in Sources */,
 				36D032811CE0CEA500ADCC4B /* OptionMenuFooter.swift in Sources */,
@@ -485,9 +495,10 @@
 				3638F2A71CC94FE8004D65C8 /* Puzzle.swift in Sources */,
 				36AD45AC1CC95C4D00CC4768 /* SudokuNumPad.swift in Sources */,
 				3638F2CC1CC95935004D65C8 /* CoreDataStack.swift in Sources */,
+				36EBF1181CE7E103005F9B8E /* Puzzle+CoreDataProperties.swift in Sources */,
 				3638F2C61CC957F5004D65C8 /* SamuraiViewController.swift in Sources */,
 				36AD45B91CC960D000CC4768 /* BackingCell+CoreDataProperties.swift in Sources */,
-				3638F2A61CC94FE8004D65C8 /* Puzzle+CoreDataProperties.swift in Sources */,
+				36EBF1101CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift in Sources */,
 				3638F2A51CC94FE8004D65C8 /* BackingCell.swift in Sources */,
 				36AD45B31CC95D5200CC4768 /* SudokuBoard.swift in Sources */,
 				3638F2B81CC9546D004D65C8 /* SamuraiMatrixExtension.swift in Sources */,
@@ -496,6 +507,7 @@
 				3638F2AC1CC95205004D65C8 /* KeyObjects.swift in Sources */,
 				3638F2B61CC9537E004D65C8 /* SamuraiPuzzleGeneration.swift in Sources */,
 				3638F2C81CC9582F004D65C8 /* SudokuViewControllers.swift in Sources */,
+				36EBF1121CE4DD66005F9B8E /* PopOverMenuFooter.swift in Sources */,
 				3603610D1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld in Sources */,
 				36D032831CE131B600ADCC4B /* PopUpTableViewController.swift in Sources */,
 			);

@@ -15,7 +15,6 @@ class PuzzleStore: NSObject {
     
     var operationQueue = NSOperationQueue()
     var difficulty: PuzzleDifficulty = .Medium
-    private var rawDiffDict: [PuzzleDifficulty:Int] = [.Easy : 130, .Medium: 160, .Hard: 190, .Insane: 240]
     
     
     var completionHandler: (Puzzle -> ())?
@@ -24,18 +23,6 @@ class PuzzleStore: NSObject {
     func setPuzzleDifficulty(pd:PuzzleDifficulty) {
         difficulty = pd
     }
-    
-    func getPuzzleDifficulty() -> Int {
-        switch difficulty {
-        case .Custom(let val):
-            return val
-        default:
-            return rawDiffDict[difficulty]!
-        }
-    }
-    
-    
-    
     
     func getPuzzleForController(controller: PlayPuzzleDelegate, withCompletionHandler handler: (Puzzle ->())) {
         
@@ -80,13 +67,13 @@ class PuzzleStore: NSObject {
      }
      */
     
-    func puzzleReady(initials: [PuzzleCell], solution: [PuzzleCell]) {
+    func puzzleReady(initials: [PuzzleCell], solution: [PuzzleCell], rawScore:Int) {
         
         let initials = initials.filter({!($0.companionCell != nil && $0.boardIndex == 0)})
         let solution = solution.filter({!($0.companionCell != nil && $0.boardIndex == 0)})
         
         dispatch_async(GlobalMainQueue) {
-            self.completionHandler!(Puzzle.init(initialValues: initials, solution: solution))
+            self.completionHandler!(Puzzle.init(initialValues: initials, solution: solution, rawScore: rawScore))
             self.completionHandler = nil
         }
         

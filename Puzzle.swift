@@ -14,7 +14,7 @@ class Puzzle: NSManagedObject {
     
     // Insert code here to add functionality to your managed object subclass
     
-    init(initialValues: [PuzzleCell], solution:[PuzzleCell]) {
+    init(initialValues: [PuzzleCell], solution:[PuzzleCell], rawScore: Int) {
         
         let ctxt = CoreDataStack.sharedStack.managedObjectContext
         
@@ -23,7 +23,12 @@ class Puzzle: NSManagedObject {
         super.init(entity: entityDescriptor, insertIntoManagedObjectContext: ctxt)
         
         self.initialValues.setByAddingObjectsFromArray(initialValues.map({$0.toBackingCell().setPuzzleInitalAndReturn(self)}))
+        
         self.solution.setByAddingObjectsFromArray(solution.map({$0.toBackingCell().setPuzzleSolutionAndReturn(self)}))
+        
+        
+        self.rawScore = NSNumber(integer: rawScore)
+   
     }
     
     func solutionArray() -> [BackingCell] {

@@ -11,27 +11,14 @@ import UIKit
 class HelpMenuController: PopUpTableViewController {
     
     
-    var selectedIndex:NSIndexPath? {
-        didSet {
-            if let selectedIndex = selectedIndex {
-                let cell = tableView.cellForRowAtIndexPath(selectedIndex)
-                cell?.textLabel?.textColor = UIColor.blackColor()
-            } else {
-                if let old = oldValue {
-                    let cell = tableView.cellForRowAtIndexPath(old)
-                    cell?.textLabel?.textColor = Utils.Palette.green
-                    cell?.selected = false
-                }
-            }
-        }
-    }
+  
     
     let instructionView = SSBInstructionSheet(frame: CGRectZero)
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell =  super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         
-        cell.textLabel?.textColor = Utils.Palette.green
+        cell.textLabel?.textColor = Utils.Palette.getTheme()
         
         if indexPath.row == 0 {
             cell.textLabel?.text = "Hint, please!"

@@ -110,11 +110,29 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     var puzzle: Puzzle? {
         didSet {
             if puzzle == nil {
-                showChoosePuzzleController()
+                for tile in tiles {
+                    tile.backingCell = nil
+                }
             }
         }
     }
+    
+    var puzzleIsSolved:Bool {
+        if nilTiles.count == 0 {
+            if wrongTiles.count == 0 {
+                return true
+            }
+        }
+        return false
+    }
+    
     var difficulty: PuzzleDifficulty = .Medium
+    
+    var allButtons: [UIButton] {
+        get {
+            return [clearButton, noteButton, optionsButton, hintButton, undoButton]
+        }
+    }
     
     override var noteMode: Bool  {
         didSet {
@@ -179,7 +197,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
         middleBoard.isMiddle = true
         
-        let configs = Utils.ButtonConfigs
+        let configs = Utils.ButtonConfigs()
         
         let hintTitle = configs.getAttributedTitle("?")
         hintButton.setAttributedTitle(hintTitle, forState: .Normal)
@@ -195,7 +213,10 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         optionsButton.setAttributedTitle(optionsTitle, forState: .Selected)
         
         
-        for button in [clearButton, noteButton, optionsButton, hintButton, undoButton] {
+        for button in allButtons {
+            
+            button.backgroundColor = UIColor.clearColor()
+            
             let size = button.frame.size
             button.setBackgroundImage(configs.backgroundImageForSize(size, selected: false), forState: .Normal)
             button.setBackgroundImage(configs.backgroundImageForSize(size, selected: true), forState: .Selected)
@@ -212,7 +233,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             button.titleEdgeInsets = button == optionsButton ? UIEdgeInsetsMake(0, 5.0, 8.0, 5.0) : UIEdgeInsetsMake(0, 5.0, 0, 5.0)
         
             
-            
         }
         
         
@@ -220,9 +240,25 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         view.setNeedsUpdateConstraints()
     }
     
+    func configureButton(button: UIButton) {
+        let size = button.frame.size
+        
+        let configs = Utils.ButtonConfigs()
+        
+        button.setBackgroundImage(configs.backgroundImageForSize(size, selected: true), forState: .Selected)
+        button.setBackgroundImage(configs.backgroundImageForSize(size, selected:true), forState: .Highlighted)
+        
+        button.layer.borderColor = configs.baseColor.CGColor
+
+    }
+    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Constants.Identifiers.colorTheme, options: .New, context: nil)
+
+        
         lastOffset = offset
         view.setNeedsUpdateConstraints()
         
@@ -232,7 +268,15 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             
             showChoosePuzzleController()
         }
-
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        if let symbs = defaults.objectForKey(Utils.Constants.Identifiers.symbolSetKey) as? Int {
+            if symbs != 0 {
+                noteButton.hidden = true
+            } else {
+                noteButton.hidden = false
+            }
+        }
     }
     
 
@@ -267,6 +311,37 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     override func boardReady() {
         readyCount += 1
+    }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if let path = keyPath {
+            if path == Utils.Constants.Identifiers.symbolSetKey {
+                for tile in tiles {
+                    tile.refreshLabel()
+                }
+                if let change = change, let new = change["new"] as? Int {
+                    if new > 0 {
+                        noteMode = false
+                        noteButton.hidden = true
+                    } else {
+                        noteButton.hidden = false
+                    }
+                }
+                numPad.configureButtonTitles()
+            } else if path == Utils.Constants.Identifiers.colorTheme {
+                print("color path changed")
+                if let bgView = self.view as? SSBBackgroundView {
+                    print("right kind of view")
+                    bgView.setNeedsDisplay()
+                }
+                
+                for button in allButtons {
+                    configureButton(button)
+                }
+                
+                numPad.configureButtonsForSelected()
+            }
+        }
     }
     
     func fetchPuzzle() {
@@ -414,7 +489,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     func popoverPresentationControllerShouldDismissPopover(popoverPresentationController: UIPopoverPresentationController) -> Bool {
-        if self.presentedViewController!.isKindOfClass(ChoosePuzzleController) && puzzle == nil {
+    
+        if self.presentedViewController!.isKindOfClass(ChoosePuzzleController) && (puzzle == nil || puzzleIsSolved) {
             return false
         } else {
             return true

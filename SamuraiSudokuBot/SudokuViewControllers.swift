@@ -96,7 +96,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         activateInterface()
         
         // register to receive notifications when user defaults change
-        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: symbolSetKey, options: .New, context: nil)
+        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey, options: .New, context: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -171,7 +171,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let path = keyPath {
-            if path == symbolSetKey {
+            if path == Utils.Constants.Identifiers.symbolSetKey {
                 for tile in tiles {
                     tile.refreshLabel()
                 }
@@ -182,7 +182,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     
     deinit {
         
-        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: symbolSetKey)
+        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey)
         
     }
     
@@ -402,14 +402,14 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         
         
         // register to receive notifications when user defaults change
-        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: symbolSetKey, options: .New, context: nil)
-    }
+        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey, options: .New, context: nil)
+           }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         let defaults = NSUserDefaults.standardUserDefaults()
-        let symType = defaults.integerForKey(symbolSetKey)
+        let symType = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
         if symType == 0 {
             noteButton!.hidden = false
         } else {
@@ -445,11 +445,16 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let path = keyPath {
-            if path == symbolSetKey {
+            if path == Utils.Constants.Identifiers.symbolSetKey {
                 for tile in tiles {
                     tile.refreshLabel()
                 }
-                
+            } else if path == Utils.Constants.Identifiers.colorTheme {
+                print("color path changed")
+                if let bgView = self.view as? SSBBackgroundView {
+                    print("right kind of view")
+                    bgView.drawRect(self.view.bounds)
+                }
             }
         }
     }
@@ -461,7 +466,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     deinit {
         
-        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: symbolSetKey)
+        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey)
         
     }
     

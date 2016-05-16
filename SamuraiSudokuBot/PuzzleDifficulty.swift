@@ -13,12 +13,26 @@ func == (lhs:PuzzleDifficulty, rhs:PuzzleDifficulty) -> Bool{
 
 let cachableDifficulties: [PuzzleDifficulty] = [.Easy, .Medium, .Hard, .Insane]
 
+private var rawDiffDict: [PuzzleDifficulty:Int] = [.Easy : 130, .Medium: 160, .Hard: 190, .Insane: 240]
+
 enum PuzzleDifficulty: Equatable, Hashable {
     case Easy
     case Medium
     case Hard
     case Insane
     case Custom (Int)
+    
+    static var minEasyThreshold: Int {
+        get {
+            return rawDiffDict[.Easy]!
+        }
+    }
+    
+    static var maxInsaneThreshold: Int {
+        get {
+            return rawDiffDict[.Insane]!
+        }
+    }
     
     static func fromCacheString(cacheString: String) -> PuzzleDifficulty {
         let dict:[String: PuzzleDifficulty] = [PuzzleDifficulty.Easy.cacheString(): .Easy, PuzzleDifficulty.Medium.cacheString(): .Medium, PuzzleDifficulty.Hard.cacheString(): .Hard, PuzzleDifficulty.Insane.cacheString(): Insane]
@@ -59,6 +73,14 @@ enum PuzzleDifficulty: Equatable, Hashable {
         }
     }
     
+    var rawDifficultyThreshold: Int {
+        switch self {
+        case .Custom(let diff):
+            return diff
+        default:
+            return rawDiffDict[self]!
+        }
+    }
     
     func toInt() -> Int {
         switch self{
@@ -74,6 +96,7 @@ enum PuzzleDifficulty: Equatable, Hashable {
             return 4 + diff
         }
     }
+    
     
     func cacheString() -> String {
         switch self{
@@ -116,6 +139,29 @@ enum PuzzleDifficulty: Equatable, Hashable {
         default:
             return insaneCacheFilePath
         }
+    }
+    
+    func stylizedDescriptor(allCaps: Bool = true) -> NSAttributedString {
+        let configs = Utils.ButtonConfigs()
+        var attributedTitle: NSAttributedString
+        switch self {
+        case .Easy:
+            let string = allCaps ? "EASY" : "Easy"
+            attributedTitle = configs.getAttributedBodyText(string)
+        case .Medium:
+            let string = allCaps ? "MEDIUM" : "Medium"
+            attributedTitle = configs.getAttributedBodyText(string)
+        case .Hard:
+            let string = allCaps ? "HARD" : "Hard"
+            attributedTitle = configs.getAttributedBodyText(string)
+        case .Insane:
+            let string = allCaps ? "INSANE" : "Insane"
+            attributedTitle = configs.getAttributedBodyText(string)
+        default:
+            let string = allCaps ? "CUSTOM" : "Custom"
+            attributedTitle = configs.getAttributedTitle(string)
+        }
+        return attributedTitle
     }
     
 }

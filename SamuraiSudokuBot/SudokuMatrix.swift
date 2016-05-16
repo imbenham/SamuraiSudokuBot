@@ -47,7 +47,7 @@ class Matrix {
     internal var solutionDict: [PuzzleCell: LinkedNode<PuzzleKey>]?
     var rawDifficultyForPuzzle:Int {
         get {
-            return PuzzleStore.sharedInstance.getPuzzleDifficulty()
+            return PuzzleStore.sharedInstance.difficulty.rawDifficultyThreshold
         }
     }
     var isSolved: Bool {
@@ -259,7 +259,7 @@ class Matrix {
         
         let puzzSolution:[PuzzleCell] = filtered.Solution
         
-        PuzzleStore.sharedInstance.puzzleReady(puzz, solution: puzzSolution)
+        PuzzleStore.sharedInstance.puzzleReady(puzz, solution: puzzSolution, rawScore: filtered.Score)
         
         
         self.rebuild()
@@ -289,7 +289,7 @@ class Matrix {
         
     }
     
-    internal func packagePuzzle(puzzle: [PuzzleCell]) -> (Givens:[PuzzleCell], Solution:[PuzzleCell]) {
+    internal func packagePuzzle(puzzle: [PuzzleCell]) -> (Givens:[PuzzleCell], Solution:[PuzzleCell], Score:Int) {
         
         func validate(puzzle: [PuzzleCell]) -> ([PuzzleCell], [PuzzleCell]) {
             var solution = puzzle
@@ -302,7 +302,7 @@ class Matrix {
             return (givens, solution)
         }
         
-        func calibrate(puzzle: (givens: [PuzzleCell], solution: [PuzzleCell])) -> (Givens: [PuzzleCell], Solution: [PuzzleCell]) {
+        func calibrate(puzzle: (givens: [PuzzleCell], solution: [PuzzleCell])) -> (Givens: [PuzzleCell], Solution: [PuzzleCell], Score:Int) {
             
             var givens = puzzle.givens
             var solution = puzzle.solution
@@ -321,7 +321,7 @@ class Matrix {
             }
             
             
-            return (givens, solution)
+            return (givens, solution, score)
         }
         
         return calibrate(validate(puzzle))

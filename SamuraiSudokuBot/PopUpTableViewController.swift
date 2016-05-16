@@ -11,18 +11,45 @@ import UIKit
 // this is an abstract superclass
 
 class PopUpTableViewController: UITableViewController {
+    
+    var selectedIndex:NSIndexPath? {
+        didSet {
+            if let selectedIndex = selectedIndex {
+                let cell = tableView.cellForRowAtIndexPath(selectedIndex)
+                cell?.textLabel?.textColor = UIColor.blackColor()
+                if let old = oldValue {
+                    if old == selectedIndex {
+                        return
+                    }
+                    let cell = tableView.cellForRowAtIndexPath(old)
+                    cell?.textLabel?.textColor = Utils.Palette.getTheme()
+                    cell?.selected = false
+                }
+            } else {
+                if let old = oldValue {
+                    print("there was an old value")
+                    let cell = tableView.cellForRowAtIndexPath(old)
+                    cell?.textLabel?.textColor = Utils.Palette.getTheme()
+                    cell?.selected = false
+                }
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
         
-        let theme = Utils.Palette.green
+        let theme = Utils.Palette.getTheme()
         
         tableView.backgroundView = nil
         tableView.backgroundColor = UIColor.blackColor()
         tableView.tintColor = UIColor.whiteColor()
         tableView.layer.borderColor = theme.CGColor
-        tableView.layer.borderWidth = 5.0
+        tableView.layer.borderWidth = 6.0
         tableView.separatorStyle = .None
+        
+        view.layoutMargins = UIEdgeInsetsMake(11, 11, 11, 11)
         
         
     }
@@ -32,7 +59,7 @@ class PopUpTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         cell.textLabel?.font = UIFont(name: "futura", size: UIFont.labelFontSize())
         
-        let theme = Utils.Palette.green
+        let theme = Utils.Palette.getTheme()
         
         cell.backgroundColor = UIColor.blackColor()
         let selectedBG = UIView()

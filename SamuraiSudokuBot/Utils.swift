@@ -12,20 +12,17 @@ import UIKit
 
 struct Utils {
     
-    static let ButtonConfigs = ButtonConfig()
-    static let Palette = ColorPalette()
+    //static let ButtonConfigs = ButtonConfig()
 
-    struct ButtonConfig {
+    struct ButtonConfigs {
         
-        var selectedColor = UIColor(red: 51/255, green: 204/255, blue: 51/255, alpha: 1)
+        var selectedColor = Utils.Palette.getTheme()
         var baseColor = UIColor.blackColor()
         
         func backgroundImageForSize(size: CGSize, selected: Bool) -> UIImage {
             let rect = CGRect(origin: CGPoint(x: 0,y: 0), size: size)
             let fillRect = CGRectInset(rect, 1, 1)
             UIGraphicsBeginImageContextWithOptions(fillRect.size, true, 0.0)
-            
-            
             
             guard let context = UIGraphicsGetCurrentContext() else {
                 return UIImage.init()
@@ -37,8 +34,9 @@ struct Utils {
                 let colorSpace =  CGColorSpaceCreateDeviceRGB()
                 
                 let outerGradientColor = selected ? selectedColor : baseColor
+                let innerGradientColor = selected ? Utils.Palette.getThemeInnerGradient().CGColor : UIColor.whiteColor().CGColor
                 
-                let colors = [UIColor.whiteColor().CGColor, outerGradientColor.CGColor]
+                let colors = [innerGradientColor, outerGradientColor.CGColor]
                 
                 let gradient = CGGradientCreateWithColors(colorSpace, colors, locations)
                 
@@ -84,10 +82,79 @@ struct Utils {
         
     }
     
-    struct ColorPalette {
-        let green = UIColor(red: 51/255, green: 204/255, blue: 51/255, alpha: 1)
+    struct Palette {
+        static func getTheme() -> UIColor {
+            let defaults = NSUserDefaults.standardUserDefaults()
+            let raw = defaults.integerForKey(Constants.Identifiers.colorTheme)
+            
+            let col = ColorPalette(rawValue: raw)!
+            return col.color
+        }
+        
+        static func getSelectedIndex() -> Int {
+            let defaults = NSUserDefaults.standardUserDefaults()
+            return defaults.integerForKey(Constants.Identifiers.colorTheme)
+        }
+        
+        static func getColorForRaw(raw:Int) -> UIColor {
+            let rawVal = raw < 4 ? raw : 0
+            
+            return ColorPalette(rawValue: rawVal)!.color
+        }
+        
+        static func getThemeInnerGradient() -> UIColor {
+            let defaults = NSUserDefaults.standardUserDefaults()
+            let raw = defaults.integerForKey(Constants.Identifiers.colorTheme)
+            
+            let col = ColorPalette(rawValue: raw)!
+            
+            return col.getInnerGradientColor()
+        }
+        enum ColorPalette: Int {
+            case Green = 0
+            case Orange = 1
+            case Blue = 2
+            case Yellow = 3
+            
+            var color: UIColor {
+                switch self {
+                case .Green:
+                    return UIColor(red: 51/255, green: 204/255, blue: 51/255, alpha: 1)
+                case .Orange:
+                    return  UIColor(red: 1, green: 184/255, blue: 8/255, alpha: 1)
+                case .Blue:
+                    return  UIColor(red: 69/255, green: 208/255, blue: 1, alpha: 1)
+                case .Yellow:
+                    return  UIColor(red: 1, green: 1, blue: 0, alpha: 1)
+                    
+                }
+            }
+            
+            func getInnerGradientColor() -> UIColor {
+                switch self {
+                case .Green:
+                    return UIColor(red: 159/255, green: 1, blue: 0, alpha: 1)
+                case .Orange:
+                    return UIColor(red: 1, green: 230, blue: 145, alpha: 1)
+                case .Blue:
+                    return UIColor(red: 159/255, green: 1, blue: 1, alpha: 1)
+                case .Yellow:
+                    return UIColor(red: 1, green: 1, blue: 161/255, alpha: 1)
+                
+                }
+            }
+
+            
+        }
+        
     }
     
+    struct Constants {
+        struct Identifiers {
+            static let colorTheme = "theme"
+            static let symbolSetKey = "symbolSet"
+        }
+    }
    
 }
 
@@ -339,7 +406,6 @@ extension UIView {
 }
 
 // user default constants
-let symbolSetKey = "symbolSet"
 let timedKey = "timed"
 let easyPuzzleKey = "Easy"
 let mediumPuzzleKey = "Medium"

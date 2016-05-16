@@ -28,7 +28,7 @@ class SudokuNumberPad: UIView {
     var symbolSet: SymbolSet {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let symType = defaults.integerForKey("symbolSet")
+            let symType = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
             switch symType {
             case 0:
                 return .Standard
@@ -64,9 +64,9 @@ class SudokuNumberPad: UIView {
         
         let buttonSize = CGSize(width: canvasRect.height, height: canvasRect.height)
         
-        let configs = Utils.ButtonConfigs
+        let configs = Utils.ButtonConfigs()
         let buttonImage = configs.backgroundImageForSize(buttonSize, selected: false)
-        let selectedImage = configs.backgroundImageForSize(buttonSize, selected: true)
+        //let selectedImage = configs.backgroundImageForSize(buttonSize, selected: true)
         
         for index in 1...9 {
             
@@ -75,10 +75,9 @@ class SudokuNumberPad: UIView {
             button.frame = buttonFrame
             button.tag = index
             button.setBackgroundImage(buttonImage, forState: .Normal)
-            button.setBackgroundImage(selectedImage, forState: .Selected)
-            button.setTitleColor(defaultTitleColor, forState: .Normal)
-            button.setTitleColor(currentTitleColor, forState: .Normal)
-            button.setBackgroundImage(selectedImage, forState: .Highlighted)
+            configureButtonForSelected(button)
+            configureButtonTitle(button)
+    
             
             let attribString = configs.getAttributedTitle(symbolSet.getSymbolForValue(index))
             button.setAttributedTitle(attribString, forState: .Normal)
@@ -92,6 +91,38 @@ class SudokuNumberPad: UIView {
             
             addSubview(button)
         }
+    }
+    
+    func configureButtonTitles() {
+        for button in buttons {
+            configureButtonTitle(button)
+        }
+    }
+    
+    func configureButtonTitle(button: UIButton) {
+        let configs = Utils.ButtonConfigs()
+        
+        let attribString = configs.getAttributedTitle(symbolSet.getSymbolForValue(button.tag))
+        button.setAttributedTitle(attribString, forState: .Normal)
+        button.setAttributedTitle(attribString, forState: .Selected)
+    }
+    
+    func configureButtonsForSelected() {
+        for button in buttons {
+            configureButtonForSelected(button)
+        }
+    }
+    
+    func configureButtonForSelected(button:UIButton) {
+
+        let rectHeight = self.bounds.size.width/9
+        let configs = Utils.ButtonConfigs()
+        let buttonSize = CGSize(width: rectHeight, height: rectHeight)
+        
+        let selectedImage = configs.backgroundImageForSize(buttonSize, selected: true)
+        
+        button.setBackgroundImage(selectedImage, forState: .Highlighted)
+        button.setBackgroundImage(selectedImage, forState: .Selected)
     }
     
     /* override func layoutSubviews() {
