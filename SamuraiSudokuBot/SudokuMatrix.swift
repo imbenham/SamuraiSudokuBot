@@ -10,7 +10,7 @@ import Foundation
 
 class Matrix {
     
-    private static var privateInstance: Matrix?
+  /*  private static var privateInstance: Matrix?
     
     class var sharedInstance: Matrix {
         get {
@@ -36,7 +36,7 @@ class Matrix {
     static func isReady() -> Bool {
         return privateInstance != nil
     }
-
+ */
     
     var matrix = SudokuMatrix<PuzzleKey>()
     typealias Choice = (Chosen: LinkedNode<PuzzleKey>, Root:Int)
@@ -311,8 +311,8 @@ class Matrix {
             var score = scorePuzzle(givens)
             while solution.count > 7 {  // target > solution
                 cycles += 1
-                print("cycles: \(cycles)")
-                print(score)
+                //print("cycles: \(cycles)")
+                //print(score)
                 for _ in 1...5 {
                     givens.append(solution.removeLast())
                 }

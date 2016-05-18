@@ -13,7 +13,7 @@ import CoreData
 
 class CoreDataStack {
     
-    static let moduleName = "SamuraiSudokuBot"
+    static let moduleName = Utils.Constants.Identifiers.coreDataModuleName
     static let sharedStack = CoreDataStack()
     
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -39,21 +39,39 @@ class CoreDataStack {
         return coordinator
     }()
     
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+    private lazy var savePuzzleManagedObjectContext: NSManagedObjectContext = {
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = self.persistentStoreCoordinator
         return managedObjectContext
     }()
     
+    lazy var managedObjectContext: NSManagedObjectContext = {
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        managedObjectContext.parentContext = self.savePuzzleManagedObjectContext
+        managedObjectContext.undoManager = NSUndoManager()
+        return managedObjectContext
+    }()
+    
     func saveMainContext() {
-        if managedObjectContext.hasChanges {
+        guard managedObjectContext.hasChanges || savePuzzleManagedObjectContext.hasChanges else {
+            return
+        }
+        
+        managedObjectContext.performBlockAndWait() {
             do {
-                try managedObjectContext.save()
+                try self.managedObjectContext.save()
             } catch {
-                fatalError("Managed Object Context could not be saved! \(error)")
+                fatalError("Error saving main managed object context! \(error)")
+            }
+        }
+        
+        savePuzzleManagedObjectContext.performBlock() {
+            do {
+                try self.savePuzzleManagedObjectContext.save()
+            } catch {
+                fatalError("Error saving private managed object context! \(error)")
             }
         }
     }
-    
     
 }

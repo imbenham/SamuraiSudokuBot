@@ -48,12 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootView = window?.rootViewController as? UINavigationController
         
         if let puzzleController = rootView?.topViewController as? PlayPuzzleDelegate {
-            saveCurrentPuzzleForController(puzzleController)
             puzzleController.goToBackground()
         } else if let puzzleController = rootView?.topViewController as? SudokuControllerDelegate {
             puzzleController.goToBackground()
         }
-        
         
         
         PuzzleStore.sharedInstance.operationQueue.cancelAllOperations()
@@ -64,13 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-        let rootView = window?.rootViewController as? UINavigationController
-        if let puzzleController = rootView?.topViewController as? PlayPuzzleDelegate {
-            saveCurrentPuzzleForController(puzzleController)
-        }
-        
-        
-        SamuraiMatrix.tearDown()
         
         
     }
@@ -82,9 +73,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             puzzleController.wakeFromBackground()
         }
         
-        if !SamuraiMatrix.isReady() {
+      /*  if !SamuraiMatrix.isReady() {
             SamuraiMatrix.prepareMatrix()
-        }
+        }*/
         
     }
     
@@ -104,7 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootView = window?.rootViewController as? UINavigationController
         
         if let puzzleController = rootView?.topViewController as? PlayPuzzleDelegate {
-            saveCurrentPuzzleForController(puzzleController)
+            if puzzleController.puzzle != nil {
+                CoreDataStack.sharedStack.saveMainContext()
+            }
         }
         
         
@@ -118,14 +111,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             if let puzzleController = rootView?.topViewController as? PlayPuzzleDelegate {
                 
-                saveCurrentPuzzleForController(puzzleController)
-                rootView?.popViewControllerAnimated(false)
+                if puzzleController.puzzle == nil {
+                    CoreDataStack.sharedStack.saveMainContext()
+                }
             }
             
-        }
-        
-        dispatch_barrier_sync(concurrentPuzzleQueue){
-            SamuraiMatrix.tearDown()
         }
     }
     

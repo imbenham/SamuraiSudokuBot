@@ -8,16 +8,17 @@
         <attribute name="revealed" attributeType="Boolean" syncable="YES"/>
         <attribute name="row" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="value" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="puzzleInitial" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Puzzle" inverseName="initialValues" inverseEntity="Puzzle" syncable="YES"/>
-        <relationship name="puzzleSolution" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Puzzle" inverseName="solution" inverseEntity="Puzzle" syncable="YES"/>
+        <relationship name="puzzleInitial" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Puzzle" inverseName="initialValues" inverseEntity="Puzzle" syncable="YES"/>
+        <relationship name="puzzleSolution" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Puzzle" inverseName="solution" inverseEntity="Puzzle" syncable="YES"/>
     </entity>
     <entity name="Puzzle" representedClassName=".Puzzle" syncable="YES">
+        <attribute name="difficultyLevel" attributeType="String" syncable="YES"/>
         <attribute name="rawScore" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="initialValues" toMany="YES" deletionRule="Cascade" destinationEntity="BackingCell" inverseName="puzzleInitial" inverseEntity="BackingCell" syncable="YES"/>
         <relationship name="solution" toMany="YES" deletionRule="Cascade" destinationEntity="BackingCell" inverseName="puzzleSolution" inverseEntity="BackingCell" syncable="YES"/>
     </entity>
     <elements>
         <element name="BackingCell" positionX="-54" positionY="-9" width="128" height="180"/>
-        <element name="Puzzle" positionX="-63" positionY="-18" width="128" height="90"/>
+        <element name="Puzzle" positionX="-63" positionY="-18" width="128" height="105"/>
     </elements>
 </model>

@@ -259,6 +259,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     var annotatedTiles: [Tile] {get}
     var revealedTiles: [Tile] {get}
     var gameOver: Bool {get}
+    var tileMap: [Int: [String: Tile]] {get}
     
     // required UI elements
     var longFetchLabel: UILabel {get}
@@ -271,11 +272,12 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     var puzzleMenuAnchor: UIView! {get}
    
     
-    //func tileWithBackingCell(cell: BackingCell) -> Tile?
+    func tileWithBackingCell(cell: BackingCell) -> Tile?
     
     // managing interface
     func toggleNoteMode(sender: AnyObject?)
     func refreshNoteButton()
+    func handleManagedObjectChange(notification: NSNotification)
     
     // overrides default implementation of activateInterface(), deactivateInterface() & wakeFromBackground()
     
@@ -285,7 +287,6 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func prepareForLongFetch()
     func fetchPuzzle()
     func puzzleReady()
-    
     
     
     // hints
@@ -327,7 +328,12 @@ extension PlayPuzzleDelegate {
     
     func tileWithBackingCell(cell: BackingCell) -> Tile? {
         // TODO
-        return nil
+        
+        let board = cell.board as Int
+        let row = cell.row as Int
+        let column = cell.column as Int
+    
+        return tileMap[board]?[String(row) + String(column)]
     }
     
     
@@ -378,6 +384,7 @@ extension PlayPuzzleDelegate {
     
     func wakeFromBackground() {
         //TODO: saved puzzle handling
+        print("woke from background")
         
         activateInterface()
         
@@ -428,16 +435,19 @@ extension PlayPuzzleDelegate {
             vc.navigationController?.navigationBarHidden = true
             self.deactivateInterface()
             self.longFetchLabel.hidden = false
-            self.longFetchLabel.frame = CGRectMake(0, 0, self.topAnchorBoard.frame.width, self.topAnchorBoard.frame.height * 0.25)
         }
         
         
+        selectedTile = nil
         
+        let middleTile = boards[0].tileAtIndex((5,4))
+        let middleBoard = middleTile.superview as! Box
         
-        let middleTile = topAnchorBoard.tileAtIndex((5,4))
         if !spinner.isAnimating() {
-            middleTile.selectedColor = UIColor.blackColor()
-            selectedTile = middleTile
+            spinner.frame = middleBoard.bounds
+            middleBoard.addSubview(spinner)
+            spinner.color = UIColor.blackColor()
+            spinner.backgroundColor = Utils.Palette.getTheme()
             spinner.startAnimating()
         }
         
@@ -454,15 +464,10 @@ extension PlayPuzzleDelegate {
         
         deactivateInterface()
         
-        let middleBoard = boards[0]
-        
-        let placeHolderColor = middleBoard.tileAtIndex((1,1)).selectedColor
-        let middleTile = middleBoard.tileAtIndex((5,4))
-        
         let handler: (Puzzle -> ()) = {
             puzzle -> () in
             self.spinner.stopAnimating()
-            middleTile.selectedColor = placeHolderColor
+            self.spinner.removeFromSuperview()
             
             for cell in self.puzzle!.solutionArray() {
                 let tile = self.board.tileAtIndex((cell.convertToTileIndex()))
@@ -495,12 +500,9 @@ extension PlayPuzzleDelegate {
             selectedTile = startingNilTiles[0]
         }
         
+        
+        
         activateInterface()
-        /*if !canDisplayBannerAds {
-            bannerView.userInteractionEnabled = true
-            bannerLayoutComplete = false
-            canDisplayBannerAds = true
-        }*/
         
         
     }
@@ -561,7 +563,7 @@ extension PlayPuzzleDelegate {
         }
         
         if let tv = tile.solutionValue {
-            tile.setValue(tv)
+            tile.backingCell?.assignValue(tv)
         }
         if wrong {
             tile.backgroundColor = tile.wrongColor
@@ -577,9 +579,7 @@ extension PlayPuzzleDelegate {
                 UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: colorBlock) { (finished) in
                     
                     UIView.animateWithDuration(0.5) { () in
-                        //tile.backgroundColor = wrong ? tile.wrongColor : tile.defaultBackgroundColor
-                        //tile.labelColor = wrong ? tile.defaultTextColor : tile.chosenTextColor
-                        //tile.valueLabel.textColor = tile.labelColor
+                       
                         tile.revealed = true
                     }
                     
@@ -614,7 +614,7 @@ extension PlayPuzzleDelegate {
         UIView.animateWithDuration(0.5) {
             for tile in self.startingNilTiles {
                 tile.userInteractionEnabled = true
-                tile.setValue(0)
+                tile.backingCell?.assignValue(0)
             }
         }
         
@@ -649,7 +649,7 @@ extension PlayPuzzleDelegate {
     
     func clearAll() {
         for tile in self.startingNilTiles {
-            tile.setValue(0)
+            tile.backingCell?.assignValue(0)
         }
     }
     

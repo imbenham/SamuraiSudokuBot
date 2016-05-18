@@ -34,8 +34,25 @@ enum PuzzleDifficulty: Equatable, Hashable {
         }
     }
     
+    var identifier: String {
+        get {
+            switch self{
+            case .Easy:
+                return Utils.Constants.Identifiers.easyPuzzleKey
+            case .Medium:
+                return Utils.Constants.Identifiers.mediumPuzzleKey
+            case .Hard:
+                return Utils.Constants.Identifiers.hardPuzzleKey
+            case .Insane:
+                return Utils.Constants.Identifiers.insanePuzzleKey
+            default:
+                return Utils.Constants.Identifiers.customPuzzleKey
+            }
+        }
+    }
+    
     static func fromCacheString(cacheString: String) -> PuzzleDifficulty {
-        let dict:[String: PuzzleDifficulty] = [PuzzleDifficulty.Easy.cacheString(): .Easy, PuzzleDifficulty.Medium.cacheString(): .Medium, PuzzleDifficulty.Hard.cacheString(): .Hard, PuzzleDifficulty.Insane.cacheString(): Insane]
+        let dict:[String: PuzzleDifficulty] = [PuzzleDifficulty.Easy.identifier: .Easy, PuzzleDifficulty.Medium.identifier: .Medium, PuzzleDifficulty.Hard.identifier: .Hard, PuzzleDifficulty.Insane.identifier: Insane]
         if let diff = dict[cacheString] {
             return diff
         } else {
@@ -94,50 +111,6 @@ enum PuzzleDifficulty: Equatable, Hashable {
             return 3
         case .Custom(let diff):
             return 4 + diff
-        }
-    }
-    
-    
-    func cacheString() -> String {
-        switch self{
-        case .Easy:
-            return easyPuzzleKey
-        case .Medium:
-            return mediumPuzzleKey
-        case .Hard:
-            return hardPuzzleKey
-        case .Insane:
-            return insanePuzzleKey
-        default:
-            return "caching unavailable"
-        }
-    }
-    
-    func notificationString() -> String {
-        switch self{
-        case .Easy:
-            return easyPuzzleReady
-        case .Medium:
-            return mediumPuzzleReady
-        case .Hard:
-            return hardPuzzleReady
-        case .Insane:
-            return insanePuzzleReady
-        default:
-            return customPuzzleReady
-        }
-    }
-    
-    func cachePath() -> NSURL {
-        switch self{
-        case .Easy:
-            return easyCacheFilePath
-        case .Medium:
-            return mediumCacheFilePath
-        case .Hard:
-            return hardCacheFilePath
-        default:
-            return insaneCacheFilePath
         }
     }
     

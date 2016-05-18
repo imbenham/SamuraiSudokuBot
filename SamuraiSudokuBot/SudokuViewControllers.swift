@@ -59,8 +59,11 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     var selectedTile: Tile? {
         didSet {
             
-            if noteMode {
-                noteMode = false
+            if selectedTile != oldValue {
+                if noteMode {
+                    noteMode = false
+                }
+
             }
             
             if let selected = selectedTile {
@@ -132,7 +135,6 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         
         board.translatesAutoresizingMaskIntoConstraints = false
         numPad.translatesAutoresizingMaskIntoConstraints = false
-        spinner.translatesAutoresizingMaskIntoConstraints = false
         
         let topPin = NSLayoutConstraint(item: board, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1, constant: 10)
         let centerPin = NSLayoutConstraint(item: board, attribute: .CenterX, relatedBy: .Equal, toItem: originalContentView, attribute: .CenterX, multiplier: 1, constant: 0)
@@ -147,10 +149,8 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         let numPadHeight = NSLayoutConstraint(item: numPad, attribute: .Height, relatedBy: .Equal, toItem: board, attribute: .Width, multiplier: 1/9, constant: 0)
         let numPadCenterX = NSLayoutConstraint(item: numPad, attribute: .CenterX, relatedBy: .Equal, toItem: board, attribute: .CenterX, multiplier: 1, constant: 0)
         let numPadTopSpace = NSLayoutConstraint(item: numPad, attribute: .Top, relatedBy: .Equal, toItem: board, attribute: .Bottom, multiplier: 1, constant: 8)
-        let spinnerHor = NSLayoutConstraint(item: spinner, attribute: .CenterX, relatedBy: .Equal, toItem: board, attribute: .CenterX, multiplier: 1, constant: 0)
-        let spinnerVert = NSLayoutConstraint(item: spinner, attribute: .CenterY, relatedBy: .Equal, toItem: board, attribute: .CenterY, multiplier: 1, constant: 0)
-        
-        originalContentView.addConstraints([numPadWidth, numPadHeight, numPadCenterX, numPadTopSpace, spinnerHor, spinnerVert])
+       
+        originalContentView.addConstraints([numPadWidth, numPadHeight, numPadCenterX, numPadTopSpace])
         
         
         
@@ -262,13 +262,14 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     
     func valueSelected(value: UIButton) {
         let value = value.tag
-        if let selected = selectedTile {
-            if selected.displayValue.rawValue == value {
-                selected.setValue(0)
+        if let selected = selectedTile?.backingCell {
+            if selected.assignedValue?.integerValue == value {
+                selected.assignValue(0)
             } else {
-                selected.setValue(value)
+                selected.assignValue(value)
             }
         }
+
         numPad.refresh()
     }
     
@@ -302,6 +303,17 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     var alertController:UIAlertController?
     
+    var tileMap: [Int: [String: Tile]] {
+        get {
+            var map = [Int: [String: Tile]]()
+            for board in self.boards {
+                map[board.index] = board.tileMap
+            }
+            return map
+        }
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -326,7 +338,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         numPad.delegate = self
         view.addSubview(board)
         view.addSubview(numPad)
-        board.addSubview(spinner)
+        boards[0].boxes[4].addSubview(spinner)
         longFetchLabel.hidden = true
         longFetchLabel.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         board.addSubview(longFetchLabel)
@@ -461,6 +473,11 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     func tileAtIndex(_index: TileIndex) -> Tile? {
         return board.getBoxAtIndex(_index.Box).getTileAtIndex(_index.Tile)
+    }
+    
+    
+    func handleManagedObjectChange(notification: NSNotification) {
+        print("handled change to managed object: \(notification)")
     }
     
     

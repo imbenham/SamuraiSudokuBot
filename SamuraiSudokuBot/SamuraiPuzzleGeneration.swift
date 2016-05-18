@@ -15,7 +15,7 @@ import Foundation
 
 class SamuraiMatrix: Matrix {
     
-    private static var privateInstance: SamuraiMatrix?
+ /*   private static var privateInstance: SamuraiMatrix?
     
     override class var sharedInstance: SamuraiMatrix {
         get {
@@ -37,9 +37,9 @@ class SamuraiMatrix: Matrix {
             privateInstance = SamuraiMatrix()
         }
     }
-   
+   */
     
-    var b1Start: LinkedNode<PuzzleKey>?
+  /*  var b1Start: LinkedNode<PuzzleKey>?
     var b2Start: LinkedNode<PuzzleKey>?
     var b3Start: LinkedNode<PuzzleKey>?
     var b4Start: LinkedNode<PuzzleKey>?
@@ -50,34 +50,14 @@ class SamuraiMatrix: Matrix {
         print(b3Start)
         print(b4Start)
     }
+    */
     
-    //var reinsertCount = 0
     
     // Constructing matrix
     //static let sharedInstance = SamuraiMatrix()
     override func constructMatrix() {
         
-        /* dispatch_async(concurrentPuzzleQueue) {
-         let opQueue = NSOperationQueue()
-         let op1 = NSBlockOperation(block: self.buildRowChoices)
-         let op2 = NSBlockOperation(block: self.buildConstraintColumns)
-         let op3 = NSBlockOperation(block: self.buildOutMatrix)
-         let op4 = NSBlockOperation(block: self.matrix.enumerateRows)
-         op3.addDependency(op1)
-         op3.addDependency(op2)
-         op4.addDependency(op3)
-         opQueue.addOperations([op1, op2, op3, op4], waitUntilFinished: true)
-         }*/
         
-        /*
-         let opQueue = NSOperationQueue()
-         let op1 = NSBlockOperation(block: self.buildRowChoices)
-         let op3 = NSBlockOperation(block: self.buildOutMatrix)
-         let op4 = NSBlockOperation(block: self.printStarts)
-         op4.addDependency(op2)
-         op3.addDependency(op1)
-         op3.addDependency(op2)
-         */
         let opQueue = NSOperationQueue()
         let op1 = NSBlockOperation(block: self.buildRowChoices)
         let op2 = NSBlockOperation(block: self.buildConstraintColumns)

@@ -21,7 +21,6 @@ class Tile: SudokuItem {
     
     var displayValue: TileValue {
         get {
-            
             guard let bc = backingCell else {
                 return .Nil
             }
@@ -200,15 +199,6 @@ class Tile: SudokuItem {
         return self.displayValue != .Nil ? symbolSet.getSymbolForTyleValue(displayValue) : ""
     }
     
-    func setValue(value: Int) {
-        backingCell?.assignedValue = value
-        if displayValue != .Nil {
-            backingCell?.notesArray = []
-        }
-        
-        refreshLabel()
-        
-    }
     
     func refreshLabel() {
         guard let backingCell = backingCell else {
@@ -233,7 +223,6 @@ class Tile: SudokuItem {
     private func refreshBackground() {
         if noteMode {
             if selected {
-                print("changin background")
                 self.backgroundColor = noteModeColor
                 for lv in noteLabels {
                     lv.layer.borderWidth = 0.25

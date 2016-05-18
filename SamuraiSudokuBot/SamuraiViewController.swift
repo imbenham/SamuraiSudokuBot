@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import CoreData
+import Foundation
 
 class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPresentationControllerDelegate {
     @IBOutlet weak var puzzleMenuAnchor: UIView!
@@ -40,7 +42,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
    
     
     @IBAction func handleUndoButtonTap(sender: AnyObject) {
-        print("undo button tapped")
+        managedObjectContext.undo()
     }
 
     @IBAction func handleHintButtonTap(sender: AnyObject) {
@@ -77,6 +79,18 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
     }
     
+    var tileMap: [Int: [String: Tile]] {
+        get {
+            var map = [Int: [String: Tile]]()
+            for board in self.boards {
+                map[board.index] = board.tileMap
+            }
+            return map
+        }
+        
+    }
+    
+    
     var alertController: UIAlertController?
     
     
@@ -109,10 +123,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     var puzzle: Puzzle? {
         didSet {
-            if puzzle == nil {
-                for tile in tiles {
-                    tile.backingCell = nil
+            if let old = oldValue {
+                if puzzle == nil {
+                    managedObjectContext.deleteObject(old)
+                    CoreDataStack.sharedStack.saveMainContext()
                 }
+                
             }
         }
     }
@@ -133,6 +149,13 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             return [clearButton, noteButton, optionsButton, hintButton, undoButton]
         }
     }
+    
+    var managedObjectContext: NSManagedObjectContext {
+        get {
+            return CoreDataStack.sharedStack.managedObjectContext
+        }
+    }
+
     
     override var noteMode: Bool  {
         didSet {
@@ -168,9 +191,11 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         puzzleMenuAnchor.backgroundColor = UIColor.clearColor()
         puzzleMenuAnchor.userInteractionEnabled = false
         
-        for board in boards {
+        for (index, board) in boards.enumerate() {
             board.controller = self
             board.prepareBoxes()
+            
+            board.defaultIndex = index
         }
         
         for button in numPad.buttons {
@@ -277,6 +302,11 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
                 noteButton.hidden = false
             }
         }
+        
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectChange(_:)), name: NSManagedObjectContextObjectsDidChangeNotification, object: nil)
+        
+        notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectSaveNotification(_:)), name: NSManagedObjectContextWillSaveNotification, object: nil)
     }
     
 
@@ -329,9 +359,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
                 }
                 numPad.configureButtonTitles()
             } else if path == Utils.Constants.Identifiers.colorTheme {
-                print("color path changed")
                 if let bgView = self.view as? SSBBackgroundView {
-                    print("right kind of view")
                     bgView.setNeedsDisplay()
                 }
                 
@@ -350,17 +378,14 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             board.userInteractionEnabled = false
         }
         
-        let placeHolderColor = middleBoard.tileAtIndex((1,1)).selectedColor
-        let middleTile = middleBoard.tileAtIndex((5,4))
+       
         
         let handler: (Puzzle -> ()) = {
             puzzle -> () in
             self.spinner.stopAnimating()
-            middleTile.selectedColor = placeHolderColor
+            self.spinner.removeFromSuperview()
             
             self.puzzle = puzzle
-            
-            print(puzzle.initialsArray().count)
             
             for cell in self.puzzle!.solutionArray() {
                 let index = cell.board.integerValue
@@ -395,7 +420,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     //MARK: PlayPuzzleDelegate
     
     override func toggleNoteMode(sender: AnyObject?) {
-        print("note mode toggled!")
         if let press = sender as? UILongPressGestureRecognizer {
             if press.state == .Began {
                 if let tile = (sender as! UIGestureRecognizer).view as? Tile {
@@ -425,43 +449,69 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
     }
     
- 
-    
     //MARK: NumPadDelegate methods
     override func valueSelected(value: UIButton) {
         let value = value.tag
         if noteMode {
             noteValueChanged(value)
-            numPad.refresh()
             return
         }
         
-        if let selected = selectedTile {
-            if selected.displayValue.rawValue == value {
-                selected.setValue(0)
+        if let selected = selectedTile?.backingCell {
+            if selected.assignedValue?.integerValue == value {
+                selected.assignValue(0)
             } else {
-                selected.setValue(value)
-                print("setting value to: \(value)")
+                selected.assignValue(value)
             }
         }
         
         checkSolution()
         numPad.refresh()
         
-        
-        
     }
     
     override func noteValueChanged(value: Int) {
-        if let selected = selectedTile {
-            if selected.noteValues.contains(value) {
-                selected.removeNoteValue(value)
-            } else {
-                selected.addNoteValue(value)
-            }
+        if let selected = selectedTile?.backingCell {
+            var notes = Set(selected.notesArray)
+            notes.insert(value)
+            numPad.refresh()
         }
+        
     }
     
+    func handleManagedObjectChange(notification: NSNotification) {
+        
+        guard let infoDict = notification.userInfo as? [String: AnyObject] else {
+            print("downcasting failed")
+            return
+        }
+        
+        if let updates = infoDict[NSUpdatedObjectsKey] as? Set<BackingCell> where updates.count > 0  {
+            for cell in updates {
+                if let tile = tileWithBackingCell(cell) {
+                    selectedTile = tile
+                    //numPad.refresh()
+                } else {
+                    print("tile fetch failed")
+                }
+            }
+        }
+        
+    }
+    
+    func handleManagedObjectSaveNotification(notification: NSNotification) {
+        guard let context = notification.object as? NSManagedObjectContext where context.deletedObjects.count > 0 else {
+            return
+        }
+        
+        if puzzle == nil {
+            for tile in tiles {
+                tile.backingCell = nil
+            }
+
+        }
+       
+    }
     
     
     override func noteValues() -> [Int]? {

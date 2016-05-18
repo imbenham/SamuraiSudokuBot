@@ -53,6 +53,9 @@ class BackingCell: NSManagedObject {
         
     }
     
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    }
     
     func setPuzzleInitalAndReturn(puzzle:Puzzle) -> BackingCell {
         self.puzzleInitial = puzzle
@@ -71,6 +74,11 @@ class BackingCell: NSManagedObject {
         let columnIndex = Int(self.column)
         
         return getTileIndex(rowIndex, column: columnIndex)
+    }
+    
+    func assignValue(value: Int) {
+        assignedValue = NSNumber(integer: value)
+        
     }
     
     

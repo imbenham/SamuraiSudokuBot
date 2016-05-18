@@ -60,6 +60,12 @@ class ChoosePuzzleController: PopUpTableViewController {
     }
     
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        puzzleController?.puzzle = nil
+        
+    }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -136,7 +142,6 @@ class ChoosePuzzleController: PopUpTableViewController {
         
         puzzleController?.difficulty = diff
         
-        puzzleController?.puzzle = nil
         //puzzleController?.clearAll()
         
         if let pvc = ppd as? SudokuController {

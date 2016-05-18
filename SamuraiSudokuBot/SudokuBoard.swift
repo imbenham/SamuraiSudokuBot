@@ -8,6 +8,8 @@
 
 import UIKit
 
+
+
 class SudokuBoard: SudokuItem, Nester {
     
     typealias T = Box
@@ -30,11 +32,14 @@ class SudokuBoard: SudokuItem, Nester {
         }
     }
     
+    var tileMap: [String: Tile] = [:]
+    
     override var controller: SudokuControllerDelegate? {
         didSet {
         }
     }
     
+    // is this necessary?
     var isMiddle = false {
         didSet {
             let boxSet: [Box] = [boxes[0], boxes[2], boxes[6], boxes[8]]
@@ -57,7 +62,6 @@ class SudokuBoard: SudokuItem, Nester {
         }
     }
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         for index in 0...8 {
@@ -74,12 +78,8 @@ class SudokuBoard: SudokuItem, Nester {
             let aBox = Box(index: index, withParent: self)
             boxes.append(aBox)
         }
-    
+
     }
-    
-   /* override func layoutSubviews() {
-        
-    }*/
     
     
     func makeRow(row: Int)-> [Box] {
@@ -130,6 +130,11 @@ class SudokuBoard: SudokuItem, Nester {
         readyCount += 1
         
         if ready {
+            for tile in self.tiles {
+                tileMap[String(tile.getRowIndex()) + String(tile.getColumnIndex())] = tile
+            }
+            print("tileMap should have 81 items and has:")
+            print(tileMap.count)
             if let cntrlr = self.controller {
                 cntrlr.boardReady()
             }
@@ -153,7 +158,7 @@ extension SudokuBoard {
         
         for cell in valueList {
             let index = getTileIndex(cell.row, column: cell.column)
-            self.tileAtIndex(index).setValue(cell.value)
+            self.tileAtIndex(index).backingCell?.assignValue(cell.value)
         }
         
         
@@ -168,6 +173,7 @@ extension SudokuBoard {
     func tileAtIndex(_index: TileIndex) -> Tile {
         return self.getBoxAtIndex(_index.Box).getTileAtIndex(_index.Tile)
     }
+    
     
     
     func getNilTiles() -> [Tile] {

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 
 class PuzzleStore: NSObject {
@@ -15,6 +16,12 @@ class PuzzleStore: NSObject {
     
     var operationQueue = NSOperationQueue()
     var difficulty: PuzzleDifficulty = .Medium
+    
+    var managedObjectContext: NSManagedObjectContext {
+        get {
+            return CoreDataStack.sharedStack.managedObjectContext
+        }
+    }
     
     
     var completionHandler: (Puzzle -> ())?
@@ -26,20 +33,32 @@ class PuzzleStore: NSObject {
     
     func getPuzzleForController(controller: PlayPuzzleDelegate, withCompletionHandler handler: (Puzzle ->())) {
         
+        self.difficulty = controller.difficulty
         
-        if false { //TODO PLACEHOLDER -- NEED TO ADD SAVED PUZZLE LOGIC
-            //handler(saved.0, saved.1)
-            //Add logic for saved puzzle
-            //print(saved)
-            //return
+        
+        let puzzleFetch = NSFetchRequest(entityName: Puzzle.entityName)
+        
+        let fetchPredicate = Puzzle.predicateForDifficulty(difficulty)
+        
+        puzzleFetch.predicate = fetchPredicate
+        
+        var fetchedPuzzles: [Puzzle]
+        
+        do {
+            fetchedPuzzles = try managedObjectContext.executeFetchRequest(puzzleFetch) as! [Puzzle]
+        } catch {
+            fatalError("puzzle fetch failed with error: \(error)")
+        }
+        
+        if fetchedPuzzles.count > 0 {
+            handler(fetchedPuzzles.last!)
         } else {
             
             controller.prepareForLongFetch()
             
             dispatch_async(concurrentPuzzleQueue) {
                 self.completionHandler = handler
-                self.difficulty = controller.difficulty
-                SamuraiMatrix.sharedInstance.generatePuzzle()
+                SamuraiMatrix().generatePuzzle()
                 
             }
             
@@ -72,12 +91,15 @@ class PuzzleStore: NSObject {
         let initials = initials.filter({!($0.companionCell != nil && $0.boardIndex == 0)})
         let solution = solution.filter({!($0.companionCell != nil && $0.boardIndex == 0)})
         
+        let puzz = Puzzle.init(initialValues: initials, solution: solution, rawScore: rawScore)
+        puzz.difficultyLevel = self.difficulty.identifier
+        
+        CoreDataStack.sharedStack.saveMainContext()
+        
         dispatch_async(GlobalMainQueue) {
-            self.completionHandler!(Puzzle.init(initialValues: initials, solution: solution, rawScore: rawScore))
+            self.completionHandler!(puzz)
             self.completionHandler = nil
         }
-        
-        
         
     }
 }
