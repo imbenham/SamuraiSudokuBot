@@ -20,6 +20,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kig-aV-nT2">
+                                <rect key="frame" x="345" y="235" width="30" height="30"/>
+                                <color key="backgroundColor" red="0.20000000000000001" green="0.79855809560000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="undo_icon"/>
+                                <connections>
+                                    <action selector="handleUndoButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="x2n-u9-RdG"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wgM-tv-1yF">
+                                <rect key="frame" x="318" y="226" width="85" height="48"/>
+                                <color key="backgroundColor" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" image="redo_icon"/>
+                                <connections>
+                                    <action selector="handleRedoButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pCe-ty-YdG"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbA-nW-po6" userLabel="Board3" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
                                 <rect key="frame" x="375" y="325" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -80,15 +97,6 @@
                                     <action selector="handleHintButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Czz-LR-Lda"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kig-aV-nT2">
-                                <rect key="frame" x="450" y="235" width="30" height="30"/>
-                                <color key="backgroundColor" red="0.20000000000000001" green="0.79855809560000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <state key="normal" image="undo_icon"/>
-                                <connections>
-                                    <action selector="handleUndoButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="x2n-u9-RdG"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vNL-fq-fjd">
                                 <rect key="frame" x="272" y="9" width="56" height="30"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -102,14 +110,15 @@
                         <constraints>
                             <constraint firstItem="WQH-kb-pww" firstAttribute="bottom" secondItem="4gs-Yy-Sja" secondAttribute="top" identifier="board2Y" id="0VA-1S-gvf"/>
                             <constraint firstItem="Jib-cP-aYm" firstAttribute="trailing" secondItem="4gs-Yy-Sja" secondAttribute="leading" identifier="board1X" id="129-Mr-y2e"/>
+                            <constraint firstItem="Kig-aV-nT2" firstAttribute="trailing" secondItem="4gs-Yy-Sja" secondAttribute="trailing" id="1Ts-uU-ZCt"/>
                             <constraint firstItem="4gs-Yy-Sja" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="1/4" id="3Ya-XJ-XTQ"/>
                             <constraint firstItem="4gs-Yy-Sja" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-50" id="3cB-PH-vQ8"/>
                             <constraint firstItem="CPe-6L-xh3" firstAttribute="height" secondItem="S18-Kj-wer" secondAttribute="height" multiplier="4/5" id="49Y-qp-L2N"/>
-                            <constraint firstItem="Kig-aV-nT2" firstAttribute="leading" secondItem="WQH-kb-pww" secondAttribute="centerX" id="4uB-Ra-TIh"/>
                             <constraint firstItem="S18-Kj-wer" firstAttribute="height" secondItem="dOO-5u-UbC" secondAttribute="height" multiplier="3/2" id="5fJ-CH-zTN"/>
                             <constraint firstItem="MtK-4M-xr9" firstAttribute="height" secondItem="S18-Kj-wer" secondAttribute="height" multiplier="4/5" id="6XE-dT-phT"/>
                             <constraint firstItem="vNL-fq-fjd" firstAttribute="bottom" secondItem="Jib-cP-aYm" secondAttribute="top" constant="-40" id="78H-pc-BSI"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="top" secondItem="4gs-Yy-Sja" secondAttribute="bottom" identifier="board4Y" id="7tH-xQ-VkA"/>
+                            <constraint firstItem="wgM-tv-1yF" firstAttribute="width" secondItem="Kig-aV-nT2" secondAttribute="width" id="8DE-dV-zmj"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="centerX" secondItem="4gs-Yy-Sja" secondAttribute="centerX" id="B4R-KI-Yej"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="width" secondItem="4gs-Yy-Sja" secondAttribute="width" id="BA3-9D-UJs"/>
                             <constraint firstItem="wbA-nW-po6" firstAttribute="width" secondItem="4gs-Yy-Sja" secondAttribute="width" id="BVX-vQ-Z6W"/>
@@ -122,11 +131,13 @@
                             <constraint firstItem="Kig-aV-nT2" firstAttribute="width" secondItem="MtK-4M-xr9" secondAttribute="width" id="Lyu-Hd-YOb"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="width" secondItem="4gs-Yy-Sja" secondAttribute="width" multiplier="1.5" id="M3O-HY-X3Q"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="height" secondItem="4gs-Yy-Sja" secondAttribute="height" multiplier="1/6" id="Nqm-PL-nhZ"/>
+                            <constraint firstItem="wgM-tv-1yF" firstAttribute="centerY" secondItem="Kig-aV-nT2" secondAttribute="centerY" id="Orn-J1-a7A"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="trailing" secondItem="4gs-Yy-Sja" secondAttribute="leading" identifier="board4X" id="Ov4-v6-qAl"/>
                             <constraint firstItem="fle-88-0fn" firstAttribute="leading" secondItem="dOO-5u-UbC" secondAttribute="trailing" constant="20" id="RQL-jF-fOK"/>
                             <constraint firstItem="WQH-kb-pww" firstAttribute="height" secondItem="4gs-Yy-Sja" secondAttribute="height" id="T2e-nM-MeU"/>
                             <constraint firstItem="Jib-cP-aYm" firstAttribute="bottom" secondItem="4gs-Yy-Sja" secondAttribute="top" identifier="board1Y" id="TRx-u3-dBx"/>
                             <constraint firstItem="wbA-nW-po6" firstAttribute="leading" secondItem="4gs-Yy-Sja" secondAttribute="trailing" identifier="board3X" id="UYV-7g-eUU"/>
+                            <constraint firstItem="wgM-tv-1yF" firstAttribute="height" secondItem="Kig-aV-nT2" secondAttribute="height" id="Vf2-E3-JFo"/>
                             <constraint firstItem="wbA-nW-po6" firstAttribute="top" secondItem="4gs-Yy-Sja" secondAttribute="bottom" identifier="board3Y" id="X0b-Km-MCo"/>
                             <constraint firstItem="4gs-Yy-Sja" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ypz-9h-pJ4"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="top" secondItem="Uo3-je-Kst" secondAttribute="bottom" constant="8" id="Z27-EN-2pu"/>
@@ -145,6 +156,7 @@
                             <constraint firstItem="CPe-6L-xh3" firstAttribute="trailing" secondItem="Jib-cP-aYm" secondAttribute="centerX" id="syP-tt-jeW"/>
                             <constraint firstItem="Kig-aV-nT2" firstAttribute="centerY" secondItem="4gs-Yy-Sja" secondAttribute="centerY" id="tMO-3L-TX8"/>
                             <constraint firstItem="4gs-Yy-Sja" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="1/4" id="twV-LE-YOa"/>
+                            <constraint firstItem="wgM-tv-1yF" firstAttribute="leading" secondItem="Kig-aV-nT2" secondAttribute="leading" id="uPD-VN-7Fp"/>
                             <constraint firstItem="WQH-kb-pww" firstAttribute="leading" secondItem="4gs-Yy-Sja" secondAttribute="trailing" identifier="board2X" id="zwL-IC-2Xu"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
@@ -174,7 +186,10 @@
                         <outlet property="numPad" destination="dOO-5u-UbC" id="hgo-eJ-3Bn"/>
                         <outlet property="optionsButton" destination="CPe-6L-xh3" id="pAU-2i-7MY"/>
                         <outlet property="puzzleMenuAnchor" destination="vNL-fq-fjd" id="VFx-SS-maN"/>
+                        <outlet property="redoButton" destination="wgM-tv-1yF" id="dmI-8O-aKA"/>
+                        <outlet property="redoPin" destination="uPD-VN-7Fp" id="ds6-kN-3yu"/>
                         <outlet property="undoButton" destination="Kig-aV-nT2" id="rje-IE-No4"/>
+                        <outlet property="undoPin" destination="1Ts-uU-ZCt" id="TsH-wn-qBS"/>
                         <outletCollection property="xConstraints" destination="129-Mr-y2e" collectionClass="NSMutableArray" id="ieE-8T-tbX"/>
                         <outletCollection property="yConstraints" destination="TRx-u3-dBx" collectionClass="NSMutableArray" id="tj5-MZ-kwT"/>
                         <outletCollection property="yConstraints" destination="0VA-1S-gvf" collectionClass="NSMutableArray" id="8eV-xK-gf8"/>
@@ -191,6 +206,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="redo_icon" width="48" height="48"/>
         <image name="undo_icon" width="48" height="48"/>
     </resources>
 </document>

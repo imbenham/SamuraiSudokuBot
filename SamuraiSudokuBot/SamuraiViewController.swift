@@ -19,6 +19,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     @IBOutlet weak var board4: SudokuBoard!
     @IBOutlet weak var middleBoard: MiddleBoard!
     
+    @IBOutlet weak var undoPin: NSLayoutConstraint!
+    @IBOutlet weak var redoPin: NSLayoutConstraint!
     
     @IBOutlet var xConstraints: [NSLayoutConstraint]!
     @IBOutlet var yConstraints: [NSLayoutConstraint]!
@@ -29,6 +31,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     @IBOutlet weak var undoButton: UIButton!
     @IBOutlet weak var hintButton: UIButton!
+    @IBOutlet weak var redoButton: UIButton!
    
     @IBAction func handleNoteButtonTap(sender: AnyObject) {
         self.toggleNoteMode(sender)
@@ -44,6 +47,9 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     @IBAction func handleUndoButtonTap(sender: AnyObject) {
         managedObjectContext.undo()
     }
+    @IBAction func handleRedoButtonTap(sender: AnyObject) {
+        managedObjectContext.redo()
+    }
 
     @IBAction func handleHintButtonTap(sender: AnyObject) {
         showHelpMenu(sender)
@@ -54,6 +60,17 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         clearSolution()
     }
     
+    var undoOffset: CGFloat {
+        get {
+            return undoButton.frame.size.width + 12
+        }
+    }
+    
+    var redoOffset: CGFloat {
+        get {
+            return undoOffset - 4
+        }
+    }
     
     
     var backgroundView: SSBBackgroundView {
@@ -146,7 +163,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     var allButtons: [UIButton] {
         get {
-            return [clearButton, noteButton, optionsButton, hintButton, undoButton]
+            return [clearButton, noteButton, optionsButton, hintButton, undoButton, redoButton]
         }
     }
     
@@ -205,6 +222,9 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         numPad.delegate = self
 
         lastOffset = offset
+        
+        undoButton.alpha = 0
+        redoButton.alpha = 0
         
     }
     
@@ -307,6 +327,10 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectChange(_:)), name: NSManagedObjectContextObjectsDidChangeNotification, object: nil)
         
         notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectSaveNotification(_:)), name: NSManagedObjectContextWillSaveNotification, object: nil)
+        
+        notificationCenter.addObserver(self, selector: #selector(self.handleUndoNotification(_:)), name: NSUndoManagerDidUndoChangeNotification, object: nil)
+        
+        notificationCenter.addObserver(self, selector: #selector(self.handleRedoNotification(_:)), name: NSUndoManagerDidRedoChangeNotification, object: nil)
     }
     
 
@@ -382,6 +406,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         
         let handler: (Puzzle -> ()) = {
             puzzle -> () in
+            
             self.spinner.stopAnimating()
             self.spinner.removeFromSuperview()
             
@@ -409,7 +434,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
                 self.navigationController?.navigationBarHidden = false
                 self.longFetchLabel.hidden = true
             }
-            
+            self.managedObjectContext.undoManager!.removeAllActions()
+            self.hideUndoRedo()
             self.puzzleReady()
             
         }
@@ -479,6 +505,65 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         
     }
     
+    //MARK: show/hide undo/redo buttons
+    
+    func hideUndoRedo() {
+        hideUndoButton()
+        hideRedoButton()
+    }
+    
+    func hideUndoButton() {
+        if undoButton.alpha == 0 {
+            return
+        }
+        view.layoutIfNeeded()
+        UIView.animateWithDuration(0.4, animations: {
+            self.undoButton.alpha = 0
+            self.undoPin.constant -= self.undoOffset
+            self.view.layoutIfNeeded()
+        })
+
+    }
+    
+    func showUndoButton() {
+        if undoButton.alpha == 1 {
+            return
+        }
+        view.layoutIfNeeded()
+        UIView.animateWithDuration(0.4, animations: {
+            self.undoButton.alpha = 1
+            self.undoPin.constant += self.undoOffset
+            self.view.layoutIfNeeded()
+        })
+    }
+    
+    func hideRedoButton() {
+        if redoButton.alpha == 0 {
+            return
+        }
+        view.layoutIfNeeded()
+        UIView.animateWithDuration(0.4, animations: {
+            self.redoButton.alpha = 0
+            self.redoPin.constant -= self.redoOffset
+            self.view.layoutIfNeeded()
+        })
+    }
+    
+    func showRedoButton() {
+        if redoButton.alpha == 1 {
+            return
+        }
+        view.layoutIfNeeded()
+        UIView.animateWithDuration(0.4, animations: {
+            self.redoButton.alpha = 1
+            self.redoPin.constant += self.redoOffset
+            self.view.layoutIfNeeded()
+        })
+
+    }
+    
+    //MARK: managedObjectContext handlers
+    
     func handleManagedObjectChange(notification: NSNotification) {
         
         guard let infoDict = notification.userInfo as? [String: AnyObject] else {
@@ -491,9 +576,20 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
                 if let tile = tileWithBackingCell(cell) {
                     selectedTile = tile
                     //numPad.refresh()
-                } else {
-                    print("tile fetch failed")
                 }
+            }
+        }
+        if managedObjectContext.undoManager!.canUndo {
+            if undoButton.alpha == 0 {
+                showUndoButton()
+              
+            }
+        }
+        
+        if managedObjectContext.undoManager!.canRedo {
+            self.view.setNeedsLayout()
+            if redoButton.alpha == 0 {
+                showRedoButton()
             }
         }
         
@@ -511,6 +607,22 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
 
         }
        
+    }
+    
+    func handleUndoNotification(notification: NSNotification) {
+        if let nm = notification.object as? NSUndoManager where !nm.canUndo {
+            if undoButton.alpha == 1 {
+                hideUndoButton()
+            }
+        }
+    }
+    
+    func handleRedoNotification(notification: NSNotification) {
+        if let nm = notification.object as? NSUndoManager where !nm.canRedo {
+            if redoButton.alpha == 1 {
+               hideRedoButton()
+            }
+        }
     }
     
     
