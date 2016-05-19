@@ -9,6 +9,7 @@
 
 import UIKit
 import iAd
+//import AVFoundation
 
 extension UINavigationController {
     public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
@@ -24,7 +25,7 @@ extension UINavigationController {
 
 /* This is intended as an abstract superclass and should not be instantiated and used directly. */
 
-class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelegate {
+class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelegate, AVAudioPlayerDelegate {
     
     var noteMode = false
     
@@ -54,6 +55,27 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         }
     }
     
+    var audioPlayer: AVAudioPlayer?
+    
+    var soundOn: Bool {
+        get {
+            let defaults = NSUserDefaults.standardUserDefaults()
+            let soundKey = Utils.Constants.Identifiers.soundKey
+            guard let soundOn = defaults.objectForKey(soundKey) as? Bool else {
+                return false
+            }
+            return soundOn
+            
+        }
+        set {
+            let defaults = NSUserDefaults.standardUserDefaults()
+            let soundKey = Utils.Constants.Identifiers.soundKey
+            defaults.setBool(!soundOn, forKey: soundKey)
+        }
+        
+    }
+
+    
     @IBOutlet weak var numPad: SudokuNumberPad!
     
     var selectedTile: Tile? {
@@ -62,6 +84,9 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
             if selectedTile != oldValue {
                 if noteMode {
                     noteMode = false
+                }
+                if selectedTile != nil {
+                    playSelectedTileChanged()
                 }
 
             }
@@ -269,9 +294,60 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
                 selected.assignValue(value)
             }
         }
-
+        
         numPad.refresh()
     }
+    
+    
+    //MARK: audioplayer delegate and related functions
+    
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+        audioPlayer = nil
+    }
+    
+     func playSelectedTileChanged() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.SelectedTileChanged.url
+        playAudioAtURL(url)
+    }
+    
+     func playValueSelected() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.ValueSelected.url
+        playAudioAtURL(url)
+    }
+    
+    func playPuzzleCompleted() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.PuzzleCompleted.url
+        playAudioAtURL(url)
+    }
+    
+    func playPuzzleFetched() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.PuzzleFetched.url
+        playAudioAtURL(url)
+    }
+    
+    func playHintGiven() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.HintGiven.url
+        playAudioAtURL(url)
+    }
+    
+    func playAudioAtURL(url:NSURL) {
+        guard soundOn else{return}
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOfURL: url)
+            audioPlayer!.delegate = self
+            audioPlayer!.prepareToPlay()
+            audioPlayer!.play()
+        } catch {
+            fatalError("audioplayer could not be initialized! \(error)")
+        }
+
+    }
+
     
 }
 

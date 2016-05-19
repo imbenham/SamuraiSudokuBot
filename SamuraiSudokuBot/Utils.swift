@@ -8,11 +8,27 @@
 
 import Foundation
 import UIKit
+import AVFoundation
 
 
 struct Utils {
     
     //static let ButtonConfigs = ButtonConfig()
+    
+    struct TextConfigs {
+        
+        
+        func getAttributedTitle(text: String, withColor color: UIColor) -> NSAttributedString {
+            let size: CGFloat = 18.0
+            let font = UIFont(name: "Futura", size: size)!
+            
+            let attribs = [NSFontAttributeName:font, NSForegroundColorAttributeName:color]
+            
+            return NSAttributedString(string:text, attributes: attribs)
+        }
+        
+        
+    }
 
     struct ButtonConfigs {
         
@@ -153,6 +169,8 @@ struct Utils {
         struct Identifiers {
             static let colorTheme = "theme"
             static let symbolSetKey = "symbolSet"
+            static let soundKey = "sound"
+            
             static let coreDataModuleName = "SamuraiSudokuBot"
             
             static let easyPuzzleKey = "Easy"
@@ -160,6 +178,43 @@ struct Utils {
             static let hardPuzzleKey = "Hard"
             static let insanePuzzleKey = "Insane"
             static let customPuzzleKey = "Custom"
+        }
+    }
+    
+    struct Sounds {
+        
+       enum SoundType {
+            case SelectedTileChanged
+            case ValueSelected
+            case PuzzleCompleted
+            case PuzzleFetched
+            case HintGiven
+            
+            var url: NSURL {
+                get{
+                    let bundle = NSBundle.mainBundle()
+                    var path: String
+
+                    switch self {
+                    case .SelectedTileChanged:
+                        path = bundle.pathForResource("tile_change", ofType: "caf")!
+                    case .ValueSelected:
+                        path = bundle.pathForResource("value_chosen", ofType: "caf")!
+                    case .PuzzleCompleted:
+                        path = bundle.pathForResource("puzzle_solved1", ofType: "caf")!
+                    case .HintGiven:
+                        path = bundle.pathForResource("hint_given", ofType: "caf")!
+                    case .PuzzleFetched:
+                        path = bundle.pathForResource("puzzle_fetched", ofType: "caf")!
+                    }
+                    
+                 
+                    return NSURL.fileURLWithPath(path)
+                  
+                }
+            }
+            
+            
         }
     }
    

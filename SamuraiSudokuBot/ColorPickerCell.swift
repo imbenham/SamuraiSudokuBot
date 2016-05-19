@@ -51,6 +51,7 @@ class ColorPickerCell: UITableViewCell {
     func didLoad() {
         
         backgroundColor = UIColor.blackColor()
+        layer.borderWidth = 1.0
         
         for (index, tab) in tabs.enumerate() {
             tab.tag = index
@@ -92,15 +93,5 @@ class ColorPickerCell: UITableViewCell {
         unselected.alpha = 0.5
         unselected.layer.borderColor = UIColor.blackColor().CGColor
     }
-    
-    //MARK: UIResponder
-    
-  /*  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        
-        return
-    }
-    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        return
-    }*/
+  
 }

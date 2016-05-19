@@ -48,6 +48,13 @@
 		36EBF10E1CE41E7E005F9B8E /* ChoosePuzzleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF10D1CE41E7E005F9B8E /* ChoosePuzzleController.swift */; };
 		36EBF1101CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF10F1CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift */; };
 		36EBF1121CE4DD66005F9B8E /* PopOverMenuFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EBF1111CE4DD66005F9B8E /* PopOverMenuFooter.swift */; };
+		36EFEE671CEE0792006B58EC /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36EFEE661CEE0792006B58EC /* AVFoundation.framework */; };
+		36EFEE6E1CEE1044006B58EC /* hint_given.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE6C1CEE0880006B58EC /* hint_given.caf */; };
+		36EFEE6F1CEE105D006B58EC /* puzzle_solved1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE6D1CEE088D006B58EC /* puzzle_solved1.caf */; };
+		36EFEE701CEE105D006B58EC /* value_chosen.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE6B1CEE0865006B58EC /* value_chosen.caf */; };
+		36EFEE711CEE105D006B58EC /* puzzle_fetched.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE6A1CEE0850006B58EC /* puzzle_fetched.caf */; };
+		36EFEE721CEE105D006B58EC /* tile_change.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE691CEE0831006B58EC /* tile_change.caf */; };
+		36EFEE741CEE36BC006B58EC /* PopOverSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EFEE731CEE36BB006B58EC /* PopOverSectionHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +122,13 @@
 		36EBF10D1CE41E7E005F9B8E /* ChoosePuzzleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChoosePuzzleController.swift; sourceTree = "<group>"; };
 		36EBF10F1CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChoosePuzzleMenuHeader.swift; sourceTree = "<group>"; };
 		36EBF1111CE4DD66005F9B8E /* PopOverMenuFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopOverMenuFooter.swift; sourceTree = "<group>"; };
+		36EFEE661CEE0792006B58EC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		36EFEE691CEE0831006B58EC /* tile_change.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = tile_change.caf; sourceTree = "<group>"; };
+		36EFEE6A1CEE0850006B58EC /* puzzle_fetched.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = puzzle_fetched.caf; sourceTree = "<group>"; };
+		36EFEE6B1CEE0865006B58EC /* value_chosen.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = value_chosen.caf; sourceTree = "<group>"; };
+		36EFEE6C1CEE0880006B58EC /* hint_given.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hint_given.caf; sourceTree = "<group>"; };
+		36EFEE6D1CEE088D006B58EC /* puzzle_solved1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = puzzle_solved1.caf; sourceTree = "<group>"; };
+		36EFEE731CEE36BB006B58EC /* PopOverSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopOverSectionHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36EFEE671CEE0792006B58EC /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +160,7 @@
 		360360F81CC94A68005F6A9F = {
 			isa = PBXGroup;
 			children = (
+				36EFEE661CEE0792006B58EC /* AVFoundation.framework */,
 				360361031CC94A69005F6A9F /* SamuraiSudokuBot */,
 				3603611B1CC94A69005F6A9F /* SamuraiSudokuBotTests */,
 				360361261CC94A69005F6A9F /* SamuraiSudokuBotUITests */,
@@ -165,6 +181,7 @@
 		360361031CC94A69005F6A9F /* SamuraiSudokuBot */ = {
 			isa = PBXGroup;
 			children = (
+				36EFEE681CEE0812006B58EC /* Sounds */,
 				360361041CC94A69005F6A9F /* AppDelegate.swift */,
 				360361061CC94A69005F6A9F /* ViewController.swift */,
 				3603610E1CC94A69005F6A9F /* Assets.xcassets */,
@@ -308,6 +325,7 @@
 				36AD45AF1CC95CFF00CC4768 /* SudokuViews */,
 				36D032801CE0CEA500ADCC4B /* OptionMenuFooter.swift */,
 				36EBF10F1CE4C82B005F9B8E /* ChoosePuzzleMenuHeader.swift */,
+				36EFEE731CEE36BB006B58EC /* PopOverSectionHeaderView.swift */,
 				36EBF1111CE4DD66005F9B8E /* PopOverMenuFooter.swift */,
 				36D032861CE14B3700ADCC4B /* SSBInstructionSheet.swift */,
 				369A9FCF1CE92E4300D81B68 /* ColorPickerCell.swift */,
@@ -353,6 +371,18 @@
 				36AD45BB1CC9616D00CC4768 /* SamuraiUIExtensions.swift */,
 			);
 			name = SamuraiViews;
+			sourceTree = "<group>";
+		};
+		36EFEE681CEE0812006B58EC /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				36EFEE6C1CEE0880006B58EC /* hint_given.caf */,
+				36EFEE6D1CEE088D006B58EC /* puzzle_solved1.caf */,
+				36EFEE6B1CEE0865006B58EC /* value_chosen.caf */,
+				36EFEE6A1CEE0850006B58EC /* puzzle_fetched.caf */,
+				36EFEE691CEE0831006B58EC /* tile_change.caf */,
+			);
+			name = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -459,6 +489,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36EFEE6F1CEE105D006B58EC /* puzzle_solved1.caf in Resources */,
+				36EFEE701CEE105D006B58EC /* value_chosen.caf in Resources */,
+				36EFEE711CEE105D006B58EC /* puzzle_fetched.caf in Resources */,
+				36EFEE721CEE105D006B58EC /* tile_change.caf in Resources */,
+				36EFEE6E1CEE1044006B58EC /* hint_given.caf in Resources */,
 				36AD45C51CC9721D00CC4768 /* Main.storyboard in Resources */,
 				360361121CC94A69005F6A9F /* LaunchScreen.storyboard in Resources */,
 				3603610F1CC94A69005F6A9F /* Assets.xcassets in Resources */,
@@ -501,6 +536,7 @@
 				3638F2C21CC9576D004D65C8 /* PuzzleOptionsController.swift in Sources */,
 				36D032851CE137A000ADCC4B /* HelpMenuController.swift in Sources */,
 				3638F2BC1CC955A9004D65C8 /* PuzzleDifficulty.swift in Sources */,
+				36EFEE741CEE36BC006B58EC /* PopOverSectionHeaderView.swift in Sources */,
 				3638F2CA1CC95858004D65C8 /* PuzzlePlayDelegateProtocol.swift in Sources */,
 				36AD45BC1CC9616D00CC4768 /* SamuraiUIExtensions.swift in Sources */,
 				36AD45B71CC95D7C00CC4768 /* SudokuTile.swift in Sources */,

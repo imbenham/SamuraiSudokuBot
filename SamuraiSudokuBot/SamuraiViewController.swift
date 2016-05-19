@@ -176,7 +176,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     override var noteMode: Bool  {
         didSet {
-            noteButton.selected = !noteButton.selected
+            noteButton.selected = noteMode
             let nbBGColor = noteMode ? UIColor.clearColor() : noteButton.backgroundColor
             let nbTextColor = noteButton.titleColorForState(.Normal)
             
@@ -323,6 +323,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             }
         }
         
+        
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectChange(_:)), name: NSManagedObjectContextObjectsDidChangeNotification, object: nil)
         
@@ -373,25 +374,20 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
                 for tile in tiles {
                     tile.refreshLabel()
                 }
-                if let change = change, let new = change["new"] as? Int {
-                    if new > 0 {
-                        noteMode = false
-                        noteButton.hidden = true
-                    } else {
-                        noteButton.hidden = false
-                    }
-                }
                 numPad.configureButtonTitles()
+                numPad.setNeedsDisplay()
             } else if path == Utils.Constants.Identifiers.colorTheme {
                 if let bgView = self.view as? SSBBackgroundView {
                     bgView.setNeedsDisplay()
                 }
                 
-                for button in allButtons {
-                    configureButton(button)
+                for button in self.allButtons {
+                    self.configureButton(button)
                 }
                 
-                numPad.configureButtonsForSelected()
+                self.numPad.configureButtonsForSelected()
+
+                
             }
         }
     }
@@ -437,6 +433,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             self.managedObjectContext.undoManager!.removeAllActions()
             self.hideUndoRedo()
             self.puzzleReady()
+            self.playPuzzleFetched()
             
         }
         
@@ -481,6 +478,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         if noteMode {
             noteValueChanged(value)
             return
+        } else {
+            playValueSelected()
         }
         
         if let selected = selectedTile?.backingCell {
@@ -572,10 +571,11 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
         
         if let updates = infoDict[NSUpdatedObjectsKey] as? Set<BackingCell> where updates.count > 0  {
+            print(infoDict)
             for cell in updates {
                 if let tile = tileWithBackingCell(cell) {
-                    selectedTile = tile
-                    //numPad.refresh()
+                    tile.refreshLabel()
+                    numPad.refresh()
                 }
             }
         }
@@ -648,15 +648,23 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         if let button = popoverPresentationController.sourceView as? UIButton {
             button.selected = false
         }
+        
+        let symbols = NSUserDefaults.standardUserDefaults().objectForKey(Utils.Constants.Identifiers.symbolSetKey) as! Int
+        
+        noteButton.hidden = symbols > 0
+        
+        
     }
     
     func popoverPresentationControllerShouldDismissPopover(popoverPresentationController: UIPopoverPresentationController) -> Bool {
     
         if self.presentedViewController!.isKindOfClass(ChoosePuzzleController) && (puzzle == nil || puzzleIsSolved) {
             return false
-        } else {
-            return true
+        } else if self.presentedViewController!.isKindOfClass(PuzzleOptionsViewController){
+            NSUserDefaults.standardUserDefaults().synchronize()
         }
+        
+        return true
     }
     
 }

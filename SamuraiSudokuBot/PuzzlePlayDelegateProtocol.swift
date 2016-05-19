@@ -306,6 +306,20 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func clearAll()
     func clearSolution()
     
+    // audioplayer functions
+    
+   
+    
+    func playSelectedTileChanged()
+    
+    func playValueSelected()
+    
+    func playPuzzleCompleted()
+    func playPuzzleFetched()
+    
+    func playHintGiven()
+    func playAudioAtURL(url:NSURL)
+    
 }
 
 extension PlayPuzzleDelegate {
@@ -495,12 +509,19 @@ extension PlayPuzzleDelegate {
     
     func puzzleReady() {
         
+        let defaults = NSUserDefaults.standardUserDefaults()
+        let placekeeper = defaults.objectForKey(Utils.Constants.Identifiers.soundKey) as! Bool
+        
+        
+        defaults.setBool(false, forKey: Utils.Constants.Identifiers.soundKey)
         
         if startingNilTiles.count != 0 {
             selectedTile = startingNilTiles[0]
         }
         
+        defaults.setBool(placekeeper, forKey: Utils.Constants.Identifiers.soundKey)
         
+        playPuzzleFetched()
         
         activateInterface()
         
@@ -542,13 +563,12 @@ extension PlayPuzzleDelegate {
         
         let tile = wrongsCount > 0 ? wrongs[0] : nils[Int(arc4random_uniform((UInt32(nils.count))))]
         
+        playHintGiven()
         animateDiscoveredTile(tile)
         
     }
     
     func animateDiscoveredTile(tile: Tile, wrong:Bool = false, delay: Double = 0, handler: (()->Void)? = nil) {
-        
-        let lastSelected = selectedTile
         
         selectedTile = nil
         
@@ -584,10 +604,7 @@ extension PlayPuzzleDelegate {
                     }
                     
                     if finished {
-                        let nils = self.nilTiles
-                        let nilsCount = nils.count
-                        let toSelect:Tile? = nilsCount > 0 ? nils[0] : nil
-                        self.selectedTile = lastSelected?.displayValue == .Nil ? lastSelected : toSelect
+                      
                         if let completionHandler = handler {
                             completionHandler()
                         }
@@ -773,7 +790,6 @@ extension PlayPuzzleDelegate {
                                         doneCount += 1
                                         if doneCount == self.boards.count {
                                             self.showChoosePuzzleController(successfullyCompleted: true)
-                                            
                                         }
                                     }
                                 }
@@ -801,7 +817,9 @@ extension PlayPuzzleDelegate {
             boxes = boxes.reverse()
             
             flashBoxAnimationsWithBoxes(boxes)
+            
         }
+         playPuzzleCompleted()
         
     }
     
@@ -813,7 +831,7 @@ extension PlayPuzzleDelegate {
             return
         }
         
-        let poController = PuzzleOptionsViewController(style: .Grouped)
+        let poController = PuzzleOptionsViewController(style: .Plain)
         poController.modalPresentationStyle = .Popover
         poController.preferredContentSize = CGSizeMake(300, 350)
         

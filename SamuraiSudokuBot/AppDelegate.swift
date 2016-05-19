@@ -24,12 +24,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let colorID = Utils.Constants.Identifiers.colorTheme
         let symbID = Utils.Constants.Identifiers.symbolSetKey
+        let soundKey = Utils.Constants.Identifiers.soundKey
         
         if defaults.objectForKey(symbID) == nil {
             defaults.setInteger(0, forKey: symbID)
         }
         if defaults.objectForKey(colorID) == nil {
             defaults.setInteger(0, forKey: colorID)
+        }
+        
+        if defaults.objectForKey(soundKey) == nil {
+            defaults.setBool(true, forKey: soundKey)
         }
         
         // initialize the matrix so it's ready to crank out puzzles

@@ -27,7 +27,6 @@ class PopUpTableViewController: UITableViewController {
                 }
             } else {
                 if let old = oldValue {
-                    print("there was an old value")
                     let cell = tableView.cellForRowAtIndexPath(old)
                     cell?.textLabel?.textColor = Utils.Palette.getTheme()
                     cell?.selected = false
@@ -50,6 +49,7 @@ class PopUpTableViewController: UITableViewController {
         tableView.separatorStyle = .None
         
         view.layoutMargins = UIEdgeInsetsMake(11, 11, 11, 11)
+        
         
         
     }
