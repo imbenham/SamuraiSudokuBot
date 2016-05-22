@@ -189,6 +189,8 @@ struct Utils {
             case PuzzleCompleted
             case PuzzleFetched
             case HintGiven
+            case GiveUp
+        
             
             var url: NSURL {
                 get{
@@ -206,6 +208,8 @@ struct Utils {
                         path = bundle.pathForResource("hint_given", ofType: "caf")!
                     case .PuzzleFetched:
                         path = bundle.pathForResource("puzzle_fetched", ofType: "caf")!
+                    case .GiveUp:
+                        path = bundle.pathForResource("give_up", ofType: "caf")!
                     }
                     
                  
@@ -286,71 +290,6 @@ func getTileIndex(row: Int, column: Int) -> TileIndex {
     }
 }
 
-// TileIndex -> row/column
-func getColumnIndexFromTileIndex(tileIndex: TileIndex) -> Int {
-    switch tileIndex.Box{
-    case 1,4,7:
-        switch tileIndex.Tile{
-        case 1,4,7:
-            return 1
-        case 2,5,8:
-            return 2
-        default:
-            return 3
-        }
-    case 2,5,8:
-        switch tileIndex.Tile{
-        case 1,4,7:
-            return 4
-        case 2,5,8:
-            return 5
-        default:
-            return 6
-        }
-    default:
-        switch tileIndex.Tile {
-        case 1,4,7:
-            return 7
-        case 2,5,8:
-            return 8
-        default:
-            return 9
-        }
-    }
-}
-
-
-func getRowIndexFromTileIndex(tileIndex: TileIndex) -> Int {
-    switch tileIndex.Box{
-    case 1,2,3:
-        switch tileIndex.Tile{
-        case 1,2,3:
-            return 1
-        case 4,5,6:
-            return 2
-        default:
-            return 3
-        }
-    case 4,5,6:
-        switch tileIndex.Tile{
-        case 1,2,3:
-            return 4
-        case 4,5,6:
-            return 5
-        default:
-            return 6
-        }
-    default:
-        switch tileIndex.Tile {
-        case 1,2,3:
-            return 7
-        case 4,5,6:
-            return 8
-        default:
-            return 9
-        }
-    }
-}
 
 // Nodes <-> Cells
 

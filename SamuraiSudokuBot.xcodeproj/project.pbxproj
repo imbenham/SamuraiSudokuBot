@@ -11,7 +11,6 @@
 		360361071CC94A69005F6A9F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361061CC94A69005F6A9F /* ViewController.swift */; };
 		3603610D1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */; };
 		3603610F1CC94A69005F6A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3603610E1CC94A69005F6A9F /* Assets.xcassets */; };
-		360361121CC94A69005F6A9F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 360361101CC94A69005F6A9F /* LaunchScreen.storyboard */; };
 		3603611D1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3603611C1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift */; };
 		360361281CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361271CC94A69005F6A9F /* SamuraiSudokuBotUITests.swift */; };
 		3638F2A51CC94FE8004D65C8 /* BackingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A11CC94FE8004D65C8 /* BackingCell.swift */; };
@@ -55,6 +54,9 @@
 		36EFEE711CEE105D006B58EC /* puzzle_fetched.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE6A1CEE0850006B58EC /* puzzle_fetched.caf */; };
 		36EFEE721CEE105D006B58EC /* tile_change.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE691CEE0831006B58EC /* tile_change.caf */; };
 		36EFEE741CEE36BC006B58EC /* PopOverSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EFEE731CEE36BB006B58EC /* PopOverSectionHeaderView.swift */; };
+		36EFEE761CF09B5E006B58EC /* TestPuzzles.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE751CF09B5E006B58EC /* TestPuzzles.plist */; };
+		36EFEE781CF1081A006B58EC /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EFEE771CF10819006B58EC /* Extensions.swift */; };
+		36EFEE7A1CF15889006B58EC /* give_up.caf in Resources */ = {isa = PBXBuildFile; fileRef = 36EFEE791CF154FB006B58EC /* give_up.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,7 +82,6 @@
 		360361061CC94A69005F6A9F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3603610C1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SamuraiSudokuBot.xcdatamodel; sourceTree = "<group>"; };
 		3603610E1CC94A69005F6A9F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		360361111CC94A69005F6A9F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		360361131CC94A69005F6A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		360361181CC94A69005F6A9F /* SamuraiSudokuBotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SamuraiSudokuBotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3603611C1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamuraiSudokuBotTests.swift; sourceTree = "<group>"; };
@@ -129,6 +130,9 @@
 		36EFEE6C1CEE0880006B58EC /* hint_given.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hint_given.caf; sourceTree = "<group>"; };
 		36EFEE6D1CEE088D006B58EC /* puzzle_solved1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = puzzle_solved1.caf; sourceTree = "<group>"; };
 		36EFEE731CEE36BB006B58EC /* PopOverSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopOverSectionHeaderView.swift; sourceTree = "<group>"; };
+		36EFEE751CF09B5E006B58EC /* TestPuzzles.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestPuzzles.plist; sourceTree = "<group>"; };
+		36EFEE771CF10819006B58EC /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		36EFEE791CF154FB006B58EC /* give_up.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = give_up.caf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,7 +190,6 @@
 				360361061CC94A69005F6A9F /* ViewController.swift */,
 				3603610E1CC94A69005F6A9F /* Assets.xcassets */,
 				360361131CC94A69005F6A9F /* Info.plist */,
-				3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */,
 				3638F2C01CC95749004D65C8 /* Controllers */,
 				3638F29F1CC94EE9004D65C8 /* Model */,
 				3638F2CD1CC959EB004D65C8 /* PuzzleStore */,
@@ -203,6 +206,7 @@
 			children = (
 				3603611C1CC94A69005F6A9F /* SamuraiSudokuBotTests.swift */,
 				3603611E1CC94A69005F6A9F /* Info.plist */,
+				36EFEE751CF09B5E006B58EC /* TestPuzzles.plist */,
 			);
 			path = SamuraiSudokuBotTests;
 			sourceTree = "<group>";
@@ -276,6 +280,7 @@
 			isa = PBXGroup;
 			children = (
 				3638F2BE1CC9560E004D65C8 /* Utils.swift */,
+				36EFEE771CF10819006B58EC /* Extensions.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -319,7 +324,6 @@
 			isa = PBXGroup;
 			children = (
 				36AD45C31CC9721D00CC4768 /* Main.storyboard */,
-				360361101CC94A69005F6A9F /* LaunchScreen.storyboard */,
 				36AD45AB1CC95C4D00CC4768 /* SudokuNumPad.swift */,
 				36AD45AD1CC95C7200CC4768 /* SSBBackgroundView.swift */,
 				36AD45AF1CC95CFF00CC4768 /* SudokuViews */,
@@ -336,6 +340,7 @@
 		369A9FD71CEB4EA600D81B68 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */,
 				3638F2CB1CC95935004D65C8 /* CoreDataStack.swift */,
 			);
 			name = Persistence;
@@ -376,6 +381,7 @@
 		36EFEE681CEE0812006B58EC /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				36EFEE791CF154FB006B58EC /* give_up.caf */,
 				36EFEE6C1CEE0880006B58EC /* hint_given.caf */,
 				36EFEE6D1CEE088D006B58EC /* puzzle_solved1.caf */,
 				36EFEE6B1CEE0865006B58EC /* value_chosen.caf */,
@@ -489,13 +495,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36EFEE7A1CF15889006B58EC /* give_up.caf in Resources */,
 				36EFEE6F1CEE105D006B58EC /* puzzle_solved1.caf in Resources */,
 				36EFEE701CEE105D006B58EC /* value_chosen.caf in Resources */,
 				36EFEE711CEE105D006B58EC /* puzzle_fetched.caf in Resources */,
 				36EFEE721CEE105D006B58EC /* tile_change.caf in Resources */,
 				36EFEE6E1CEE1044006B58EC /* hint_given.caf in Resources */,
 				36AD45C51CC9721D00CC4768 /* Main.storyboard in Resources */,
-				360361121CC94A69005F6A9F /* LaunchScreen.storyboard in Resources */,
 				3603610F1CC94A69005F6A9F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -504,6 +510,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36EFEE761CF09B5E006B58EC /* TestPuzzles.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +535,7 @@
 				3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */,
 				369A9FD01CE92E4300D81B68 /* ColorPickerCell.swift in Sources */,
 				3638F2BF1CC9560E004D65C8 /* Utils.swift in Sources */,
+				36EFEE781CF1081A006B58EC /* Extensions.swift in Sources */,
 				369A9FD31CEA5E8000D81B68 /* Puzzle+CoreDataProperties.swift in Sources */,
 				36EBF10E1CE41E7E005F9B8E /* ChoosePuzzleController.swift in Sources */,
 				36D032811CE0CEA500ADCC4B /* OptionMenuFooter.swift in Sources */,
@@ -593,14 +601,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		360361101CC94A69005F6A9F /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				360361111CC94A69005F6A9F /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
 		36AD45C31CC9721D00CC4768 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -701,6 +701,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = SamuraiSudokuBot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.isaacbenham.SamuraiSudokuBot;
@@ -712,6 +713,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = SamuraiSudokuBot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.isaacbenham.SamuraiSudokuBot;

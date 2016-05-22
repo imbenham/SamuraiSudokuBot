@@ -114,6 +114,8 @@ class ChoosePuzzleController: PopUpTableViewController {
             difficulty = difficulties[indexPath.row]
         } else {
             // do some stuff
+            
+            // this causes a crash because the puzle controller's puzzle property has been set to nil
             let current = Int(puzzleController!.puzzle!.rawScore)
             var newLevel: PuzzleDifficulty? = difficulty
             

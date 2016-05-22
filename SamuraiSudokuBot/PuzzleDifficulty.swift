@@ -11,9 +11,9 @@ func == (lhs:PuzzleDifficulty, rhs:PuzzleDifficulty) -> Bool{
     return lhs.toInt() == rhs.toInt()
 }
 
-let cachableDifficulties: [PuzzleDifficulty] = [.Easy, .Medium, .Hard, .Insane]
+//let cachableDifficulties: [PuzzleDifficulty] = [.Easy, .Medium, .Hard, .Insane]
 
-private var rawDiffDict: [PuzzleDifficulty:Int] = [.Easy : 130, .Medium: 160, .Hard: 190, .Insane: 240]
+private var rawDiffDict: [PuzzleDifficulty:Int] = [.Easy : 860, .Medium: 1000, .Hard: 1300, .Insane: 1460]
 
 enum PuzzleDifficulty: Equatable, Hashable {
     case Easy

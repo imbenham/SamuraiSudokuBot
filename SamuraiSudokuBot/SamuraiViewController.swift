@@ -327,6 +327,9 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectChange(_:)), name: NSManagedObjectContextObjectsDidChangeNotification, object: nil)
         
+        notificationCenter.addObserver(self, selector: #selector(self.handleUndoGroupClosedNotification(_:)), name: NSUndoManagerDidCloseUndoGroupNotification, object: nil)
+        
+        
         notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectSaveNotification(_:)), name: NSManagedObjectContextWillSaveNotification, object: nil)
         
         notificationCenter.addObserver(self, selector: #selector(self.handleUndoNotification(_:)), name: NSUndoManagerDidUndoChangeNotification, object: nil)
@@ -397,7 +400,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         for board in boards {
             board.userInteractionEnabled = false
         }
-        
+        CoreDataStack.sharedStack.managedObjectContext.undoManager?.disableUndoRegistration()
+        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
        
         
         let handler: (Puzzle -> ()) = {
@@ -430,11 +434,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
                 self.navigationController?.navigationBarHidden = false
                 self.longFetchLabel.hidden = true
             }
-            self.managedObjectContext.undoManager!.removeAllActions()
-            self.hideUndoRedo()
+            
+            
             self.puzzleReady()
             self.playPuzzleFetched()
-            
+            CoreDataStack.sharedStack.managedObjectContext.undoManager?.enableUndoRegistration()
+            self.managedObjectContext.undoManager?.removeAllActions()
         }
         
         PuzzleStore.sharedInstance.getPuzzleForController(self, withCompletionHandler: handler)
@@ -571,8 +576,9 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
         
         if let updates = infoDict[NSUpdatedObjectsKey] as? Set<BackingCell> where updates.count > 0  {
-            print(infoDict)
             for cell in updates {
+                if cell.revealed as Bool {
+                                    }
                 if let tile = tileWithBackingCell(cell) {
                     tile.refreshLabel()
                     numPad.refresh()
@@ -607,6 +613,11 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
 
         }
        
+    }
+    
+    func handleUndoGroupClosedNotification(notification: NSNotification){
+       
+
     }
     
     func handleUndoNotification(notification: NSNotification) {

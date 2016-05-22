@@ -7,87 +7,7 @@
 //
 
 import Foundation
-import iAd
-
-/*protocol BannerViewDelegate: class {
-    var bannerView: ADBannerView {get}
-    var bannerPin: NSLayoutConstraint? {get set}
-    var bannerLayoutComplete: Bool {get set}
-    
-    var canDisplayBannerAds: Bool {get set}
-    
-    func layoutAnimated(animated: Bool)
-    
-    func bannerViewDidLoadAd(banner: ADBannerView!)
-    
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!)
-    
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool
-}
-
-extension BannerViewDelegate {
-    var bannerView: ADBannerView {
-        get {
-            let delegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            if let bv = delegate.banner {
-                return bv
-            }
-            
-            delegate.banner = ADBannerView(adType: .Banner)
-            delegate.banner?.delegate = delegate
-            return delegate.banner!
-        }
-        
-    }
-    
-    func layoutAnimated(animated: Bool) {
-        guard let vc = self as? UIViewController, view = vc.view else {
-            return
-        }
-        if !canDisplayBannerAds {
-            if bannerPin?.constant != 0 {
-                view.layoutIfNeeded()
-                UIView.animateWithDuration(0.25) {
-                    self.bannerPin?.constant = 0
-                    view.layoutIfNeeded()
-                }
-            }
-            return
-        }
-        
-        if bannerView.bannerLoaded  {
-            if bannerPin?.constant == 0 {
-                view.layoutIfNeeded()
-                UIView.animateWithDuration(0.25) {
-                    self.bannerPin?.constant = -self.bannerView.frame.size.height
-                    view.layoutIfNeeded()
-                }
-            }
-        } else {
-            if bannerPin?.constant != 0 {
-                view.layoutIfNeeded()
-                UIView.animateWithDuration(0.25) {
-                    self.bannerPin?.constant = 0
-                    view.layoutIfNeeded()
-                }
-                
-            }
-            
-        }
-    }
-    
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
-        
-        layoutAnimated(true)
-    }
-    
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
-        
-        layoutAnimated(true)
-    }
-    
-    
-}*/
+import UIKit
 
 protocol NumPadDelegate {
     var currentValue: Int {get}
@@ -131,7 +51,7 @@ protocol SudokuControllerDelegate: class, NumPadDelegate {
     // (de)activate interface
     func activateInterface()
     func deactivateInterface()
-    func bannerViewActionDidFinish(banner: ADBannerView!)
+   
     
     func wakeFromBackground()
     func goToBackground()
@@ -189,11 +109,6 @@ extension SudokuControllerDelegate {
         numPad.refresh()
     }
     
-    func bannerViewActionDidFinish(banner: ADBannerView!) {
-        activateInterface()
-        
-    }
-    
     func activateInterface() {
         board.userInteractionEnabled = true
     }
@@ -218,17 +133,6 @@ extension SudokuControllerDelegate {
         }*/
     }
     
-    
-    //MARK: BannerViewDelegate
-    /*func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
-        if banner.bannerLoaded {
-            return true
-        } else {
-            activateInterface()
-            layoutAnimated(true)
-            return false
-        }
-    }*/
     
     //MARK: NumPadDelegate
     var currentValue: Int {
@@ -318,6 +222,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func playPuzzleFetched()
     
     func playHintGiven()
+    func playGiveUp()
     func playAudioAtURL(url:NSURL)
     
 }
@@ -564,7 +469,10 @@ extension PlayPuzzleDelegate {
         let tile = wrongsCount > 0 ? wrongs[0] : nils[Int(arc4random_uniform((UInt32(nils.count))))]
         
         playHintGiven()
-        animateDiscoveredTile(tile)
+        CoreDataStack.sharedStack.managedObjectContext.undoManager?.disableUndoRegistration()
+        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+
+        animateDiscoveredTile(tile, handler: {CoreDataStack.sharedStack.managedObjectContext.undoManager?.enableUndoRegistration()})
         
     }
     
@@ -574,6 +482,8 @@ extension PlayPuzzleDelegate {
         
         let label = tile.valueLabel
         
+        tile.revealed = true
+        
         tile.labelColor = UIColor.whiteColor()
         
         let flickerBlock: () -> Void = { () in
@@ -582,9 +492,7 @@ extension PlayPuzzleDelegate {
             label.alpha = 1
         }
         
-        if let tv = tile.solutionValue {
-            tile.backingCell?.assignValue(tv)
-        }
+       
         if wrong {
             tile.backgroundColor = tile.wrongColor
         }
@@ -598,15 +506,11 @@ extension PlayPuzzleDelegate {
                 
                 UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: colorBlock) { (finished) in
                     
-                    UIView.animateWithDuration(0.5) { () in
-                       
-                        tile.revealed = true
-                    }
-                    
                     if finished {
                       
                         if let completionHandler = handler {
                             completionHandler()
+                    
                         }
                     }
                     
@@ -704,14 +608,25 @@ extension PlayPuzzleDelegate {
     
     func giveUp() {
         
+        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+        CoreDataStack.sharedStack.managedObjectContext.undoManager?.disableUndoRegistration()
+        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+        
+        playGiveUp()
+        
         deactivateInterface()
         var lastTile: Tile?
         if !nilTiles.isEmpty {
             lastTile = nilTiles[nilTiles.count-1]
         }
         
+        
         let completion: (()->()) = {
-            for wrongTile in self.wrongTiles {
+            let count = self.wrongTiles.count
+            for (index, wrongTile) in self.wrongTiles.enumerate() {
+                if index == count {
+                    self.animateDiscoveredTile(wrongTile, wrong: true, handler:{CoreDataStack.sharedStack.managedObjectContext.undoManager?.enableUndoRegistration()})
+                }
                 self.animateDiscoveredTile(wrongTile, wrong: true)
                 wrongTile.userInteractionEnabled = false
             }

@@ -140,6 +140,72 @@ func == (lhs: PuzzleCell, rhs: ColumnHeader) -> Bool {
 
 struct PuzzleCell: Hashable {
     
+   static func getColumnIndexFromTileIndex(tileIndex: TileIndex) -> Int {
+        switch tileIndex.Box{
+        case 1,4,7:
+            switch tileIndex.Tile{
+            case 1,4,7:
+                return 1
+            case 2,5,8:
+                return 2
+            default:
+                return 3
+            }
+        case 2,5,8:
+            switch tileIndex.Tile{
+            case 1,4,7:
+                return 4
+            case 2,5,8:
+                return 5
+            default:
+                return 6
+            }
+        default:
+            switch tileIndex.Tile {
+            case 1,4,7:
+                return 7
+            case 2,5,8:
+                return 8
+            default:
+                return 9
+            }
+        }
+    }
+    
+    
+    static func getRowIndexFromTileIndex(tileIndex: TileIndex) -> Int {
+        switch tileIndex.Box{
+        case 1,2,3:
+            switch tileIndex.Tile{
+            case 1,2,3:
+                return 1
+            case 4,5,6:
+                return 2
+            default:
+                return 3
+            }
+        case 4,5,6:
+            switch tileIndex.Tile{
+            case 1,2,3:
+                return 4
+            case 4,5,6:
+                return 5
+            default:
+                return 6
+            }
+        default:
+            switch tileIndex.Tile {
+            case 1,2,3:
+                return 7
+            case 4,5,6:
+                return 8
+            default:
+                return 9
+            }
+        }
+    }
+
+    
     
     let row: Int
     let column: Int
@@ -203,6 +269,13 @@ struct PuzzleCell: Hashable {
         self.column = column
         self.value = value
         self.boardIndex = boardIndex
+    }
+    
+    init(tileIndex: TileIndex, value:Int, boardIndex:Int) {
+        let row = PuzzleCell.getRowIndexFromTileIndex(tileIndex)
+        let column = PuzzleCell.getColumnIndexFromTileIndex(tileIndex)
+        
+        self.init(row: row, column: column, value: value, boardIndex: boardIndex)
     }
     
     

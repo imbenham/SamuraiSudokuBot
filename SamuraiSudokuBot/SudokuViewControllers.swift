@@ -335,6 +335,12 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         playAudioAtURL(url)
     }
     
+    func playGiveUp() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.GiveUp.url
+        playAudioAtURL(url)
+    }
+    
     func playAudioAtURL(url:NSURL) {
         guard soundOn else{return}
         do {

@@ -10,34 +10,6 @@ import Foundation
 
 class Matrix {
     
-  /*  private static var privateInstance: Matrix?
-    
-    class var sharedInstance: Matrix {
-        get {
-            guard let instance = privateInstance else {
-                privateInstance = Matrix()
-                return privateInstance!
-            }
-            
-            return instance
-        }
-    }
-    
-    class func tearDown() {
-        privateInstance = nil
-    }
-    
-    class func prepareMatrix() {
-        if privateInstance == nil {
-            privateInstance = Matrix()
-        }
-    }
-    
-    static func isReady() -> Bool {
-        return privateInstance != nil
-    }
- */
-    
     var matrix = SudokuMatrix<PuzzleKey>()
     typealias Choice = (Chosen: LinkedNode<PuzzleKey>, Root:Int)
     internal var currentSolution = [Choice]()
@@ -64,6 +36,9 @@ class Matrix {
     
     
     func rebuild() {
+        
+        print(currentSolution)
+        
         while currentSolution.count != 0 {
             let lastChoice:Choice = currentSolution.removeLast()
             reinsertLast(lastChoice)
@@ -283,7 +258,9 @@ class Matrix {
     }
     
     func scorePuzzle(puzzle: [PuzzleCell]) -> Int {
-        let rowList: [LinkedNode<PuzzleKey>] = puzzle.map({solutionDict![$0]!})
+        
+        
+        let rowList: [LinkedNode<PuzzleKey>] = puzzle.map({findRowMatchForCell($0)})
         
         return eliminateRows(rowList);
         
@@ -293,11 +270,11 @@ class Matrix {
         
         func validate(puzzle: [PuzzleCell]) -> ([PuzzleCell], [PuzzleCell]) {
             var solution = puzzle
-            // first we grab an array of all the values that aren't in the solution set, which is allVals + tried
-            var givens = [solution.removeLast()]
+           
+            var givens:[PuzzleCell] = []
             
             while !validatePuzzle(givens) {
-                givens.append(solution.removeLast())
+                givens += solution.removeRandom()
             }
             return (givens, solution)
         }
@@ -306,21 +283,35 @@ class Matrix {
             
             var givens = puzzle.givens
             var solution = puzzle.solution
-            let target = rawDifficultyForPuzzle - 100
-            var cycles = 0
+            let target = rawDifficultyForPuzzle
             var score = scorePuzzle(givens)
-            while solution.count > 7 {  // target > solution
-                cycles += 1
-                //print("cycles: \(cycles)")
-                //print(score)
-                for _ in 1...5 {
-                    givens.append(solution.removeLast())
+            
+            while score > target {  // target > solution
+                print(score)
+                let delta = score - target
+                switch delta {
+                case 1000...3000:
+                    givens += solution.removeRandom(80)
+                    print("first case")
+                case 500...999:
+                    givens += solution.removeRandom(25)
+                    print("second case")
+                case 199...499:
+                    givens += solution.removeRandom(12)
+                    print("third case")
+                case 119...198:
+                    givens += solution.removeRandom(5)
+                    print("fourth case")
+                default:
+                    givens += solution.removeRandom()
+                    print("base case")
+                    
                 }
                 
                 score = scorePuzzle(givens)
             }
             
-            
+            print("target = \(target) vs. score = \(score)")
             return (givens, solution, score)
         }
         
