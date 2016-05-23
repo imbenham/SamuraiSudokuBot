@@ -3,7 +3,7 @@
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "SSB_Icon_small.png",
+      "filename" : "SSB_AppIcon_29pt.png",
       "scale" : "1x"
     },
     {
@@ -15,13 +15,13 @@
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "SSB_AppIcon_40pt.png",
+      "filename" : "SSB_AppIcon_76pt-1.png",
       "scale" : "1x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "SSB_AppIcon_80pt.png",
+      "filename" : "SSB_AppIcon_152pt-1.png",
       "scale" : "2x"
     },
     {

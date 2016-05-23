@@ -501,6 +501,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     override func noteValueChanged(value: Int) {
+        print("samurai controller notevaluechanged called")
         if let selected = selectedTile?.backingCell {
             var notes = Set(selected.notesArray)
             notes.insert(value)
@@ -577,8 +578,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         
         if let updates = infoDict[NSUpdatedObjectsKey] as? Set<BackingCell> where updates.count > 0  {
             for cell in updates {
-                if cell.revealed as Bool {
-                                    }
                 if let tile = tileWithBackingCell(cell) {
                     tile.refreshLabel()
                     numPad.refresh()
@@ -636,15 +635,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
     }
     
-    
-    override func noteValues() -> [Int]? {
-        print("Using SamController implementation")
-        guard noteMode, let selected = selectedTile else {
-            return nil
-        }
-        
-        return selected.noteValues
-    }
 
     override var currentValue: Int {
         guard let selected = selectedTile else {

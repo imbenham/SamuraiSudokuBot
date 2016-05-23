@@ -168,6 +168,9 @@ class Tile: SudokuItem {
     
     
     override func layoutSubviews() {
+        self.layer.cornerRadius = 3.0
+        //let configs = Utils.ButtonConfigs()
+       // self.addSubview(UIImageView(image: configs.backgroundImageForSize(self.frame.size, selected: false)))
         self.addSubview(valueLabel)
         valueLabel.frame = self.bounds
         valueLabel.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -225,7 +228,7 @@ class Tile: SudokuItem {
             if selected {
                 self.backgroundColor = noteModeColor
                 for lv in noteLabels {
-                    lv.layer.borderWidth = 0.25
+                    lv.layer.borderWidth = 1
                 }
                 return
             }

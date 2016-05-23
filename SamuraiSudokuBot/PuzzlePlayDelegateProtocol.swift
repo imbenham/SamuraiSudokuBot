@@ -125,28 +125,8 @@ extension SudokuControllerDelegate {
     func goToBackground() {
         deactivateInterface()
         
-        /*if canDisplayBannerAds {
-            bannerView.removeFromSuperview()
-            canDisplayBannerAds = false
-            bannerLayoutComplete = false
-            layoutAnimated(false)
-        }*/
     }
-    
-    
-    //MARK: NumPadDelegate
-    var currentValue: Int {
-        get {
-            if selectedTile?.noteMode == true {
-                return 0
-            }
-            if let sel = selectedTile {
-                let val = sel.displayValue.rawValue
-                return val
-            }
-            return 0
-        }
-    }
+
     
 }
 
@@ -303,14 +283,8 @@ extension PlayPuzzleDelegate {
     
     func wakeFromBackground() {
         //TODO: saved puzzle handling
-        print("woke from background")
-        
         activateInterface()
         
-        /*if self.puzzle != nil && !canDisplayBannerAds {
-            bannerLayoutComplete = false
-            canDisplayBannerAds = true
-        }*/
     }
     
     
@@ -327,7 +301,7 @@ extension PlayPuzzleDelegate {
         
         let poController = ChoosePuzzleController(style: .Plain, successfullyCompleted:successfullyCompleted, gaveUp: gaveUp)
         poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 1/4, vc.view.frame.height * 1/5)
+        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 1/3, vc.view.frame.height * 1/5)
         poController.puzzleController = self
         
         

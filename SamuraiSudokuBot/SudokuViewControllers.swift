@@ -116,11 +116,6 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        /*if  !canDisplayBannerAds {
-            canDisplayBannerAds = true
-            bannerView.userInteractionEnabled = true
-        }*/
-        
         activateInterface()
         
         // register to receive notifications when user defaults change
@@ -136,22 +131,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         }
         
     }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        /*if canDisplayBannerAds {
-            let delegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            delegate.banner = nil
-            canDisplayBannerAds = false
-            bannerLayoutComplete = false
-            layoutAnimated(false)
-        }*/
-        
-    }
-    
-    
-    
+
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         return .Portrait
     }
@@ -185,10 +165,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     }
     
    func tileTapped(sender: AnyObject?) {
-    print("tile was tapperooed")
-      if let tile = (sender as! UIGestureRecognizer).view as? Tile {
-        
-        print("box: \((tile.parentSquare! as! Box).index) tile: \(tile.index)")
+    if let tile = (sender as! UIGestureRecognizer).view as? Tile {
          selectedTile = tile
       }
     }
@@ -221,7 +198,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     //MARK: PlayPuzzleDelegate
     
     func toggleNoteMode(sender: AnyObject?) {
-        print("note mode toggled!")
+        
         if let press = sender as? UILongPressGestureRecognizer {
             if press.state == .Began {
                 if let tile = (sender as! UIGestureRecognizer).view as? Tile {
@@ -268,7 +245,6 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     
     
     func noteValues() -> [Int]? {
-        print("Using SamController implementation")
         guard noteMode, let selected = selectedTile else {
             return nil
         }
@@ -430,36 +406,6 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         setUpButtons()
         configureButtons()
         
-       /* if self.canDisplayBannerAds  && !bannerLayoutComplete {
-            view.addSubview(bannerView)
-            
-            bannerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            originalContentView.removeConstraints()
-            originalContentView.translatesAutoresizingMaskIntoConstraints = false
-            
-            
-            bannerPin = NSLayoutConstraint(item: bannerView, attribute: .Top, relatedBy: .Equal, toItem: bottomLayoutGuide, attribute: .Top, multiplier: 1, constant: 0)
-            bannerPin!.priority = 1000
-            let bannerLeft = NSLayoutConstraint(item: bannerView, attribute: .Leading, relatedBy: .Equal, toItem:view, attribute: .Leading, multiplier: 1, constant: 0)
-            let bannerRight = NSLayoutConstraint(item: bannerView, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1, constant: 0)
-            
-            
-            let contentBottom = NSLayoutConstraint(item: originalContentView, attribute: .Bottom, relatedBy: .Equal, toItem: bannerView, attribute: .Top, multiplier: 1, constant: 0)
-            contentBottom.priority = 1000
-            let contentLeft = NSLayoutConstraint(item: originalContentView, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1, constant: 0)
-            let contentRight = NSLayoutConstraint(item: originalContentView, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1, constant: 0)
-            let contentTop = NSLayoutConstraint(item: originalContentView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: 0)
-            view.addConstraints([contentBottom, contentLeft, contentRight, contentTop, bannerPin!, bannerLeft, bannerRight])
-            
-            bannerLayoutComplete = true
-            
-            board.removeConstraints()
-            setUpBoard()
-            containerView.removeConstraints()
-            setUpButtons()
-            
-        }*/
         
         longFetchLabel.layer.backgroundColor = UIColor.blackColor().CGColor
         longFetchLabel.textColor = UIColor.whiteColor()
@@ -475,11 +421,6 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     override func viewDidAppear(animated: Bool) {
         
         super.viewDidAppear(animated)
-        
-        /*if self.puzzle != nil && !canDisplayBannerAds {
-            canDisplayBannerAds = true
-            bannerView.userInteractionEnabled = true
-        }*/
         
         if self.puzzle == nil {
             let middleTile = self.board.tileAtIndex((5,4))
@@ -516,14 +457,6 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        /*if canDisplayBannerAds {
-            let delegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            delegate.banner = nil
-            canDisplayBannerAds = false
-            bannerLayoutComplete = false
-            layoutAnimated(false)
-        }*/
         
         deactivateInterface()
         if !gameOver {

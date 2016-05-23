@@ -66,7 +66,6 @@ class SudokuNumberPad: UIView {
         
         let configs = Utils.ButtonConfigs()
         let buttonImage = configs.backgroundImageForSize(buttonSize, selected: false)
-        //let selectedImage = configs.backgroundImageForSize(buttonSize, selected: true)
         
         for index in 1...9 {
             
@@ -125,27 +124,6 @@ class SudokuNumberPad: UIView {
         button.setBackgroundImage(selectedImage, forState: .Selected)
     }
     
-    /* override func layoutSubviews() {
-     self.userInteractionEnabled = true
-     for index in 0...buttons.count-1 {
-     setTextTitleForValue(index+1)
-     let button = buttons[index]
-     button.setTitleColor(defaultTitleColor, forState: .Normal)
-     button.backgroundColor = defaultColor
-     self.addSubview(button)
-     constrainButton(button, atIndex: index)
-     let radius = self.frame.height/2
-     buttonHeight = radius
-     button.layer.cornerRadius = radius
-     button.layer.borderColor = UIColor.blackColor().CGColor
-     button.layer.borderWidth = 3.0
-     button.tag = index+1
-     button.addTarget(self, action: #selector(SudokuNumberPad.buttonTapped(_:)), forControlEvents: .TouchUpInside)
-     
-     }
-     }*/
-    
-    
     
     func constrainButton(button: UIButton, atIndex index: Int) {
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -189,11 +167,6 @@ class SudokuNumberPad: UIView {
     func configureForNoteMode() {
        
         guard let delegate = delegate where delegate.noteMode, let selected = delegate.noteValues() else {
-            print("returning wihtout doing anything")
-            print("\(self.delegate!.noteValues())")
-            if !self.delegate!.noteMode {
-                print("no note mode")
-            }
             return
         }
         

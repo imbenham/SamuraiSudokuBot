@@ -133,7 +133,7 @@ class SudokuBoard: SudokuItem, Nester {
             for tile in self.tiles {
                 tileMap[String(tile.getRowIndex()) + String(tile.getColumnIndex())] = tile
             }
-            print("tileMap should have 81 items and has:")
+            
             print(tileMap.count)
             if let cntrlr = self.controller {
                 cntrlr.boardReady()
