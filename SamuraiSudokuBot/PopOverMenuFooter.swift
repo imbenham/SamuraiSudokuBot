@@ -40,7 +40,7 @@ class PopOverMenuFooter: UIView {
         button.layer.borderWidth =  2.0
         
         
-        button.autoresizingMask = [.None]
+        button.autoresizingMask = [.FlexibleWidth,.FlexibleHeight]
         
         let configs = Utils.ButtonConfigs()
         button.setBackgroundImage(configs.backgroundImageForSize(button.frame.size, selected: true), forState: .Normal)

@@ -17,6 +17,19 @@ class PuzzleStore: NSObject {
     var operationQueue = NSOperationQueue()
     var difficulty: PuzzleDifficulty = .Medium
     
+    lazy var recentPuzzleFetch: NSFetchRequest = {
+        let puzzleFetch = NSFetchRequest(entityName: Puzzle.entityName)
+        puzzleFetch.sortDescriptors = [NSSortDescriptor(key: "modifiedDate", ascending: false)]
+        return puzzleFetch
+    }()
+    
+    var hasRecents: Bool {
+        get {
+            let err: NSErrorPointer = nil
+            return self.managedObjectContext.countForFetchRequest(recentPuzzleFetch, error: err) > 0
+        }
+    }
+    
     var managedObjectContext: NSManagedObjectContext {
         get {
             return CoreDataStack.sharedStack.managedObjectContext
@@ -66,25 +79,26 @@ class PuzzleStore: NSObject {
         
     }
     
-    /*
-     
-     func savedPuzzleForDifficulty(difficulty: PuzzleDifficulty) -> (Puzzle, [String:Any]?)? {
-     let defaults = NSUserDefaults.standardUserDefaults()
-     guard let key = difficulty.currentKey, let dict = defaults.objectForKey(key) as? [String: AnyObject], puzzData = dict["puzzle"] as? NSData, assigned = dict["progress"] as? [[String:Int]], let annotatedDict = dict["annotated"] as? [NSDictionary], let discovered = dict["discovered"] as? [[String: Int]], let time = dict["time"] as? Double  else {
-     return nil
-     }
-     let currentPuzz = NSKeyedUnarchiver.unarchiveObjectWithData(puzzData) as! Puzzle
-     let assignedCells = assigned.map{PuzzleCell(dict: $0)!}
-     let discoveredCells = discovered.map{PuzzleCell(dict: $0)!}
-     
-     defaults.removeObjectForKey(key)
-     
-     let puzzInfo:[String:Any] = ["progress": assignedCells, "discovered":discoveredCells, "annotated":annotatedDict, "time":time]
-     
-     return (currentPuzz, puzzInfo)
-     
-     }
-     */
+    func getMostRecentPuzzleForController(controller: PlayPuzzleDelegate, withCompletionHandler handler: (Puzzle ->())) {
+        let puzzleFetch = NSFetchRequest(entityName: Puzzle.entityName)
+        puzzleFetch.sortDescriptors = [NSSortDescriptor(key: "modifiedDate", ascending: false)]
+        
+        var fetchedPuzzles: [Puzzle]
+        
+        
+        
+        
+        
+        do {
+            fetchedPuzzles = try managedObjectContext.executeFetchRequest(puzzleFetch) as! [Puzzle]
+        } catch {
+            fatalError("puzzle fetch failed with error: \(error)")
+        }
+
+        handler(fetchedPuzzles[0])
+    }
+    
+   
     
     func puzzleReady(initials: [PuzzleCell], solution: [PuzzleCell], rawScore:Int) {
         

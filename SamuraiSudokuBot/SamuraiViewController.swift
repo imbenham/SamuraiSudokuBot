@@ -68,7 +68,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     @IBAction func handleClearButtonTap(sender: AnyObject) {
         noteMode = false
-        clearSolution()
+        showClearMenu(sender)
     }
     
     var undoOffset: CGFloat {
@@ -419,7 +419,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
     }
     
-    func fetchPuzzle() {
+    func fetchPuzzle(mostRecent: Bool = false) {
         
         for board in boards {
             board.userInteractionEnabled = false
@@ -480,7 +480,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
 
         }
         
-        PuzzleStore.sharedInstance.getPuzzleForController(self, withCompletionHandler: handler)
+        if mostRecent {
+            PuzzleStore.sharedInstance.getMostRecentPuzzleForController(self, withCompletionHandler: handler)
+        } else {
+            PuzzleStore.sharedInstance.getPuzzleForController(self, withCompletionHandler: handler)
+        }
+        
     }
     
     //MARK: PlayPuzzleDelegate
@@ -601,8 +606,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     //MARK: show/hide undo/redo buttons
     
     func hideUndoRedo() {
-        hideUndoButton()
-        hideRedoButton()
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.hideUndoButton()
+            self.hideRedoButton()
+        })
+        
     }
     
     func hideUndoButton() {
@@ -610,12 +619,16 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         if undoButton.alpha == 0 {
             return
         }
-        view.layoutIfNeeded()
-        UIView.animateWithDuration(0.2, animations: {
-            self.undoButton.alpha = 0
-            self.undoPin.constant -= self.undoOffset
+        
+        dispatch_async(dispatch_get_main_queue(), {
             self.view.layoutIfNeeded()
+            UIView.animateWithDuration(0.2, animations: {
+                self.undoButton.alpha = 0
+                self.undoPin.constant -= self.undoOffset
+                self.view.layoutIfNeeded()
+            })
         })
+       
 
     }
     
@@ -624,12 +637,16 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         if undoButton.alpha == 1 {
             return
         }
-        view.layoutIfNeeded()
-        UIView.animateWithDuration(0.2, animations: {
-            self.undoButton.alpha = 1
-            self.undoPin.constant += self.undoOffset
+        
+        dispatch_async(dispatch_get_main_queue(), {
             self.view.layoutIfNeeded()
+            UIView.animateWithDuration(0.2, animations: {
+                self.undoButton.alpha = 1
+                self.undoPin.constant += self.undoOffset
+                self.view.layoutIfNeeded()
+            })
         })
+        
     }
     
     func hideRedoButton() {
@@ -637,12 +654,15 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         if redoButton.alpha == 0 {
             return
         }
-        view.layoutIfNeeded()
-        UIView.animateWithDuration(0.2, animations: {
-            self.redoButton.alpha = 0
-            self.redoPin.constant -= self.redoOffset
+        
+        dispatch_async(dispatch_get_main_queue(), {
             self.view.layoutIfNeeded()
-        })
+            UIView.animateWithDuration(0.2, animations: {
+                self.redoButton.alpha = 0
+                self.redoPin.constant -= self.redoOffset
+                self.view.layoutIfNeeded()
+            })        })
+        
     }
     
     func showRedoButton() {
@@ -650,13 +670,15 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         if redoButton.alpha == 1 {
             return
         }
-        view.layoutIfNeeded()
-        UIView.animateWithDuration(0.2, animations: {
-            self.redoButton.alpha = 1
-            self.redoPin.constant += self.redoOffset
+        
+        dispatch_async(dispatch_get_main_queue(), {
             self.view.layoutIfNeeded()
+            UIView.animateWithDuration(0.2, animations: {
+                self.redoButton.alpha = 1
+                self.redoPin.constant += self.redoOffset
+                self.view.layoutIfNeeded()
+            })
         })
-
     }
     
     //MARK: managedObjectContext handlers
@@ -776,6 +798,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             return false
         } else if self.presentedViewController!.isKindOfClass(PuzzleOptionsViewController){
             NSUserDefaults.standardUserDefaults().synchronize()
+        } else if self.presentedViewController!.isKindOfClass(ClearMenuController){
+            clearButton.selected = false
         }
         
         return true

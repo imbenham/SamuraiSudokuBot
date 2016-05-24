@@ -13,12 +13,13 @@
     </entity>
     <entity name="Puzzle" representedClassName=".Puzzle" syncable="YES">
         <attribute name="difficultyLevel" attributeType="String" syncable="YES"/>
+        <attribute name="modifiedDate" attributeType="Date" syncable="YES"/>
         <attribute name="rawScore" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="initialValues" toMany="YES" deletionRule="Cascade" destinationEntity="BackingCell" inverseName="puzzleInitial" inverseEntity="BackingCell" syncable="YES"/>
         <relationship name="solution" toMany="YES" deletionRule="Cascade" destinationEntity="BackingCell" inverseName="puzzleSolution" inverseEntity="BackingCell" syncable="YES"/>
     </entity>
     <elements>
         <element name="BackingCell" positionX="-54" positionY="-9" width="128" height="180"/>
-        <element name="Puzzle" positionX="-63" positionY="-18" width="128" height="105"/>
+        <element name="Puzzle" positionX="-63" positionY="-18" width="128" height="120"/>
     </elements>
 </model>

@@ -160,7 +160,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     // initial puzzle loading
     func showChoosePuzzleController(currentDifficulty:Int?)
     func prepareForLongFetch()
-    func fetchPuzzle()
+    func fetchPuzzle(mostRecent:Bool)
     func puzzleReady()
     
     
@@ -178,7 +178,8 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func replayCurrent()
     //func newPuzzleOfDifficulty(difficulty: PuzzleDifficulty, replay:Bool)
     
-    
+    // clearing content
+    func showClearMenu(sender: AnyObject?)
     func clearAll()
     func clearSolution()
     
@@ -271,7 +272,7 @@ extension PlayPuzzleDelegate {
         
         
         poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 2/5, vc.view.frame.height * 1/3)
+        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 2/5, vc.view.frame.height * 6/15)
         poController.puzzleController = self
         
         
@@ -317,7 +318,7 @@ extension PlayPuzzleDelegate {
         
     }
     
-    func fetchPuzzle() {
+    func fetchPuzzle(mostRecent:Bool = false) {
         
         guard let vc = self as? UIViewController else {
             return
@@ -521,6 +522,36 @@ extension PlayPuzzleDelegate {
     
     
     //MARK: clearing input
+    
+    func showClearMenu(sender: AnyObject?) {
+        guard let vc = self as? SudokuController else{
+            return
+        }
+        
+        if let button = sender as? UIButton {
+            button.selected = true
+        }
+        
+        let poController:ClearMenuController = ClearMenuController(style: .Plain)
+        
+        
+        poController.modalPresentationStyle = .Popover
+        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 2/5, vc.view.frame.height * 1/3)
+        
+        let ppc = poController.popoverPresentationController
+        ppc?.permittedArrowDirections = .Up
+        ppc?.backgroundColor = UIColor.clearColor()
+        ppc?.sourceView = puzzleMenuAnchor
+        ppc?.sourceRect = puzzleMenuAnchor.bounds
+        
+        
+        if let popD = vc as? UIPopoverPresentationControllerDelegate {
+            ppc?.delegate = popD
+        }
+        
+        vc.presentViewController(poController, animated: true, completion: nil)
+
+    }
     
     func clearAll() {
         for tile in self.startingNilTiles {

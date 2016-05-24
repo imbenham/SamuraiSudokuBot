@@ -2,7 +2,7 @@
 //  Puzzle+CoreDataProperties.swift
 //  SamuraiSudokuBot
 //
-//  Created by Isaac Benham on 5/16/16.
+//  Created by Isaac Benham on 5/24/16.
 //  Copyright © 2016 Isaac Benham. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -14,6 +14,7 @@ import CoreData
 
 extension Puzzle {
 
+    @NSManaged var modifiedDate: NSDate
     @NSManaged var rawScore: NSNumber
     @NSManaged var difficultyLevel: String
     @NSManaged var initialValues: NSSet

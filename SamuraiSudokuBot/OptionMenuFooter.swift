@@ -49,8 +49,6 @@ class OptionMenuFooter: UITableViewHeaderFooterView {
         saveButton.layer.cornerRadius = saveButton.frame.width/2
         saveButton.clipsToBounds = true
         
-        print(saveButton.frame)
-
         
     }
     

@@ -35,9 +35,16 @@ class PopUpTableViewController: UITableViewController {
         }
     }
     
+    var headerWidth: CGFloat {
+        get {
+            return tableView.frame.width - tableView.layoutMargins.left - tableView.layoutMargins.right - tableView.layer.borderWidth
+        }
+    }
+    
     override func viewDidLoad() {
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
+        tableView.scrollEnabled = false
         
         let theme = Utils.Palette.getTheme()
         
@@ -81,5 +88,14 @@ class PopUpTableViewController: UITableViewController {
         var frame = view.frame
         frame = CGRectInset(frame, 5, 0)
         view.frame = frame
+    }
+    
+    func animateWithDelay(delay: Double, closure:()->()) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(), closure)
     }
 }

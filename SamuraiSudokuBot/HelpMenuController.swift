@@ -66,7 +66,7 @@ class HelpMenuController: PopUpTableViewController {
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return (preferredContentSize.height - tableView.sectionFooterHeight - headerHeight) / CGFloat(self.tableView(tableView, numberOfRowsInSection: indexPath.section))
+        return (preferredContentSize.height - tableView.sectionFooterHeight - headerHeight - tableView.contentInset.top - tableView.contentInset.bottom) / CGFloat(self.tableView(tableView, numberOfRowsInSection: indexPath.section))
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -105,9 +105,7 @@ class HelpMenuController: PopUpTableViewController {
     
     func pushInstructionSheet() {
         
-        tableView.bounces = false
-        
-        let newSize = CGSizeMake(self.preferredContentSize.width * 1.4, self.preferredContentSize.height * 1.5)
+        let newSize = CGSizeMake(self.preferredContentSize.width * 1.4, self.preferredContentSize.height * 1.5 + tableView.layoutMargins.top + tableView.layoutMargins.bottom)
         
         let rect = CGRect(origin: CGPointMake(0, newSize.height), size: newSize)
         
@@ -119,7 +117,6 @@ class HelpMenuController: PopUpTableViewController {
         
         let animations: () -> () = {
             self.preferredContentSize = newSize
-            self.tableView.layoutIfNeeded()
         }
         
         let endingRect = UIEdgeInsetsInsetRect(CGRect(origin: CGPointMake(0, 0), size:newSize), UIEdgeInsetsMake(1, 1, 1, 3))
@@ -127,17 +124,21 @@ class HelpMenuController: PopUpTableViewController {
         
         let animations2: () -> () = {
             self.instructionView.frame = endingRect
-            self.tableView.layoutIfNeeded()
         }
-        self.tableView.layoutIfNeeded()
-        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: animations) { (completed: Bool) -> () in
-            if completed {
-                self.tableView.addSubview(self.instructionView)
-                self.tableView.layoutIfNeeded()
-                UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseInOut, animations: animations2, completion: nil)
+        
+        UIView.animateWithDuration(0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.25, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            animations()
+            }, completion: {(completed: Bool) in
+                if completed {
+                    self.tableView.addSubview(self.instructionView)
+                    UIView.animateWithDuration(0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.25, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            
+                    animations2()}, completion: nil)
+                }
             }
-                
-        }
+        )
+        
+        
     }
     
     func popInstructionSheet() {
@@ -149,27 +150,33 @@ class HelpMenuController: PopUpTableViewController {
         let animations: () -> () = {
             self.instructionView.frame = defaultRect
             self.preferredContentSize = defaultSize
-            self.tableView.layoutIfNeeded()
+            //self.tableView.reloadData()
         }
         
         let emptyRect = CGRectMake(defaultRect.origin.x, defaultRect.height, defaultRect.width, 0)
         
         let animations2: () -> () = {
             self.instructionView.frame = emptyRect
-            self.tableView.layoutIfNeeded()
+            //self.tableView.reloadData()
         }
-        self.tableView.layoutIfNeeded()
-        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: animations) { (completed: Bool) -> () in
-            if completed {
-                UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseInOut, animations: animations2){
-                    completed in
-                    self.instructionView.removeFromSuperview()
-                    self.tableView.bounces = true
-                    self.selectedIndex = nil
+        
+        UIView.animateWithDuration(0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.25, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            animations()
+            }, completion: {(completed: Bool) in
+                if completed {
+                    self.tableView.addSubview(self.instructionView)
+                    UIView.animateWithDuration(0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.25, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+                        
+                        animations2()}, completion: {(completed: Bool) in
+                            if completed {
+                                self.selectedIndex = nil
+                            }
+                    })
                 }
             }
-            
-        }
+        )
+        
+        
         
     }
 

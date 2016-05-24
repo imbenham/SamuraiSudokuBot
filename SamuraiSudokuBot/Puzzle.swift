@@ -23,6 +23,7 @@ class Puzzle: NSManagedObject {
         return NSPredicate(format: "difficultyLevel = '\(difficulty.identifier)'")
     }
     
+    
     init(initialValues: [PuzzleCell], solution:[PuzzleCell], rawScore: Int) {
         
         let ctxt = CoreDataStack.sharedStack.managedObjectContext
@@ -38,6 +39,18 @@ class Puzzle: NSManagedObject {
         
         self.rawScore = NSNumber(integer: rawScore)
         
+    }
+    
+    override func didSave() {
+        self.modifiedDate = NSDate()
+    }
+    
+    override func awakeFromInsert() {
+        self.modifiedDate = NSDate()
+    }
+    
+    override func awakeFromFetch() {
+        self.modifiedDate = NSDate()
     }
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
