@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		360018761CF3F0B0001D9696 /* undo_redo.caf in Resources */ = {isa = PBXBuildFile; fileRef = 360018751CF3F035001D9696 /* undo_redo.caf */; };
 		360361051CC94A69005F6A9F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361041CC94A69005F6A9F /* AppDelegate.swift */; };
 		360361071CC94A69005F6A9F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361061CC94A69005F6A9F /* ViewController.swift */; };
 		3603610D1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */; };
@@ -77,6 +78,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		360018751CF3F035001D9696 /* undo_redo.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = undo_redo.caf; sourceTree = "<group>"; };
 		360361011CC94A68005F6A9F /* SamuraiSudokuBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamuraiSudokuBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		360361041CC94A69005F6A9F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		360361061CC94A69005F6A9F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 		36EFEE681CEE0812006B58EC /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				360018751CF3F035001D9696 /* undo_redo.caf */,
 				36EFEE791CF154FB006B58EC /* give_up.caf */,
 				36EFEE6C1CEE0880006B58EC /* hint_given.caf */,
 				36EFEE6D1CEE088D006B58EC /* puzzle_solved1.caf */,
@@ -496,6 +499,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				360018761CF3F0B0001D9696 /* undo_redo.caf in Resources */,
 				36EFEE7A1CF15889006B58EC /* give_up.caf in Resources */,
 				36EFEE6F1CEE105D006B58EC /* puzzle_solved1.caf in Resources */,
 				36EFEE701CEE105D006B58EC /* value_chosen.caf in Resources */,

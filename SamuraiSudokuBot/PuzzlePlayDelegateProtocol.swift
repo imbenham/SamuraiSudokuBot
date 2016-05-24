@@ -40,13 +40,12 @@ protocol SudokuControllerDelegate: class, NumPadDelegate {
     
     func tileAtIndex(index: TileIndex, forBoard board: SudokuBoard?) -> Tile?
     func boardSelectedTileChanged()
-    //func setUpButtons()
+
     func setUpBoard()
     func boardReady()
     
     func tileTapped(sender: AnyObject?)
     
-   // func refreshNoteButton()
     
     // (de)activate interface
     func activateInterface()
@@ -109,13 +108,6 @@ extension SudokuControllerDelegate {
         numPad.refresh()
     }
     
-    func activateInterface() {
-        board.userInteractionEnabled = true
-    }
-    
-    func deactivateInterface() {
-        board.userInteractionEnabled = false
-    }
     
     func wakeFromBackground() {
         activateInterface()
@@ -144,6 +136,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     var revealedTiles: [Tile] {get}
     var gameOver: Bool {get}
     var tileMap: [Int: [String: Tile]] {get}
+    var userSolvedPuzzle: Bool? {get set}
     
     // required UI elements
     var longFetchLabel: UILabel {get}
@@ -163,11 +156,9 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func refreshNoteButton()
     func handleManagedObjectChange(notification: NSNotification)
     
-    // overrides default implementation of activateInterface(), deactivateInterface() & wakeFromBackground()
-    
     
     // initial puzzle loading
-    func showChoosePuzzleController(gaveUp gaveUp: Bool, successfullyCompleted: Bool)
+    func showChoosePuzzleController(currentDifficulty:Int?)
     func prepareForLongFetch()
     func fetchPuzzle()
     func puzzleReady()
@@ -182,17 +173,16 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func checkSolution()
     func puzzleSolved()
     func giveUp()
+    func cleanUp()
     
     func replayCurrent()
-    func newPuzzleOfDifficulty(difficulty: PuzzleDifficulty, replay:Bool)
+    //func newPuzzleOfDifficulty(difficulty: PuzzleDifficulty, replay:Bool)
     
     
     func clearAll()
     func clearSolution()
     
     // audioplayer functions
-    
-   
     
     func playSelectedTileChanged()
     
@@ -203,6 +193,8 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     
     func playHintGiven()
     func playGiveUp()
+    func playUndoRedo()
+    
     func playAudioAtURL(url:NSURL)
     
 }
@@ -234,7 +226,7 @@ extension PlayPuzzleDelegate {
     
         return tileMap[board]?[String(row) + String(column)]
     }
-    
+
     
     //MARK: managing interface
     
@@ -254,32 +246,6 @@ extension PlayPuzzleDelegate {
         }
     }
     
-    func deactivateInterface() {
-        board.userInteractionEnabled = false
-        
-        UIView.animateWithDuration(0.25) {
-
-            self.noteButton?.alpha = 0.5
-            self.optionsButton.alpha = 0.5
-            self.clearButton?.alpha = 0.5
-            
-        }
-    }
-    
-    func activateInterface() {
-        numPad.userInteractionEnabled = true
-        board.userInteractionEnabled = true
-        numPad.refresh()
-        
-        UIView.animateWithDuration(0.25) {
-          
-            self.noteButton?.alpha = 1.0
-            self.optionsButton.alpha = 1.0
-            self.clearButton?.alpha = 1.0
-            
-        }
-        
-    }
     
     func wakeFromBackground() {
         //TODO: saved puzzle handling
@@ -290,18 +256,22 @@ extension PlayPuzzleDelegate {
     
     //MARK: initial puzzle loading
     
-    func showChoosePuzzleController(gaveUp gaveUp: Bool = false, successfullyCompleted: Bool = false) {
+    func showChoosePuzzleController(currentDifficulty: Int? = nil) {
         guard let vc = self as? SudokuController else{
             return
         }
         
-        guard gaveUp == false || successfullyCompleted == false else {
-            fatalError("gaveUp and successfullyCompleted cannot both be true")
+        var poController: ChoosePuzzleController
+        
+        if let success = userSolvedPuzzle {
+            poController = ChoosePuzzleController(style: .Plain, successfullyCompleted:success, gaveUp: !success, previousDifficulty: currentDifficulty)
+        } else {
+            poController = ChoosePuzzleController(style: .Plain, successfullyCompleted:false, gaveUp: false, previousDifficulty: currentDifficulty)
         }
         
-        let poController = ChoosePuzzleController(style: .Plain, successfullyCompleted:successfullyCompleted, gaveUp: gaveUp)
+        
         poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 1/3, vc.view.frame.height * 1/5)
+        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 2/5, vc.view.frame.height * 1/3)
         poController.puzzleController = self
         
         
@@ -348,8 +318,6 @@ extension PlayPuzzleDelegate {
     }
     
     func fetchPuzzle() {
-        
-        print("fetchPuzzle default PPCD implementation called")
         
         guard let vc = self as? UIViewController else {
             return
@@ -400,10 +368,23 @@ extension PlayPuzzleDelegate {
         
         defaults.setBool(placekeeper, forKey: Utils.Constants.Identifiers.soundKey)
         
-        playPuzzleFetched()
+        dispatch_async(concurrentPuzzleQueue, {self.playPuzzleFetched()})
         
+        userSolvedPuzzle = nil
+
         activateInterface()
         
+        if let undoManager = CoreDataStack.sharedStack.managedObjectContext.undoManager {
+            
+            if !undoManager.undoRegistrationEnabled {
+                CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+                undoManager.removeAllActions()
+                undoManager.enableUndoRegistration()
+            } else {
+                CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+                undoManager.removeAllActions()
+            }
+        }
         
     }
     
@@ -439,14 +420,18 @@ extension PlayPuzzleDelegate {
             return
         }
         
+        let tile = nils[Int(arc4random_uniform((UInt32(nils.count))))]
         
-        let tile = wrongsCount > 0 ? wrongs[0] : nils[Int(arc4random_uniform((UInt32(nils.count))))]
+        dispatch_async(concurrentPuzzleQueue, {self.playHintGiven()})
         
-        playHintGiven()
-        CoreDataStack.sharedStack.managedObjectContext.undoManager?.disableUndoRegistration()
+        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+        CoreDataStack.sharedStack.managedObjectContext.undoManager!.disableUndoRegistration()
         CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
 
-        animateDiscoveredTile(tile, handler: {CoreDataStack.sharedStack.managedObjectContext.undoManager?.enableUndoRegistration()})
+        animateDiscoveredTile(tile, handler: {
+            CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+            CoreDataStack.sharedStack.managedObjectContext.undoManager!.enableUndoRegistration()
+        })
         
     }
     
@@ -474,14 +459,12 @@ extension PlayPuzzleDelegate {
         UIView.animateWithDuration(0.5, delay: 0.0, options: [.Repeat, .CurveEaseIn, .Autoreverse], animations: flickerBlock) { (finished) in
             
             if finished {
-                let colorBlock: () -> Void = { () in
+                let endBlock: () -> Void = { () in
                     label.alpha = 1
                 }
                 
-                UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: colorBlock) { (finished) in
-                    
+                UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: endBlock) { (finished) in
                     if finished {
-                      
                         if let completionHandler = handler {
                             completionHandler()
                     
@@ -494,8 +477,6 @@ extension PlayPuzzleDelegate {
         }
         
     }
-    
-    
     
     
     //MARK: replay / new puzzle
@@ -514,7 +495,6 @@ extension PlayPuzzleDelegate {
         }
         
         
-        
         for tile in givens {
             tile.userInteractionEnabled = false
         }
@@ -522,7 +502,7 @@ extension PlayPuzzleDelegate {
     }
 
 
-    func newPuzzleOfDifficulty(difficulty: PuzzleDifficulty, replay:Bool = false) {
+ /*   func newPuzzleOfDifficulty(difficulty: PuzzleDifficulty, replay:Bool = false) {
         if replay {
             replayCurrent()
             activateInterface()
@@ -536,7 +516,7 @@ extension PlayPuzzleDelegate {
             
             fetchPuzzle()
         }
-    }
+    }*/
     
     
     
@@ -549,9 +529,19 @@ extension PlayPuzzleDelegate {
     }
     
     func clearPuzzle() {
+        let context = CoreDataStack.sharedStack.managedObjectContext
+        
+        if context.undoManager!.undoRegistrationEnabled {
+            context.processPendingChanges()
+            context.undoManager!.removeAllActions()
+            context.undoManager!.disableUndoRegistration()
+        }
+        
         for tile in self.tiles {
             tile.backingCell = nil
         }
+        
+        self.puzzle = nil
     }
     
     func clearSolution() {
@@ -582,11 +572,16 @@ extension PlayPuzzleDelegate {
     
     func giveUp() {
         
-        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
-        CoreDataStack.sharedStack.managedObjectContext.undoManager?.disableUndoRegistration()
-        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
         
-        playGiveUp()
+        let context = CoreDataStack.sharedStack.managedObjectContext
+        
+        if context.undoManager!.undoRegistrationEnabled {
+            context.processPendingChanges()
+            context.undoManager!.removeAllActions()
+            context.undoManager!.disableUndoRegistration()
+            context.processPendingChanges()
+        }
+
         
         deactivateInterface()
         var lastTile: Tile?
@@ -596,35 +591,23 @@ extension PlayPuzzleDelegate {
         
         
         let completion: (()->()) = {
-            let count = self.wrongTiles.count
-            for (index, wrongTile) in self.wrongTiles.enumerate() {
-                if index == count {
-                    self.animateDiscoveredTile(wrongTile, wrong: true, handler:{CoreDataStack.sharedStack.managedObjectContext.undoManager?.enableUndoRegistration()})
-                }
+            
+            for wrongTile in self.wrongTiles {
                 self.animateDiscoveredTile(wrongTile, wrong: true)
-                wrongTile.userInteractionEnabled = false
             }
             
-            self.board.userInteractionEnabled = false
-            self.board.alpha = 1.0
-            for tile in self.tiles {
-                tile.userInteractionEnabled = false
-            }
+            self.userSolvedPuzzle = false
             
-            self.showChoosePuzzleController(gaveUp: true)
         }
         
+        dispatch_async(concurrentPuzzleQueue, {self.playGiveUp()})
+        
         for nilTile in nilTiles {
-            if lastTile == nil {
+            if nilTile == lastTile {
                 animateDiscoveredTile(nilTile, handler: completion)
                 
             } else {
-                if nilTile == lastTile {
-                    animateDiscoveredTile(nilTile, handler: completion)
-                    
-                } else {
-                    animateDiscoveredTile(nilTile)
-                }
+                animateDiscoveredTile(nilTile)
             }
         }
     }
@@ -677,9 +660,7 @@ extension PlayPuzzleDelegate {
                                 }) { finished in
                                     if finished {
                                         doneCount += 1
-                                        if doneCount == self.boards.count {
-                                            self.showChoosePuzzleController(successfullyCompleted: true)
-                                        }
+                                        if doneCount == 5 { self.userSolvedPuzzle = true}
                                     }
                                 }
                                 
@@ -708,61 +689,12 @@ extension PlayPuzzleDelegate {
             flashBoxAnimationsWithBoxes(boxes)
             
         }
-         playPuzzleCompleted()
+        playPuzzleCompleted()
+        deactivateInterface()
         
     }
     
-    //MARK: settings and help
     
-    func showOptions(sender: AnyObject) {
-        
-        guard let vc = self as? UIViewController else {
-            return
-        }
-        
-        let poController = PuzzleOptionsViewController(style: .Plain)
-        poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(300, 350)
-        
-        let sender = sender as! UIButton
-        sender.selected = true
-        let ppc = poController.popoverPresentationController
-        ppc?.sourceView = sender
-        ppc?.sourceRect = sender.bounds
-        ppc?.permittedArrowDirections = .Left
-        ppc?.backgroundColor = Utils.Palette.getTheme()
-        
-        if let popD = vc as? UIPopoverPresentationControllerDelegate {
-            ppc?.delegate = popD
-        }
-        
-        vc.presentViewController(poController, animated: true, completion: nil)
-        
-    }
-    
-    func showHelpMenu(sender: AnyObject) {
-        guard let vc = self as? UIViewController else {
-            return
-        }
-        
-        let poController = HelpMenuController(style: .Grouped)
-        poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(225, 225)
-        
-        let sender = sender as! UIButton
-        sender.selected = true
-        let ppc = poController.popoverPresentationController
-        ppc?.sourceView = sender
-        ppc?.sourceRect = sender.bounds
-        ppc?.permittedArrowDirections = .Down
-        ppc?.backgroundColor = Utils.Palette.getTheme()
-        
-        if let popD = vc as? UIPopoverPresentationControllerDelegate {
-            ppc?.delegate = popD
-        }
-        
-        vc.presentViewController(poController, animated: true, completion: nil)
-        
-    }
+  
     
 }

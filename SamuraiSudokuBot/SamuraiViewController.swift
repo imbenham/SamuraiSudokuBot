@@ -33,30 +33,41 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     @IBOutlet weak var hintButton: UIButton!
     @IBOutlet weak var redoButton: UIButton!
    
+    @IBOutlet weak var playAgainButton: UIButton!
     @IBAction func handleNoteButtonTap(sender: AnyObject) {
         self.toggleNoteMode(sender)
     }
     
     @IBAction func handleOptionsButtonTap(sender: AnyObject) {
-        
+        noteMode = false
         showOptions(sender)
         
     }
+    @IBAction func handlePlayAgainButtonTap(sender: AnyObject) {
+        let currentScore = puzzle?.rawScore as? Int
+        cleanUp()
+        showChoosePuzzleController(currentScore)
+    }
    
-    
     @IBAction func handleUndoButtonTap(sender: AnyObject) {
+        noteMode = false
         managedObjectContext.undo()
+        playUndoRedo()
     }
     @IBAction func handleRedoButtonTap(sender: AnyObject) {
+        noteMode = false
         managedObjectContext.redo()
+        playUndoRedo()
     }
 
     @IBAction func handleHintButtonTap(sender: AnyObject) {
+        noteMode = false
         showHelpMenu(sender)
     }
     
     
     @IBAction func handleClearButtonTap(sender: AnyObject) {
+        noteMode = false
         clearSolution()
     }
     
@@ -110,6 +121,15 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     var alertController: UIAlertController?
     
+    var userSolvedPuzzle: Bool? {
+        didSet {
+            if userSolvedPuzzle == nil {
+                playAgainButton.hidden = true
+            } else {
+                playAgainButton.hidden = false
+            }
+        }
+    }
     
     let longFetchLabel = UILabel()
     var outerBoards: [SudokuBoard] {
@@ -161,9 +181,9 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     var difficulty: PuzzleDifficulty = .Medium
     
-    var allButtons: [UIButton] {
+    var allButtons: Set<UIButton>{
         get {
-            return [clearButton, noteButton, optionsButton, hintButton, undoButton, redoButton]
+            return Set([clearButton, noteButton, optionsButton, hintButton, undoButton, redoButton, playAgainButton])
         }
     }
     
@@ -176,34 +196,43 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
     override var noteMode: Bool  {
         didSet {
-            noteButton.selected = noteMode
-            let nbBGColor = noteMode ? UIColor.clearColor() : noteButton.backgroundColor
-            let nbTextColor = noteButton.titleColorForState(.Normal)
-            
-            noteButton.backgroundColor = nbBGColor
-            noteButton.setTitleColor(nbTextColor, forState: .Normal)
-            noteButton.layer.borderColor = nbBGColor?.CGColor
-            if noteMode {
-                if let selectedTile = selectedTile {
-                    if selectedTile.displayValue.rawValue != 0 {
-                        selectedTile.addNote(selectedTile.displayValue.rawValue)
-                        selectedTile.clearValue()
+            if noteMode != oldValue {
+                noteButton.selected = noteMode
+                let nbBGColor = noteMode ? UIColor.clearColor() : noteButton.backgroundColor
+                let nbTextColor = noteButton.titleColorForState(.Normal)
+                
+                noteButton.backgroundColor = nbBGColor
+                noteButton.setTitleColor(nbTextColor, forState: .Normal)
+                noteButton.layer.borderColor = nbBGColor?.CGColor
+                if noteMode {
+                    if let selectedTile = selectedTile {
+                        if selectedTile.displayValue.rawValue != 0 {
+                            selectedTile.addNote(selectedTile.displayValue.rawValue)
+                            selectedTile.clearValue()
+                        }
+                        selectedTile.refreshLabel()
                     }
-                    selectedTile.refreshLabel()
+                } else {
+                    if let selectedTile = selectedTile {
+                        selectedTile.refreshLabel()
+                    }
                 }
-            } else {
-                if let selectedTile = selectedTile {
-                    selectedTile.refreshLabel()
-                }
+                
+                numPad.refresh()
+
             }
-           
-            numPad.refresh()
         }
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        managedObjectContext.processPendingChanges()
+        managedObjectContext.undoManager?.removeAllActions()
+        managedObjectContext.undoManager?.disableUndoRegistration()
+        managedObjectContext.processPendingChanges()
+        
         
         puzzleMenuAnchor.backgroundColor = UIColor.clearColor()
         puzzleMenuAnchor.userInteractionEnabled = false
@@ -220,12 +249,58 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
         
         numPad.delegate = self
-
+        
         lastOffset = offset
         
         undoButton.alpha = 0
         redoButton.alpha = 0
         
+        playAgainButton.hidden = true
+        
+    }
+    
+    private func styleButtons() {
+        let configs = Utils.ButtonConfigs()
+        
+        let hintTitle = configs.getAttributedTitle("?")
+        hintButton.setAttributedTitle(hintTitle, forState: .Normal)
+        hintButton.setAttributedTitle(hintTitle, forState: .Selected)
+        let clearTitle = configs.getAttributedTitle("Clear")
+        clearButton.setAttributedTitle(clearTitle, forState: .Normal)
+        clearButton.setAttributedTitle(clearTitle, forState: .Selected)
+        let noteTitle = configs.getAttributedTitle("Note+")
+        noteButton.setAttributedTitle(noteTitle, forState: .Normal)
+        noteButton.setAttributedTitle(noteTitle, forState: .Selected)
+        let optionsTitle = configs.getAttributedTitle("Options")
+        optionsButton.setAttributedTitle(optionsTitle, forState: .Normal)
+        optionsButton.setAttributedTitle(optionsTitle, forState: .Selected)
+        
+        let playAgainTitle = configs.getAttributedTitle("PLAY")
+        playAgainButton.setAttributedTitle(playAgainTitle, forState: .Normal)
+        playAgainButton.setAttributedTitle(playAgainTitle, forState: .Selected)
+        
+        
+        for button in allButtons {
+            
+            let size = button.frame.size
+            button.setBackgroundImage(configs.backgroundImageForSize(size, selected: false), forState: .Normal)
+            button.setBackgroundImage(configs.backgroundImageForSize(size, selected: true), forState: .Selected)
+            button.setBackgroundImage(configs.backgroundImageForSize(size, selected:true), forState: .Highlighted)
+            
+            button.backgroundColor = UIColor.blackColor()
+            
+            button.layer.cornerRadius = button.frame.size.height/2
+            button.clipsToBounds = true
+            
+            button.layer.borderColor = configs.baseColor.CGColor
+            button.layer.borderWidth = 2.0
+            
+            button.titleLabel?.numberOfLines = 1
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
+            button.titleEdgeInsets = button == optionsButton ? UIEdgeInsetsMake(0, 5.0, 8.0, 5.0) : UIEdgeInsetsMake(0, 5.0, 0, 5.0)
+            
+        }
+
     }
     
     override func viewDidLayoutSubviews() {
@@ -242,44 +317,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     
         middleBoard.isMiddle = true
         
-        let configs = Utils.ButtonConfigs()
-        
-        let hintTitle = configs.getAttributedTitle("?")
-        hintButton.setAttributedTitle(hintTitle, forState: .Normal)
-        hintButton.setAttributedTitle(hintTitle, forState: .Selected)
-        let clearTitle = configs.getAttributedTitle("Clear")
-        clearButton.setAttributedTitle(clearTitle, forState: .Normal)
-        clearButton.setAttributedTitle(clearTitle, forState: .Selected)
-        let noteTitle = configs.getAttributedTitle("Note+")
-        noteButton.setAttributedTitle(noteTitle, forState: .Normal)
-        noteButton.setAttributedTitle(noteTitle, forState: .Selected)
-        let optionsTitle = configs.getAttributedTitle("Options")
-        optionsButton.setAttributedTitle(optionsTitle, forState: .Normal)
-        optionsButton.setAttributedTitle(optionsTitle, forState: .Selected)
-        
-        
-        for button in allButtons {
-            
-            button.backgroundColor = UIColor.clearColor()
-            
-            let size = button.frame.size
-            button.setBackgroundImage(configs.backgroundImageForSize(size, selected: false), forState: .Normal)
-            button.setBackgroundImage(configs.backgroundImageForSize(size, selected: true), forState: .Selected)
-            button.setBackgroundImage(configs.backgroundImageForSize(size, selected:true), forState: .Highlighted)
-            
-            button.layer.cornerRadius = button.frame.size.height/2
-            button.clipsToBounds = true
-            
-            button.layer.borderColor = configs.baseColor.CGColor
-            button.layer.borderWidth = 2.0
-            
-            button.titleLabel?.numberOfLines = 1
-            button.titleLabel?.adjustsFontSizeToFitWidth = true
-            button.titleEdgeInsets = button == optionsButton ? UIEdgeInsetsMake(0, 5.0, 8.0, 5.0) : UIEdgeInsetsMake(0, 5.0, 0, 5.0)
-        
-            
-        }
-        
+        styleButtons()
         
         lastOffset = offset
         view.setNeedsUpdateConstraints()
@@ -307,10 +345,7 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         lastOffset = offset
         view.setNeedsUpdateConstraints()
         
-        if readyCount == 5 && self.presentedViewController == nil {
-            //fetchPuzzle()
-            // give protocol a default function for popping the play menu and call it here
-            
+        if readyCount == 5 && puzzle == nil && self.presentedViewController == nil {
             showChoosePuzzleController()
         }
         
@@ -324,17 +359,6 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         }
         
         
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectChange(_:)), name: NSManagedObjectContextObjectsDidChangeNotification, object: nil)
-        
-        notificationCenter.addObserver(self, selector: #selector(self.handleUndoGroupClosedNotification(_:)), name: NSUndoManagerDidCloseUndoGroupNotification, object: nil)
-        
-        
-        notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectSaveNotification(_:)), name: NSManagedObjectContextWillSaveNotification, object: nil)
-        
-        notificationCenter.addObserver(self, selector: #selector(self.handleUndoNotification(_:)), name: NSUndoManagerDidUndoChangeNotification, object: nil)
-        
-        notificationCenter.addObserver(self, selector: #selector(self.handleRedoNotification(_:)), name: NSUndoManagerDidRedoChangeNotification, object: nil)
     }
     
 
@@ -400,12 +424,28 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         for board in boards {
             board.userInteractionEnabled = false
         }
-        CoreDataStack.sharedStack.managedObjectContext.undoManager?.disableUndoRegistration()
-        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+        
+        if self.managedObjectContext.undoManager!.undoRegistrationEnabled {
+            self.managedObjectContext.processPendingChanges()
+            self.undoManager!.removeAllActions()
+            self.managedObjectContext.undoManager?.disableUndoRegistration()
+            self.managedObjectContext.processPendingChanges()
+        }
+        self.managedObjectContext.processPendingChanges()
+        self.managedObjectContext.undoManager!.removeAllActions()
        
         
         let handler: (Puzzle -> ()) = {
             puzzle -> () in
+            
+            let notificationCenter = NSNotificationCenter.defaultCenter()
+            notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectChange(_:)), name: NSManagedObjectContextObjectsDidChangeNotification, object: nil)
+            
+            notificationCenter.addObserver(self, selector: #selector(self.handleManagedObjectSaveNotification(_:)), name: NSManagedObjectContextWillSaveNotification, object: nil)
+            
+            notificationCenter.addObserver(self, selector: #selector(self.handleUndoNotification(_:)), name: NSUndoManagerDidUndoChangeNotification, object: nil)
+            
+            notificationCenter.addObserver(self, selector: #selector(self.handleRedoNotification(_:)), name: NSUndoManagerDidRedoChangeNotification, object: nil)
             
             self.spinner.stopAnimating()
             self.spinner.removeFromSuperview()
@@ -437,15 +477,58 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
             
             
             self.puzzleReady()
-            self.playPuzzleFetched()
-            CoreDataStack.sharedStack.managedObjectContext.undoManager?.enableUndoRegistration()
-            self.managedObjectContext.undoManager?.removeAllActions()
+
         }
         
         PuzzleStore.sharedInstance.getPuzzleForController(self, withCompletionHandler: handler)
     }
     
     //MARK: PlayPuzzleDelegate
+    
+    override func deactivateInterface() {
+        
+        numPad.userInteractionEnabled = false
+        board.userInteractionEnabled = false
+        
+        var buttons = allButtons
+        for removable in [playAgainButton, undoButton, redoButton] {
+            buttons.remove(removable)
+        }
+        
+        UIView.animateWithDuration(0.25) {
+            
+            for button in buttons {
+                button.userInteractionEnabled = false
+                button.alpha = 0.75
+            }
+            
+            self.numPad.alpha = 0.75
+        }
+        
+        self.hideUndoRedo()
+        self.hideRedoButton()
+    }
+    
+    override func activateInterface() {
+        numPad.userInteractionEnabled = true
+        board.userInteractionEnabled = true
+        numPad.refresh()
+        
+        var buttons = allButtons
+        for removable in [playAgainButton, undoButton, redoButton] {
+            buttons.remove(removable)
+        }
+        
+        UIView.animateWithDuration(0.25) {
+            
+            for button in buttons {
+                button.userInteractionEnabled = true
+                button.alpha = 1
+            }
+            
+            self.numPad.alpha = 1.0
+        }
+    }
     
     override func toggleNoteMode(sender: AnyObject?) {
         if let press = sender as? UILongPressGestureRecognizer {
@@ -501,10 +584,15 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     override func noteValueChanged(value: Int) {
-        print("samurai controller notevaluechanged called")
+        
         if let selected = selectedTile?.backingCell {
             var notes = Set(selected.notesArray)
-            notes.insert(value)
+            if notes.contains(value){
+                notes.remove(value)
+            } else {
+                notes.insert(value)
+            }
+            selected.notesArray = Array(notes)
             numPad.refresh()
         }
         
@@ -518,11 +606,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     func hideUndoButton() {
+        print("hide undo called")
         if undoButton.alpha == 0 {
             return
         }
         view.layoutIfNeeded()
-        UIView.animateWithDuration(0.4, animations: {
+        UIView.animateWithDuration(0.2, animations: {
             self.undoButton.alpha = 0
             self.undoPin.constant -= self.undoOffset
             self.view.layoutIfNeeded()
@@ -531,11 +620,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     func showUndoButton() {
+        print("show undo called")
         if undoButton.alpha == 1 {
             return
         }
         view.layoutIfNeeded()
-        UIView.animateWithDuration(0.4, animations: {
+        UIView.animateWithDuration(0.2, animations: {
             self.undoButton.alpha = 1
             self.undoPin.constant += self.undoOffset
             self.view.layoutIfNeeded()
@@ -543,11 +633,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     func hideRedoButton() {
+        print("hide redo called")
         if redoButton.alpha == 0 {
             return
         }
         view.layoutIfNeeded()
-        UIView.animateWithDuration(0.4, animations: {
+        UIView.animateWithDuration(0.2, animations: {
             self.redoButton.alpha = 0
             self.redoPin.constant -= self.redoOffset
             self.view.layoutIfNeeded()
@@ -555,11 +646,12 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     func showRedoButton() {
+        print("show redo called")
         if redoButton.alpha == 1 {
             return
         }
         view.layoutIfNeeded()
-        UIView.animateWithDuration(0.4, animations: {
+        UIView.animateWithDuration(0.2, animations: {
             self.redoButton.alpha = 1
             self.redoPin.constant += self.redoOffset
             self.view.layoutIfNeeded()
@@ -570,6 +662,8 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     //MARK: managedObjectContext handlers
     
     func handleManagedObjectChange(notification: NSNotification) {
+        
+        print("received first managed object change notification")
         
         guard let infoDict = notification.userInfo as? [String: AnyObject] else {
             print("downcasting failed")
@@ -587,14 +681,19 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         if managedObjectContext.undoManager!.canUndo {
             if undoButton.alpha == 0 {
                 showUndoButton()
-              
+            }
+        } else {
+            if undoButton.alpha == 1 {
+                hideUndoButton()
             }
         }
-        
         if managedObjectContext.undoManager!.canRedo {
-            self.view.setNeedsLayout()
-            if redoButton.alpha == 0 {
+            if redoButton.alpha == 0  {
                 showRedoButton()
+            }
+        } else {
+            if redoButton.alpha == 1 {
+                hideRedoButton()
             }
         }
         
@@ -614,13 +713,10 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
        
     }
     
-    func handleUndoGroupClosedNotification(notification: NSNotification){
-       
-
-    }
     
     func handleUndoNotification(notification: NSNotification) {
-        if let nm = notification.object as? NSUndoManager where !nm.canUndo {
+        managedObjectContext.processPendingChanges()
+        if !managedObjectContext.undoManager!.canUndo {
             if undoButton.alpha == 1 {
                 hideUndoButton()
             }
@@ -628,12 +724,29 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
     }
     
     func handleRedoNotification(notification: NSNotification) {
-        if let nm = notification.object as? NSUndoManager where !nm.canRedo {
+        managedObjectContext.processPendingChanges()
+        if !managedObjectContext.undoManager!.canRedo {
             if redoButton.alpha == 1 {
                hideRedoButton()
             }
         }
     }
+    
+    func cleanUp() {
+        
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        
+        notificationCenter.removeObserver(self)
+       
+        if managedObjectContext.undoManager!.undoRegistrationEnabled {
+            managedObjectContext.processPendingChanges()
+            managedObjectContext.undoManager?.removeAllActions()
+            managedObjectContext.undoManager!.disableUndoRegistration()
+        }
+        clearPuzzle()
+        CoreDataStack.sharedStack.saveMainContext()
+    }
+    
     
 
     override var currentValue: Int {
@@ -668,5 +781,47 @@ class SamuraiSudokuController: SudokuController, PlayPuzzleDelegate, UIPopoverPr
         return true
     }
     
+    
+    //MARK: popover management
+    func showOptions(sender: AnyObject) {
+        
+        let poController = PuzzleOptionsViewController(style: .Plain)
+        poController.modalPresentationStyle = .Popover
+        poController.preferredContentSize = CGSizeMake(300, 350)
+        
+        let sender = sender as! UIButton
+        sender.selected = true
+        let ppc = poController.popoverPresentationController
+        ppc?.sourceView = sender
+        ppc?.sourceRect = sender.bounds
+        ppc?.permittedArrowDirections = .Left
+        ppc?.backgroundColor = Utils.Palette.getTheme()
+        
+        ppc?.delegate = self
+        
+        self.presentViewController(poController, animated: true, completion: nil)
+        
+    }
+    
+    func showHelpMenu(sender: AnyObject) {
+        
+        
+        let poController = HelpMenuController(style: .Grouped)
+        poController.modalPresentationStyle = .Popover
+        poController.preferredContentSize = CGSizeMake(225, 250)
+        
+        let sender = sender as! UIButton
+        sender.selected = true
+        let ppc = poController.popoverPresentationController
+        ppc?.sourceView = sender
+        ppc?.sourceRect = sender.bounds
+        ppc?.permittedArrowDirections = .Down
+        ppc?.backgroundColor = Utils.Palette.getTheme()
+        
+        ppc?.delegate = self
+        
+        self.presentViewController(poController, animated: true, completion: nil)
+        
+    }
 }
 

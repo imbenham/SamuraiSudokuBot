@@ -14,6 +14,8 @@ class ChoosePuzzleController: PopUpTableViewController {
     var difficulties: [PuzzleDifficulty] = [.Easy, .Medium, .Hard, .Insane]
     var difficulty: PuzzleDifficulty?
     
+    var previousDifficulty: Int?
+    
     var successfullyCompleted = false {
         didSet {
             if successfullyCompleted {
@@ -29,13 +31,24 @@ class ChoosePuzzleController: PopUpTableViewController {
         }
     }
     
+    var headerHeight: CGFloat {
+        get {
+            return preferredContentSize.height * 1/5
+        }
+    }
+    
+    lazy var footerHeight: CGFloat  = {
+        return self.preferredContentSize.height * 1/6
+    }()
     
     
-    init(style: UITableViewStyle, successfullyCompleted: Bool, gaveUp: Bool) {
+    
+    init(style: UITableViewStyle, successfullyCompleted: Bool, gaveUp: Bool, previousDifficulty: Int? = nil) {
         super.init(style: style)
         
         self.successfullyCompleted = successfullyCompleted
         self.gaveUp = gaveUp
+        self.previousDifficulty = previousDifficulty
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,9 +58,9 @@ class ChoosePuzzleController: PopUpTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.tableHeaderView = ChoosePuzzleMenuHeader(frame: CGRectMake(0, 0, preferredContentSize.width, 65))
+        tableView.tableHeaderView = ChoosePuzzleMenuHeader(frame: CGRectMake(0, 0, preferredContentSize.width, headerHeight))
         
-        let footerRect = CGRectMake(0,0, preferredContentSize.width, 50)
+        let footerRect = CGRectMake(0,0, preferredContentSize.width, footerHeight)
         
         let footer = PopOverMenuFooter(frame: footerRect, text:"Go!")
         
@@ -73,12 +86,9 @@ class ChoosePuzzleController: PopUpTableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let difficulty = puzzleController?.difficulty else {
-            print("returning 4")
             return 4
         }
         let num = (successfullyCompleted && !(difficulty == .Insane)) || (gaveUp && !(difficulty == .Easy)) ? 5 : 4
-        
-        print("num rows: \(num)")
         
         return num
     }
@@ -94,7 +104,7 @@ class ChoosePuzzleController: PopUpTableViewController {
         } else {
             print("row 4")
             let configs = Utils.ButtonConfigs()
-            attributedTitle = successfullyCompleted ? configs.getAttributedBodyText("SLIGHTLY HARDER") : configs.getAttributedBodyText("SLIGHLTY EASIER")
+            attributedTitle = successfullyCompleted ? configs.getAttributedBodyText("SLIGHTLY HARDER") : configs.getAttributedBodyText("SLIGHTLY EASIER")
 
         }
         
@@ -104,7 +114,14 @@ class ChoosePuzzleController: PopUpTableViewController {
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return (preferredContentSize.height - 65) / ((successfullyCompleted && !(difficulty == .Insane)) || (gaveUp && !(difficulty == .Easy)) ? 5 : 4)
+        var ftHeight:CGFloat = 0
+        if let footer = tableView.tableFooterView {
+            if !footer.hidden {
+                ftHeight = footerHeight
+            }
+        }
+        
+        return (preferredContentSize.height - headerHeight - ftHeight) / ((successfullyCompleted && !(difficulty == .Insane)) || (gaveUp && !(difficulty == .Easy)) ? 5 : 4)
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -129,10 +146,11 @@ class ChoosePuzzleController: PopUpTableViewController {
             
         }
         if tableView.tableFooterView!.hidden {
-            // do some special stuff
-            UIView.animateWithDuration(0.4) {
-                self.preferredContentSize.height += 56
+            //tableView.layoutIfNeeded()
+            UIView.animateWithDuration(0.2) {
                 self.tableView.tableFooterView!.hidden = false
+                self.preferredContentSize.height += self.footerHeight + 6
+                //self.tableView.layoutIfNeeded()
             }
         }
     }
@@ -144,7 +162,6 @@ class ChoosePuzzleController: PopUpTableViewController {
         
         puzzleController?.difficulty = diff
         
-        //puzzleController?.clearAll()
         
         if let pvc = ppd as? SudokuController {
             pvc.dismissViewControllerAnimated(true) {

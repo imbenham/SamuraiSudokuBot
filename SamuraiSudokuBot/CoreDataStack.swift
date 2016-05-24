@@ -49,6 +49,9 @@ class CoreDataStack {
         let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         managedObjectContext.parentContext = self.savePuzzleManagedObjectContext
         managedObjectContext.undoManager = NSUndoManager()
+        managedObjectContext.undoManager?.disableUndoRegistration()
+        managedObjectContext.processPendingChanges()
+        managedObjectContext.undoManager!.removeAllActions()
         return managedObjectContext
     }()
     
@@ -60,6 +63,7 @@ class CoreDataStack {
         managedObjectContext.performBlockAndWait() {
             do {
                 try self.managedObjectContext.save()
+                print("started saving")
             } catch {
                 fatalError("Error saving main managed object context! \(error)")
             }
@@ -68,6 +72,7 @@ class CoreDataStack {
         savePuzzleManagedObjectContext.performBlock() {
             do {
                 try self.savePuzzleManagedObjectContext.save()
+                print("finished saving")
             } catch {
                 fatalError("Error saving private managed object context! \(error)")
             }

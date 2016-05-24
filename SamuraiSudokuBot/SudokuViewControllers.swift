@@ -80,7 +80,6 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     
     var selectedTile: Tile? {
         didSet {
-            
             if selectedTile != oldValue {
                 if noteMode {
                     noteMode = false
@@ -92,6 +91,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
             }
             
             if let selected = selectedTile {
+                print(selected.displayValue)
                 selected.refreshLabel()
             }
             
@@ -113,10 +113,19 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         numPad.delegate = self
     }
     
+    func activateInterface() {
+        board.userInteractionEnabled = true
+    }
+    
+    func deactivateInterface() {
+        board.userInteractionEnabled = false
+    }
+    
+    
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        activateInterface()
         
         // register to receive notifications when user defaults change
         NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey, options: .New, context: nil)
@@ -241,8 +250,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
             }
         }
     }
-    
-    
+
     
     func noteValues() -> [Int]? {
         guard noteMode, let selected = selectedTile else {
@@ -260,7 +268,6 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         return selected.displayValue.rawValue
     }
 
-    
     func valueSelected(value: UIButton) {
         let value = value.tag
         if let selected = selectedTile?.backingCell {
@@ -281,17 +288,20 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         audioPlayer = nil
     }
     
+    
      func playSelectedTileChanged() {
         guard soundOn else{return}
         let url = Utils.Sounds.SoundType.SelectedTileChanged.url
         playAudioAtURL(url)
     }
     
-     func playValueSelected() {
+
+    func playValueSelected() {
         guard soundOn else{return}
         let url = Utils.Sounds.SoundType.ValueSelected.url
         playAudioAtURL(url)
     }
+    
     
     func playPuzzleCompleted() {
         guard soundOn else{return}
@@ -299,11 +309,13 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         playAudioAtURL(url)
     }
     
+    
     func playPuzzleFetched() {
         guard soundOn else{return}
         let url = Utils.Sounds.SoundType.PuzzleFetched.url
         playAudioAtURL(url)
     }
+    
     
     func playHintGiven() {
         guard soundOn else{return}
@@ -311,9 +323,16 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         playAudioAtURL(url)
     }
     
+    
     func playGiveUp() {
         guard soundOn else{return}
         let url = Utils.Sounds.SoundType.GiveUp.url
+        playAudioAtURL(url)
+    }
+    
+    func playUndoRedo() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.UndoRedo.url
         playAudioAtURL(url)
     }
     
@@ -353,6 +372,16 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     var containerWidth: NSLayoutConstraint!
     var containerHeight: NSLayoutConstraint!
     
+    var userSolvedPuzzle: Bool? {
+        didSet {
+            if userSolvedPuzzle == nil {
+                
+            } else {
+                
+            }
+        }
+    }
+    
     var numPadHeight: CGFloat {
         get {
             return self.board.frame.size.width * 1/9
@@ -372,25 +401,48 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         
     }
     
+    override func deactivateInterface() {
+        board.userInteractionEnabled = false
+        
+        UIView.animateWithDuration(0.25) {
+            
+            self.noteButton?.alpha = 0.5
+            self.optionsButton.alpha = 0.5
+            self.clearButton?.alpha = 0.5
+            
+        }
+    }
+    
+    override func activateInterface() {
+        numPad.userInteractionEnabled = true
+        board.userInteractionEnabled = true
+        numPad.refresh()
+        
+        UIView.animateWithDuration(0.25) {
+            
+            self.noteButton?.alpha = 1.0
+            self.optionsButton.alpha = 1.0
+            self.clearButton?.alpha = 1.0
+            
+        }
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         containerSubviews = (front: hintButton, back:playAgainButton)
-        
         
         containerView.backgroundColor = UIColor.clearColor()
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = containerView.frame.size.height/2
         containerView.layer.borderWidth = 3.0
         
-        
         let nestedButtons = [hintButton, playAgainButton]
         
         for button in nestedButtons {
             button.frame = containerView.bounds
         }
-        
         
         board.controller = self
         numPad.delegate = self
@@ -405,7 +457,6 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         setUpBoard()
         setUpButtons()
         configureButtons()
-        
         
         longFetchLabel.layer.backgroundColor = UIColor.blackColor().CGColor
         longFetchLabel.textColor = UIColor.whiteColor()
@@ -432,9 +483,6 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         }
         
         activateInterface()
-        
-        
-        
         
         // register to receive notifications when user defaults change
         NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey, options: .New, context: nil)
@@ -477,9 +525,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
                     tile.refreshLabel()
                 }
             } else if path == Utils.Constants.Identifiers.colorTheme {
-                print("color path changed")
                 if let bgView = self.view as? SSBBackgroundView {
-                    print("right kind of view")
                     bgView.drawRect(self.view.bounds)
                 }
             }
@@ -693,5 +739,10 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
             }
         }
     }
+    
+    func cleanUp() {
+        print("clean up called")
+    }
+    
     
 }

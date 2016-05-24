@@ -20,8 +20,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kig-aV-nT2">
-                                <rect key="frame" x="375" y="225" width="50" height="50"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kig-aV-nT2">
+                                <rect key="frame" x="374" y="225" width="51" height="50"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.79855809560000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" image="undo_icon"/>
@@ -30,39 +30,39 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wgM-tv-1yF">
-                                <rect key="frame" x="318" y="226" width="85" height="48"/>
+                                <rect key="frame" x="374" y="225" width="51" height="50"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" image="redo_icon"/>
                                 <connections>
                                     <action selector="handleRedoButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pCe-ty-YdG"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wbA-nW-po6" userLabel="Board3" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
-                                <rect key="frame" x="429" y="370" width="257" height="240"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbA-nW-po6" userLabel="Board3" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="425" y="375" width="250" height="250"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Uo3-je-Kst" userLabel="Board4" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
-                                <rect key="frame" x="-86" y="370" width="257" height="240"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uo3-je-Kst" userLabel="Board4" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="-75" y="375" width="250" height="250"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WQH-kb-pww" userLabel="Board2" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
-                                <rect key="frame" x="429" y="-110" width="257" height="240"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WQH-kb-pww" userLabel="Board2" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="425" y="-125" width="250" height="250"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jib-cP-aYm" userLabel="Board1" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
-                                <rect key="frame" x="-86" y="-110" width="257" height="240"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jib-cP-aYm" userLabel="Board1" customClass="SudokuBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="-75" y="-125" width="250" height="250"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4gs-Yy-Sja" customClass="MiddleBoard" customModule="SamuraiSudokuBot" customModuleProvider="target">
                                 <rect key="frame" x="175" y="125" width="250" height="250"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dOO-5u-UbC" customClass="SudokuNumberPad" customModule="SamuraiSudokuBot" customModuleProvider="target">
-                                <rect key="frame" x="151" y="483" width="300" height="25"/>
+                            <view multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dOO-5u-UbC" customClass="SudokuNumberPad" customModule="SamuraiSudokuBot" customModuleProvider="target">
+                                <rect key="frame" x="113" y="633" width="375" height="42"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S18-Kj-wer">
-                                <rect key="frame" x="94" y="483" width="37" height="38"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S18-Kj-wer">
+                                <rect key="frame" x="30" y="633" width="63" height="63"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Clear"/>
@@ -70,8 +70,8 @@
                                     <action selector="handleClearButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="AbJ-ZM-ni7"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CPe-6L-xh3">
-                                <rect key="frame" x="1" y="225" width="50" height="50"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CPe-6L-xh3">
+                                <rect key="frame" x="-1" y="225" width="51" height="50"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.79855809560000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Settings"/>
@@ -79,8 +79,8 @@
                                     <action selector="handleOptionsButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ouA-gT-iRa"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fle-88-0fn">
-                                <rect key="frame" x="471" y="483" width="38" height="38"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fle-88-0fn">
+                                <rect key="frame" x="508" y="633" width="63" height="63"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Note+"/>
@@ -88,8 +88,8 @@
                                     <action selector="handleNoteButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2gU-aV-I4h"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MtK-4M-xr9">
-                                <rect key="frame" x="274" y="507" width="52" height="52"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MtK-4M-xr9">
+                                <rect key="frame" x="275" y="500" width="50" height="50"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Button"/>
@@ -97,14 +97,23 @@
                                     <action selector="handleHintButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Czz-LR-Lda"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vNL-fq-fjd">
-                                <rect key="frame" x="272" y="9" width="56" height="30"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vNL-fq-fjd">
+                                <rect key="frame" x="294" y="-135" width="12" height="10"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="10" id="e2J-1y-vL5"/>
                                     <constraint firstAttribute="width" constant="12" id="zyp-Sv-uzT"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OTg-8o-R5O">
+                                <rect key="frame" x="269" y="-63" width="63" height="63"/>
+                                <color key="backgroundColor" red="0.18431372549019609" green="0.77647058823529413" blue="0.14901960784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="playAgainButton"/>
+                                <connections>
+                                    <action selector="handlePlayAgainButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yzg-4C-HqC"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.76619302290000002" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -116,7 +125,7 @@
                             <constraint firstItem="CPe-6L-xh3" firstAttribute="height" secondItem="S18-Kj-wer" secondAttribute="height" multiplier="4/5" id="49Y-qp-L2N"/>
                             <constraint firstItem="S18-Kj-wer" firstAttribute="height" secondItem="dOO-5u-UbC" secondAttribute="height" multiplier="3/2" id="5fJ-CH-zTN"/>
                             <constraint firstItem="MtK-4M-xr9" firstAttribute="height" secondItem="S18-Kj-wer" secondAttribute="height" multiplier="4/5" id="6XE-dT-phT"/>
-                            <constraint firstItem="vNL-fq-fjd" firstAttribute="bottom" secondItem="Jib-cP-aYm" secondAttribute="top" constant="-40" id="78H-pc-BSI"/>
+                            <constraint firstItem="vNL-fq-fjd" firstAttribute="bottom" secondItem="Jib-cP-aYm" secondAttribute="top" id="78H-pc-BSI"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="top" secondItem="4gs-Yy-Sja" secondAttribute="bottom" identifier="board4Y" id="7tH-xQ-VkA"/>
                             <constraint firstItem="wgM-tv-1yF" firstAttribute="width" secondItem="Kig-aV-nT2" secondAttribute="width" id="8DE-dV-zmj"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="centerX" secondItem="4gs-Yy-Sja" secondAttribute="centerX" id="B4R-KI-Yej"/>
@@ -130,9 +139,11 @@
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="leading" secondItem="S18-Kj-wer" secondAttribute="trailing" constant="20" id="LGX-CI-dJO"/>
                             <constraint firstItem="Kig-aV-nT2" firstAttribute="width" secondItem="MtK-4M-xr9" secondAttribute="width" id="Lyu-Hd-YOb"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="width" secondItem="4gs-Yy-Sja" secondAttribute="width" multiplier="1.5" id="M3O-HY-X3Q"/>
+                            <constraint firstItem="OTg-8o-R5O" firstAttribute="bottom" secondItem="Jib-cP-aYm" secondAttribute="centerY" id="Mck-WH-IsA"/>
                             <constraint firstItem="dOO-5u-UbC" firstAttribute="height" secondItem="4gs-Yy-Sja" secondAttribute="height" multiplier="1/6" id="Nqm-PL-nhZ"/>
                             <constraint firstItem="wgM-tv-1yF" firstAttribute="centerY" secondItem="Kig-aV-nT2" secondAttribute="centerY" id="Orn-J1-a7A"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="trailing" secondItem="4gs-Yy-Sja" secondAttribute="leading" identifier="board4X" id="Ov4-v6-qAl"/>
+                            <constraint firstItem="OTg-8o-R5O" firstAttribute="height" secondItem="S18-Kj-wer" secondAttribute="height" id="PsT-j7-dB4"/>
                             <constraint firstItem="fle-88-0fn" firstAttribute="leading" secondItem="dOO-5u-UbC" secondAttribute="trailing" constant="20" id="RQL-jF-fOK"/>
                             <constraint firstItem="WQH-kb-pww" firstAttribute="height" secondItem="4gs-Yy-Sja" secondAttribute="height" id="T2e-nM-MeU"/>
                             <constraint firstItem="Jib-cP-aYm" firstAttribute="bottom" secondItem="4gs-Yy-Sja" secondAttribute="top" identifier="board1Y" id="TRx-u3-dBx"/>
@@ -145,6 +156,7 @@
                             <constraint firstItem="MtK-4M-xr9" firstAttribute="width" secondItem="S18-Kj-wer" secondAttribute="width" multiplier="4/5" id="cr4-9p-pwZ"/>
                             <constraint firstItem="Jib-cP-aYm" firstAttribute="height" secondItem="4gs-Yy-Sja" secondAttribute="height" id="dYo-eW-bMU"/>
                             <constraint firstItem="Uo3-je-Kst" firstAttribute="height" secondItem="4gs-Yy-Sja" secondAttribute="height" id="dfQ-o8-F35"/>
+                            <constraint firstItem="OTg-8o-R5O" firstAttribute="width" secondItem="S18-Kj-wer" secondAttribute="width" id="enz-T4-MeQ"/>
                             <constraint firstItem="S18-Kj-wer" firstAttribute="width" secondItem="dOO-5u-UbC" secondAttribute="height" multiplier="3/2" id="hfy-Mc-bZ1"/>
                             <constraint firstItem="CPe-6L-xh3" firstAttribute="centerY" secondItem="4gs-Yy-Sja" secondAttribute="centerY" id="k6c-mI-96x"/>
                             <constraint firstItem="fle-88-0fn" firstAttribute="width" secondItem="dOO-5u-UbC" secondAttribute="height" multiplier="3/2" id="kTC-wp-Oka"/>
@@ -157,6 +169,7 @@
                             <constraint firstItem="Kig-aV-nT2" firstAttribute="centerY" secondItem="4gs-Yy-Sja" secondAttribute="centerY" id="tMO-3L-TX8"/>
                             <constraint firstItem="4gs-Yy-Sja" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="10/24" id="twV-LE-YOa"/>
                             <constraint firstItem="wgM-tv-1yF" firstAttribute="leading" secondItem="Kig-aV-nT2" secondAttribute="leading" id="uPD-VN-7Fp"/>
+                            <constraint firstItem="OTg-8o-R5O" firstAttribute="centerX" secondItem="4gs-Yy-Sja" secondAttribute="centerX" id="uRc-Lz-Hej"/>
                             <constraint firstItem="WQH-kb-pww" firstAttribute="leading" secondItem="4gs-Yy-Sja" secondAttribute="trailing" identifier="board2X" id="zwL-IC-2Xu"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
@@ -185,6 +198,7 @@
                         <outlet property="noteButton" destination="fle-88-0fn" id="Drv-CM-OaY"/>
                         <outlet property="numPad" destination="dOO-5u-UbC" id="hgo-eJ-3Bn"/>
                         <outlet property="optionsButton" destination="CPe-6L-xh3" id="pAU-2i-7MY"/>
+                        <outlet property="playAgainButton" destination="OTg-8o-R5O" id="Rfo-yx-kMb"/>
                         <outlet property="puzzleMenuAnchor" destination="vNL-fq-fjd" id="VFx-SS-maN"/>
                         <outlet property="redoButton" destination="wgM-tv-1yF" id="dmI-8O-aKA"/>
                         <outlet property="redoPin" destination="uPD-VN-7Fp" id="ds6-kN-3yu"/>

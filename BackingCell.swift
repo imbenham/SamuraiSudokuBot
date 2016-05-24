@@ -32,7 +32,6 @@ class BackingCell: NSManagedObject {
                 newString += "\(num)"
             }
             self.notes = newString
-            // save puzzle
         }
     }
     

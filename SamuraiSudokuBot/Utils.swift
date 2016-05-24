@@ -190,6 +190,7 @@ struct Utils {
             case PuzzleFetched
             case HintGiven
             case GiveUp
+            case UndoRedo
         
             
             var url: NSURL {
@@ -210,6 +211,8 @@ struct Utils {
                         path = bundle.pathForResource("puzzle_fetched", ofType: "caf")!
                     case .GiveUp:
                         path = bundle.pathForResource("give_up", ofType: "caf")!
+                    case .UndoRedo:
+                        path = bundle.pathForResource("undo_redo", ofType: "caf")!
                     }
                     
                  

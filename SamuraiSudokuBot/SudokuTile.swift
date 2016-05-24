@@ -31,6 +31,7 @@ class Tile: SudokuItem {
                 } else  if let assignedVal = bc.assignedValue {
                     return TileValue(rawValue: Int(assignedVal))!
                 }
+                
                 return .Nil
             } else {
                 userInteractionEnabled = false
@@ -39,16 +40,27 @@ class Tile: SudokuItem {
             
         }
     }
-    var revealed = false {
-        didSet {
-            if revealed == true {
+    var revealed: Bool {
+        
+        get {
+            guard let backingCell = backingCell else {
+                return false
+            }
+            
+            return backingCell.revealed.boolValue
+        }
+        
+        set {
+            guard backingCell != nil else{
+                return
+            }
+            if newValue == true {
                 backingCell?.revealed = true
                 userInteractionEnabled = false
             } else {
                 backingCell?.revealed = false
                 userInteractionEnabled = true
             }
-            refreshLabel()
         }
     }
     var valueLabel = UILabel()
@@ -216,6 +228,7 @@ class Tile: SudokuItem {
         } else {
             valueLabel.textColor = labelColor
             userInteractionEnabled = true
+            
         }
         
         valueLabel.text = noteMode ? "" : self.getValueText()

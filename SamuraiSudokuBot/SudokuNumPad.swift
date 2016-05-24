@@ -156,12 +156,11 @@ class SudokuNumberPad: UIView {
            
             for button in allButtons {
                 button.selected = self.delegate?.currentValue == button.tag ? true : false
-                button.userInteractionEnabled = true
             }
         } else {
             configureForNoteMode()
         }
-        self.userInteractionEnabled = true
+
     }
     
     func configureForNoteMode() {
@@ -182,8 +181,6 @@ class SudokuNumberPad: UIView {
             }
             return initial
         })
-        
-        print(twoSets)
         
         for button in twoSets.include {
             button.selected = true
