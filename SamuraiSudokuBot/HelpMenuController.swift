@@ -90,9 +90,8 @@ class HelpMenuController: PopUpTableViewController {
         case 1:
             pvc.dismissViewControllerAnimated(true) {
                 if let ppd = pvc as? PlayPuzzleDelegate {
-                    ppd.giveUp()
+                    ppd.presentGiveUpAlert()
                     ppd.hintButton.selected = false
-                    
                     if let ssc = pvc as? SamuraiSudokuController {
                         ssc.hideUndoRedo()
                     }

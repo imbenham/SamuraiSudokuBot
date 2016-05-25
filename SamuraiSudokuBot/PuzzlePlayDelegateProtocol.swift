@@ -172,6 +172,7 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     // handling puzzle completion
     func checkSolution()
     func puzzleSolved()
+    func presentGiveUpAlert()
     func giveUp()
     func cleanUp()
     
@@ -180,8 +181,10 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     
     // clearing content
     func showClearMenu(sender: AnyObject?)
-    func clearAll()
+    func presentClearSolutionAlert()
     func clearSolution()
+    func presentClearPuzzleAlert()
+    func clearPuzzle()
     
     // audioplayer functions
     
@@ -195,6 +198,8 @@ protocol PlayPuzzleDelegate:class, SudokuControllerDelegate {
     func playHintGiven()
     func playGiveUp()
     func playUndoRedo()
+    func playDiscardPuzzle()
+    func playStartOver()
     
     func playAudioAtURL(url:NSURL)
     
@@ -358,16 +363,16 @@ extension PlayPuzzleDelegate {
     func puzzleReady() {
         
         let defaults = NSUserDefaults.standardUserDefaults()
-        let placekeeper = defaults.objectForKey(Utils.Constants.Identifiers.soundKey) as! Bool
+        let placekeeper = defaults.objectForKey(Utils.Identifiers.soundKey) as! Bool
         
         
-        defaults.setBool(false, forKey: Utils.Constants.Identifiers.soundKey)
+        defaults.setBool(false, forKey: Utils.Identifiers.soundKey)
         
         if startingNilTiles.count != 0 {
             selectedTile = startingNilTiles[0]
         }
         
-        defaults.setBool(placekeeper, forKey: Utils.Constants.Identifiers.soundKey)
+        defaults.setBool(placekeeper, forKey: Utils.Identifiers.soundKey)
         
         dispatch_async(concurrentPuzzleQueue, {self.playPuzzleFetched()})
         
@@ -381,7 +386,9 @@ extension PlayPuzzleDelegate {
                 CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
                 undoManager.removeAllActions()
                 undoManager.enableUndoRegistration()
+                undoManager.removeAllActions()
             } else {
+                undoManager.removeAllActions()
                 CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
                 undoManager.removeAllActions()
             }
@@ -425,13 +432,21 @@ extension PlayPuzzleDelegate {
         
         dispatch_async(concurrentPuzzleQueue, {self.playHintGiven()})
         
-        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
-        CoreDataStack.sharedStack.managedObjectContext.undoManager!.disableUndoRegistration()
-        CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
+        let context = CoreDataStack.sharedStack.managedObjectContext
+        if context.undoManager!.undoRegistrationEnabled {
+            context.processPendingChanges()
+            context.undoManager?.removeAllActions()
+            context.undoManager!.disableUndoRegistration()
+        }
+        
 
         animateDiscoveredTile(tile, handler: {
-            CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
-            CoreDataStack.sharedStack.managedObjectContext.undoManager!.enableUndoRegistration()
+            context.processPendingChanges()
+            if !context.undoManager!.undoRegistrationEnabled {
+                context.processPendingChanges()
+                context.undoManager!.enableUndoRegistration()
+            }
+            
         })
         
     }
@@ -521,7 +536,7 @@ extension PlayPuzzleDelegate {
     
     
     
-    //MARK: clearing input
+    //MARK: clearing content
     
     func showClearMenu(sender: AnyObject?) {
         guard let vc = self as? SudokuController else{
@@ -536,7 +551,7 @@ extension PlayPuzzleDelegate {
         
         
         poController.modalPresentationStyle = .Popover
-        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 2/5, vc.view.frame.height * 1/3)
+        poController.preferredContentSize = CGSizeMake(vc.view.frame.width * 2/5, vc.view.frame.height * 1/4)
         
         let ppc = poController.popoverPresentationController
         ppc?.permittedArrowDirections = .Up
@@ -553,20 +568,52 @@ extension PlayPuzzleDelegate {
 
     }
     
-    func clearAll() {
+    func clearSolution() {
+        let context = PuzzleStore.sharedInstance.managedObjectContext
+        
+        context.processPendingChanges()
+        context.undoManager!.removeAllActions()
+        if context.undoManager!.undoRegistrationEnabled {
+            context.undoManager!.disableUndoRegistration()
+            if let ssb = self as? SamuraiSudokuController {
+                ssb.hideUndoRedo()
+            }
+        }
+
+        dispatch_async(concurrentPuzzleQueue, {
+            self.playStartOver()
+        })
         for tile in self.startingNilTiles {
             tile.backingCell?.assignValue(0)
         }
+        
+        if !context.undoManager!.undoRegistrationEnabled {
+            context.processPendingChanges()
+            context.undoManager!.removeAllActions()
+            if !context.undoManager!.undoRegistrationEnabled {
+                print("about to enable from clearSolution")
+                context.undoManager!.enableUndoRegistration()
+            }
+            
+        }
+        
     }
     
     func clearPuzzle() {
-        let context = CoreDataStack.sharedStack.managedObjectContext
+        let context = PuzzleStore.sharedInstance.managedObjectContext
         
+        context.processPendingChanges()
+        context.undoManager!.removeAllActions()
         if context.undoManager!.undoRegistrationEnabled {
-            context.processPendingChanges()
-            context.undoManager!.removeAllActions()
             context.undoManager!.disableUndoRegistration()
+            if let ssb = self as? SamuraiSudokuController {
+                ssb.hideUndoRedo()
+            }
         }
+        
+        dispatch_async(concurrentPuzzleQueue, {
+            self.playDiscardPuzzle()
+        })
         
         for tile in self.tiles {
             tile.backingCell = nil
@@ -575,15 +622,19 @@ extension PlayPuzzleDelegate {
         self.puzzle = nil
     }
     
-    func clearSolution() {
+    func presentClearSolutionAlert() {
         
         guard let vc = self as? UIViewController else {
             return
         }
         
         alertController = UIAlertController(title: "Are you sure?", message: "This will cause all of the values you've entered to be removed and cannot be undone.", preferredStyle: .Alert)
+        
+       
         let oKay = UIAlertAction(title: "Clear", style: .Default) { (_) in
-           self.clearAll()
+            
+            self.clearSolution()
+            self.activateInterface()
         }
         
         let cancel = UIAlertAction(title: "Cancel", style: .Default) {(_) in
@@ -597,6 +648,31 @@ extension PlayPuzzleDelegate {
             self.deactivateInterface()
         }
         
+    }
+    
+    func presentClearPuzzleAlert() {
+        guard let vc = self as? UIViewController else {
+            return
+        }
+        
+        alertController = UIAlertController(title: "Are you sure?", message: "This will nuke this puzzle and cannot be undone.", preferredStyle: .Alert)
+        
+        
+        let oKay = UIAlertAction(title: "Get on with it", style: .Default) { (_) in
+            self.clearPuzzle()
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .Default) {(_) in
+            self.activateInterface()
+        }
+        
+        alertController!.addAction(oKay)
+        alertController!.addAction(cancel)
+        
+        vc.presentViewController(alertController!, animated: true) { (_) in
+            self.deactivateInterface()
+        }
+
     }
     
     //MARK: handling puzzle completion
@@ -642,7 +718,34 @@ extension PlayPuzzleDelegate {
             }
         }
     }
+    
+    
+    func presentGiveUpAlert() {
+        guard let vc = self as? UIViewController else {
+            return
+        }
+        
+        alertController = UIAlertController(title: "Throwing in the towel?", message: "Say the word and I'll show you where all the numbers belong.", preferredStyle: .Alert)
+        
+        
+        let oKay = UIAlertAction(title: "Do it.", style: .Default) { (_) in
+            
+            self.giveUp()
+        
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .Default) {(_) in
+            self.activateInterface()
+        }
+        
+        alertController!.addAction(oKay)
+        alertController!.addAction(cancel)
+        
+        vc.presentViewController(alertController!, animated: true) { (_) in
+            self.deactivateInterface()
+        }
 
+    }
     
     func checkSolution() {
         print(nilTiles.count)
@@ -662,7 +765,7 @@ extension PlayPuzzleDelegate {
         
         for tile in tiles {
             tile.userInteractionEnabled = false
-            tile.backgroundColor = tile.defaultBackgroundColor
+            //tile.backgroundColor = tile.defaultBackgroundColor
         }
         
         
@@ -672,21 +775,21 @@ extension PlayPuzzleDelegate {
             let tiles = boxes[0].boxes
             UIView.animateWithDuration(0.15, animations: {
                 for tile in tiles {
-                    tile.backgroundColor = tile.assignedBackgroundColor
+                    tile.prepareForPuzzleSolvedAnimation()
                 }
             }) { finished in
                 boxes.removeAtIndex(0)
                 if finished {
                     UIView.animateWithDuration(0.15, animations: {
                         for tile in tiles {
-                            tile.backgroundColor = tile.defaultBackgroundColor
+                            tile.prepareForPuzzleSolvedAnimation()
                         }
                     }) { finished in
                         if finished {
                             if boxes.isEmpty {
                                 UIView.animateWithDuration(0.15, animations: {
                                     for tile in self.tiles {
-                                        tile.backgroundColor = tile.assignedBackgroundColor
+                                         tile.finishPuzzleSolvedAnimation()
                                     }
                                 }) { finished in
                                     if finished {

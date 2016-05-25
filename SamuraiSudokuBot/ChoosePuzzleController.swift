@@ -128,23 +128,28 @@ class ChoosePuzzleController: PopUpTableViewController {
         let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         var attributedTitle: NSAttributedString
         
+        let color = indexPath == selectedIndex ? UIColor.blackColor() : Utils.Palette.getTheme()
+        
+        let configs = Utils.TextConfigs.self
+        
         let row = indexPath.row
         
         if row < 4 {
-            attributedTitle = difficulties[row].stylizedDescriptor()
+            let selected = selectedIndex == indexPath
+            attributedTitle = difficulties[row].stylizedDescriptor(selected: selected)
         } else if row == 4 {
-            let configs = Utils.ButtonConfigs()
+    
             if customAvailable {
-                attributedTitle = successfullyCompleted ? configs.getAttributedBodyText("SLIGHTLY HARDER") : configs.getAttributedBodyText("SLIGHTLY EASIER")
+                attributedTitle = successfullyCompleted ? configs.getAttributedTitle("SLIGHTLY HARDER", withColor: color) : configs.getAttributedTitle("SLIGHTLY EASIER", withColor: color)
             } else {
-                attributedTitle = configs.getAttributedBodyText("MOST RECENT")
+                attributedTitle = configs.getAttributedTitle("MOST RECENT", withColor: color)
             }
         } else {
-            let configs = Utils.ButtonConfigs()
-            attributedTitle = configs.getAttributedBodyText("MOST RECENT")
+            attributedTitle = configs.getAttributedTitle("MOST RECENT", withColor: color)
         }
         
         cell.textLabel?.attributedText = attributedTitle
+       
         
         return cell
     }
@@ -157,7 +162,7 @@ class ChoosePuzzleController: PopUpTableViewController {
             }
         }
         
-        return (preferredContentSize.height - headerHeight - ftHeight - tableView.layoutMargins.bottom - 0.5) / CGFloat(self.tableView(tableView, numberOfRowsInSection: indexPath.section))
+        return (preferredContentSize.height - headerHeight - ftHeight - (tableView.layoutMargins.top/2.0)) / CGFloat(self.tableView(tableView, numberOfRowsInSection: indexPath.section))
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -198,17 +203,16 @@ class ChoosePuzzleController: PopUpTableViewController {
             UIView.animateWithDuration(0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.25, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.preferredContentSize.height += self.footerHeight
                 footer.hidden = false
-                self.tableView.reloadData()
-                }, completion: nil)
+                
+                }, completion: {completed in
+                    if completed {
+                        self.tableView.reloadData()
+                    }
+            })
         }
 
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        print(sfHeight)
-        
-        return sfHeight
-    }
     
     func saveAndPop(sender: AnyObject?) {
         

@@ -10,6 +10,11 @@ import UIKit
 
 class Tile: SudokuItem {
     
+    var defaultImage: UIImage!
+    var selectedImage: UIImage!
+    var noteModeImage: UIImage!
+    var valueAssignedImage: UIImage!
+    
     override var controller: SudokuControllerDelegate? {
         get {
             return parentSquare?.controller
@@ -79,7 +84,7 @@ class Tile: SudokuItem {
     var symbolSet: SymbolSet {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let symType = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
+            let symType = defaults.integerForKey(Utils.Identifiers.symbolSetKey)
             switch symType {
             case 0:
                 return .Standard
@@ -91,9 +96,9 @@ class Tile: SudokuItem {
         }
         
     }
+    var backgroundImageView = UIImageView()
     
     let noteLabels: [TableCell]
-    let noteModeColor = UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 0.3)
     var backingCell: BackingCell? {
         didSet {
             if let bc = backingCell {
@@ -107,10 +112,9 @@ class Tile: SudokuItem {
             refreshLabel()
         }
     }
-    let defaultBackgroundColor = UIColor.whiteColor()
-    let assignedBackgroundColor = UIColor(red: 0.0, green: 1.0, blue: 0, alpha: 0.3)
+
     let wrongColor = UIColor(red: 1.0, green: 0.0, blue: 0, alpha: 0.3)
-    var selectedColor = UIColor(red: 0.1, green: 0.1, blue: 0.9, alpha: 0.2)
+    
     let noteBackground = UIView()
     var noteMode:Bool {
         if let controller = controller as? PlayPuzzleDelegate {
@@ -164,6 +168,20 @@ class Tile: SudokuItem {
         self.backingCell = BackingCell(cell:cells[0])
     }
     
+    //tiles -> cells
+    private func cellsFromTiles(tiles:[Tile]) -> [PuzzleCell] {
+        var cells: [PuzzleCell] = []
+        for tile in tiles {
+            let val = tile.displayValue.rawValue
+            let row = tile.getRowIndex()
+            let column = tile.getColumnIndex()
+            let pCell = PuzzleCell(row: row, column: column, value: val)
+            cells.append(pCell)
+        }
+        
+        return cells
+    }
+    
     
     required init(coder aDecoder: NSCoder) {
         var labels: [TableCell] = []
@@ -180,17 +198,31 @@ class Tile: SudokuItem {
     
     
     override func layoutSubviews() {
+        clipsToBounds = true
+        addSubview(backgroundImageView)
+        backgroundImageView.frame = bounds
+        backgroundImageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        backgroundImageView.backgroundColor = UIColor.clearColor()
+        
+        let size = backgroundImageView.frame.size
+        let configs = Utils.TileConfigs.self
+        
+        defaultImage = configs.backgroundImageForSize(size)
+        selectedImage = configs.backgroundImageForSize(size, color: UIColor(red: 0.1, green: 0.1, blue: 0.9, alpha: 1.0))
+        noteModeImage = configs.backgroundImageForSize(size, color: UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0))
+        valueAssignedImage = configs.backgroundImageForSize(size, color:UIColor(red: 0.0, green: 1.0, blue: 0, alpha: 1.0))
+       
+        
         self.layer.cornerRadius = 3.0
-        //let configs = Utils.ButtonConfigs()
-       // self.addSubview(UIImageView(image: configs.backgroundImageForSize(self.frame.size, selected: false)))
-        self.addSubview(valueLabel)
+        
+        backgroundImageView.addSubview(valueLabel)
         valueLabel.frame = self.bounds
         valueLabel.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         valueLabel.textAlignment = .Center
         valueLabel.font = UIFont.boldSystemFontOfSize(UIFont.labelFontSize()+2)
         
-        noteBackground.frame = self.bounds
-        addSubview(noteBackground)
+        noteBackground.frame = bounds
+        backgroundImageView.addSubview(noteBackground)
         noteBackground.backgroundColor = UIColor.clearColor()
         for label in noteLabels {
             label.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -239,7 +271,7 @@ class Tile: SudokuItem {
     private func refreshBackground() {
         if noteMode {
             if selected {
-                self.backgroundColor = noteModeColor
+                backgroundImageView.image = noteModeImage
                 for lv in noteLabels {
                     lv.layer.borderWidth = 1
                 }
@@ -248,11 +280,11 @@ class Tile: SudokuItem {
         }
         
         if displayValue != .Nil && solutionValue != nil {
-            backgroundColor = selected ? selectedColor : assignedBackgroundColor
+            backgroundImageView.image = selected ? selectedImage : valueAssignedImage
         } else if revealed {
-            backgroundColor = defaultBackgroundColor
+            backgroundImageView.image = defaultImage
         } else {
-            backgroundColor = selected ? selectedColor : defaultBackgroundColor
+            backgroundImageView.image = selected ? selectedImage : defaultImage
         }
         
         for lv in noteLabels {
@@ -299,7 +331,7 @@ class Tile: SudokuItem {
             
             noteLabel.frame = rect
             
-            noteLabel.layer.borderColor = selectedColor.CGColor
+            noteLabel.layer.borderColor = UIColor(red: 0.1, green: 0.1, blue: 0.9, alpha: 0.3).CGColor
             let fontHeight = noteLabel.frame.size.height * 9/10
             noteLabel.label?.font = UIFont(name: "futura", size: fontHeight)
             noteLabel.label?.textColor = UIColor.darkGrayColor()
@@ -318,6 +350,14 @@ class Tile: SudokuItem {
             }
             
         }
+    }
+    
+    func prepareForPuzzleSolvedAnimation() {
+        backgroundImageView.image = defaultImage
+    }
+    
+    func finishPuzzleSolvedAnimation() {
+        backgroundImageView.image = valueAssignedImage
     }
 }
 

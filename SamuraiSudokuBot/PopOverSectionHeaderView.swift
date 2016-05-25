@@ -26,10 +26,18 @@ class PopOverSectionHeaderView: UIView {
         self.backgroundColor = UIColor.blackColor()
         self.addSubview(titleLabel)
         
-        titleLabel.attributedText = Utils.TextConfigs().getAttributedTitle(titleText, withColor: UIColor.whiteColor())
+        titleLabel.attributedText = Utils.TextConfigs.getAttributedTitle(titleText, withColor: UIColor.whiteColor())
         
-        titleLabel.centerXAnchor.constraintEqualToAnchor(centerXAnchor)
-        titleLabel.centerYAnchor.constraintEqualToAnchor(centerYAnchor)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+       
+        let leftPin = NSLayoutConstraint(item: titleLabel, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1, constant: 6)
+        let rightPin = NSLayoutConstraint(item: titleLabel, attribute: .Right, relatedBy: .Equal, toItem: self, attribute: .Right, multiplier: 1, constant: -6)
+        let topPin = NSLayoutConstraint(item: titleLabel, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: 6)
+        let bottomPin = NSLayoutConstraint(item: titleLabel, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1, constant: 0)
+        
+        self.addConstraints([leftPin, rightPin, topPin, bottomPin])
+        
+        
         titleLabel.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(6, 16, 0, 6))
         titleLabel.numberOfLines = 1
         titleLabel.textAlignment = .Left

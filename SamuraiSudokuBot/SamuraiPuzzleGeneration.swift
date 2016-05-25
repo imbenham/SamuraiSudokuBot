@@ -307,7 +307,6 @@ class SamuraiMatrix: Matrix {
         
         let lastChoice:Choice = currentSolution.removeLast()
         reinsertLast(lastChoice)
-        //print(reinsertCount)
         
         let lcDown = lastChoice.Chosen.down!.vertOrder != 0 ? lastChoice.Chosen.down! : lastChoice.Chosen.down!.down!
         

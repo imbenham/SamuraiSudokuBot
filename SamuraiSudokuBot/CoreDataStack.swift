@@ -13,7 +13,7 @@ import CoreData
 
 class CoreDataStack {
     
-    static let moduleName = Utils.Constants.Identifiers.coreDataModuleName
+    static let moduleName = Utils.Identifiers.coreDataModuleName
     static let sharedStack = CoreDataStack()
     
     lazy var managedObjectModel: NSManagedObjectModel = {

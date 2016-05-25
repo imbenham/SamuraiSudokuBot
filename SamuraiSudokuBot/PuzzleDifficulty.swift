@@ -6,14 +6,14 @@
 //  Copyright © 2016 Isaac Benham. All rights reserved.
 //
 
-import Foundation
+import UIKit
 func == (lhs:PuzzleDifficulty, rhs:PuzzleDifficulty) -> Bool{
     return lhs.toInt() == rhs.toInt()
 }
 
 //let cachableDifficulties: [PuzzleDifficulty] = [.Easy, .Medium, .Hard, .Insane]
 
-private var rawDiffDict: [PuzzleDifficulty:Int] = [.Easy : 860, .Medium: 1000, .Hard: 1300, .Insane: 1460]
+private var rawDiffDict: [PuzzleDifficulty:Int] = [.Easy : 860, .Medium: 1000, .Hard: 1300, .Insane: 1470]
 
 enum PuzzleDifficulty: Equatable, Hashable {
     case Easy
@@ -38,15 +38,15 @@ enum PuzzleDifficulty: Equatable, Hashable {
         get {
             switch self{
             case .Easy:
-                return Utils.Constants.Identifiers.easyPuzzleKey
+                return Utils.Identifiers.easyPuzzleKey
             case .Medium:
-                return Utils.Constants.Identifiers.mediumPuzzleKey
+                return Utils.Identifiers.mediumPuzzleKey
             case .Hard:
-                return Utils.Constants.Identifiers.hardPuzzleKey
+                return Utils.Identifiers.hardPuzzleKey
             case .Insane:
-                return Utils.Constants.Identifiers.insanePuzzleKey
+                return Utils.Identifiers.insanePuzzleKey
             default:
-                return Utils.Constants.Identifiers.customPuzzleKey
+                return Utils.Identifiers.customPuzzleKey
             }
         }
     }
@@ -114,26 +114,34 @@ enum PuzzleDifficulty: Equatable, Hashable {
         }
     }
     
-    func stylizedDescriptor(allCaps: Bool = true) -> NSAttributedString {
-        let configs = Utils.ButtonConfigs()
+    func stylizedDescriptor(allCaps: Bool = true, selected: Bool = false) -> NSAttributedString {
+       
         var attributedTitle: NSAttributedString
+        
+        var titleString: String
+        
         switch self {
         case .Easy:
-            let string = allCaps ? "EASY" : "Easy"
-            attributedTitle = configs.getAttributedBodyText(string)
+            titleString = allCaps ? "EASY" : "Easy"
+           
         case .Medium:
-            let string = allCaps ? "MEDIUM" : "Medium"
-            attributedTitle = configs.getAttributedBodyText(string)
+            titleString = allCaps ? "MEDIUM" : "Medium"
+           
         case .Hard:
-            let string = allCaps ? "HARD" : "Hard"
-            attributedTitle = configs.getAttributedBodyText(string)
+            titleString = allCaps ? "HARD" : "Hard"
+            
         case .Insane:
-            let string = allCaps ? "INSANE" : "Insane"
-            attributedTitle = configs.getAttributedBodyText(string)
+            titleString = allCaps ? "INSANE" : "Insane"
+           
         default:
-            let string = allCaps ? "CUSTOM" : "Custom"
-            attributedTitle = configs.getAttributedTitle(string)
+            titleString = allCaps ? "CUSTOM" : "Custom"
+            
         }
+        
+        let color = selected ? UIColor.blackColor() : Utils.Palette.getTheme()
+        
+        attributedTitle = Utils.TextConfigs.getAttributedTitle(titleString, withColor: color)
+        
         return attributedTitle
     }
     

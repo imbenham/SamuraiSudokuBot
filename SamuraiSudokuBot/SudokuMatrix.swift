@@ -37,8 +37,6 @@ class Matrix {
     
     func rebuild() {
         
-        print(currentSolution)
-        
         while currentSolution.count != 0 {
             let lastChoice:Choice = currentSolution.removeLast()
             reinsertLast(lastChoice)
@@ -260,7 +258,7 @@ class Matrix {
     func scorePuzzle(puzzle: [PuzzleCell]) -> Int {
         
         
-        let rowList: [LinkedNode<PuzzleKey>] = puzzle.map({findRowMatchForCell($0)})
+        let rowList: [LinkedNode<PuzzleKey>] = puzzle.map({solutionDict![$0]!})
         
         return eliminateRows(rowList);
         
@@ -286,27 +284,43 @@ class Matrix {
             let target = rawDifficultyForPuzzle
             var score = scorePuzzle(givens)
             
+            print("givens count: \(givens.count)")
+            
             while score > target {  // target > solution
                 print(score)
-                let delta = score - target
-                switch delta {
-                case 1000...3000:
-                    givens += solution.removeRandom(80)
-                    print("first case")
-                case 500...999:
-                    givens += solution.removeRandom(25)
-                    print("second case")
-                case 199...499:
-                    givens += solution.removeRandom(12)
-                    print("third case")
-                case 119...198:
-                    givens += solution.removeRandom(5)
-                    print("fourth case")
-                default:
-                    givens += solution.removeRandom()
-                    print("base case")
-                    
+                if givens.count == 0 {
+                    switch PuzzleStore.sharedInstance.difficulty {
+                    case .Hard:
+                        givens += solution.removeRandom(99)
+                    case .Medium:
+                        givens += solution.removeRandom(122)
+                    case .Easy:
+                        givens += solution.removeRandom(137)
+                    default:
+                        givens += solution.removeRandom(89)
+                    }
+                } else {
+                    let delta = score - target
+                    switch delta {
+                    case 1000...3000:
+                        givens += solution.removeRandom(80)
+                        print("first case")
+                    case 500...999:
+                        givens += solution.removeRandom(25)
+                        print("second case")
+                    case 199...499:
+                        givens += solution.removeRandom(12)
+                        print("third case")
+                    case 119...198:
+                        givens += solution.removeRandom(5)
+                        print("fourth case")
+                    default:
+                        givens += solution.removeRandom()
+                        print("base case")
+                        
+                    }
                 }
+                
                 
                 score = scorePuzzle(givens)
             }
@@ -443,7 +457,6 @@ class Matrix {
         
         let lastChoice:Choice = self.currentSolution.removeLast()
         reinsertLast(lastChoice)
-        print(currentSolution.count)
         
         let lcDown = lastChoice.Chosen.down!.vertOrder != 0 ? lastChoice.Chosen.down! : lastChoice.Chosen.down!.down!
         
@@ -513,9 +526,7 @@ class Matrix {
     
     
     internal func solveForRow(row: LinkedNode<PuzzleKey>, root: Int = 1){
-        if root == 0 {
-            print("stop")
-        }
+        
         removeRowFromMatrix(row)
         currentSolution.append((row, root))
         
@@ -577,9 +588,7 @@ class Matrix {
     internal func removeRow(row: LinkedNode<PuzzleKey>) {
         let skip = row.latOrder  // skip the column we're choosing on
         var current = row.getLateralHead() // start at leftmost node and remove each from left to right
-        if current.latOrder != 0 {
-            print("stop")
-        }
+        
         repeat {
             if current.latOrder == skip {
                 current = current.right!

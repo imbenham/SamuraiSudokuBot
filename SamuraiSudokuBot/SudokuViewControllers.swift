@@ -60,7 +60,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     var soundOn: Bool {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let soundKey = Utils.Constants.Identifiers.soundKey
+            let soundKey = Utils.Identifiers.soundKey
             guard let soundOn = defaults.objectForKey(soundKey) as? Bool else {
                 return false
             }
@@ -69,7 +69,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         }
         set {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let soundKey = Utils.Constants.Identifiers.soundKey
+            let soundKey = Utils.Identifiers.soundKey
             defaults.setBool(!soundOn, forKey: soundKey)
         }
         
@@ -128,7 +128,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         
         
         // register to receive notifications when user defaults change
-        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey, options: .New, context: nil)
+        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Identifiers.symbolSetKey, options: .New, context: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -182,7 +182,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let path = keyPath {
-            if path == Utils.Constants.Identifiers.symbolSetKey {
+            if path == Utils.Identifiers.symbolSetKey {
                 for tile in tiles {
                     tile.refreshLabel()
                 }
@@ -193,7 +193,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
     
     deinit {
         
-        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey)
+        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: Utils.Identifiers.symbolSetKey)
         
     }
     
@@ -336,6 +336,18 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         playAudioAtURL(url)
     }
     
+    func playStartOver() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.StartOver.url
+        playAudioAtURL(url)
+    }
+    
+    func playDiscardPuzzle() {
+        guard soundOn else{return}
+        let url = Utils.Sounds.SoundType.DiscardPuzzle.url
+        playAudioAtURL(url)
+    }
+    
     func playAudioAtURL(url:NSURL) {
         guard soundOn else{return}
         do {
@@ -475,7 +487,6 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         
         if self.puzzle == nil {
             let middleTile = self.board.tileAtIndex((5,4))
-            middleTile.selectedColor = UIColor.blackColor()
             self.selectedTile = middleTile
             
             self.spinner.startAnimating()
@@ -485,14 +496,14 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
         activateInterface()
         
         // register to receive notifications when user defaults change
-        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey, options: .New, context: nil)
+        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Identifiers.symbolSetKey, options: .New, context: nil)
            }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         let defaults = NSUserDefaults.standardUserDefaults()
-        let symType = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
+        let symType = defaults.integerForKey(Utils.Identifiers.symbolSetKey)
         if symType == 0 {
             noteButton!.hidden = false
         } else {
@@ -520,11 +531,11 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let path = keyPath {
-            if path == Utils.Constants.Identifiers.symbolSetKey {
+            if path == Utils.Identifiers.symbolSetKey {
                 for tile in tiles {
                     tile.refreshLabel()
                 }
-            } else if path == Utils.Constants.Identifiers.colorTheme {
+            } else if path == Utils.Identifiers.colorTheme {
                 if let bgView = self.view as? SSBBackgroundView {
                     bgView.drawRect(self.view.bounds)
                 }
@@ -544,7 +555,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     deinit {
         
-        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: Utils.Constants.Identifiers.symbolSetKey)
+        NSUserDefaults.standardUserDefaults().removeObserver(self, forKeyPath: Utils.Identifiers.symbolSetKey)
         
     }
     

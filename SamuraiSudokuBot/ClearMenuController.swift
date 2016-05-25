@@ -21,7 +21,7 @@ class ClearMenuController: PopUpTableViewController {
         tableView.separatorStyle = .SingleLine
         tableView.separatorColor = Utils.Palette.getTheme()*/
         
-        headerHeight = (preferredContentSize.height * 1/3) - tableView.layoutMargins.bottom - tableView.layoutMargins.top
+        headerHeight = (preferredContentSize.height * 1/3) - (tableView.layoutMargins.top/2)
         
         let header = PopOverMenuHeader(frame: CGRectMake(0, 0, headerWidth, headerHeight), title: "Humans sometimes \n need a fresh start.")
         tableView.tableHeaderView = header
@@ -50,7 +50,7 @@ class ClearMenuController: PopUpTableViewController {
         let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         var attributedTitle: NSAttributedString
         
-        let configs = Utils.ButtonConfigs()
+        let configs = Utils.TextConfigs.self
         
         let row = indexPath.row
         
@@ -67,6 +67,41 @@ class ClearMenuController: PopUpTableViewController {
         
         return cell
 
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard let ppd = presentingViewController as? PlayPuzzleDelegate else {
+            self.dismissViewControllerAnimated(true, completion: nil)
+            return
+        }
+        switch indexPath.row {
+        case 0:
+            dismiss( {
+                ppd.clearButton.selected = false
+                
+                // show the alert first
+                ppd.presentClearSolutionAlert()
+            })
+        case 1:
+            dismiss({
+                ppd.clearButton.selected = false
+                ppd.presentGiveUpAlert()
+            })
+        default:
+            dismiss({
+                ppd.clearButton.selected = false
+                ppd.presentClearPuzzleAlert()
+            })
+            
+        }
+    }
+    
+    func dismiss(completion: ()->()) {
+        if let vc = self.presentingViewController as? SudokuController {
+            vc.dismissViewControllerAnimated(true) {
+                completion()
+            }
+        }
     }
     
 }

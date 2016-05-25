@@ -106,7 +106,13 @@ class SudokuBoard: SudokuItem, Nester {
     
     
     func prepareBoxes() {
+        self.layer.cornerRadius = 5.0
+        self.clipsToBounds = true
+        self.backgroundColor = UIColor.blackColor()
         for box in boxes {
+            
+            //box.layer.cornerRadius = 5.0
+            //box.clipsToBounds = true
             
             self.addSubview(box)
             

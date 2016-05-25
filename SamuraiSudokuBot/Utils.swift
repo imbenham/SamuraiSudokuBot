@@ -18,7 +18,7 @@ struct Utils {
     struct TextConfigs {
         
         
-        func getAttributedTitle(text: String, withColor color: UIColor) -> NSAttributedString {
+        static func getAttributedTitle(text: String, withColor color: UIColor) -> NSAttributedString {
             let size: CGFloat = 18.0
             let font = UIFont(name: "Futura", size: size)!
             
@@ -27,7 +27,60 @@ struct Utils {
             return NSAttributedString(string:text, attributes: attribs)
         }
         
+        static func getAttributedBodyText(text: String) -> NSAttributedString {
+            let size = UIFont.systemFontSize()
+            let font = UIFont(name: "Futura", size: size)!
+            
+            let attribs = [NSFontAttributeName:font, NSForegroundColorAttributeName:Utils.Palette.getTheme()]
+            
+            return NSAttributedString(string:text, attributes: attribs)
+        }
         
+        
+    }
+    
+    struct TileConfigs {
+        
+        static func backgroundImageForSize(size: CGSize, color: UIColor =  UIColor.lightGrayColor()) -> UIImage {
+            let fillRect = CGRect(origin: CGPoint(x: 0,y: 0), size: size)
+            
+            UIGraphicsBeginImageContextWithOptions(fillRect.size, true, 0.0)
+            
+            guard let context = UIGraphicsGetCurrentContext() else {
+                return UIImage.init()
+            }
+            
+            func drawRadialInRect(context: CGContextRef, rect: CGRect) {
+                let locations: [CGFloat] = [0.0, 1.0]
+                let colorSpace =  CGColorSpaceCreateDeviceRGB()
+                
+                let outerGradientColor = color.CGColor
+                let innerGradientColor = UIColor.whiteColor().CGColor
+                
+                let colors = [innerGradientColor, outerGradientColor]
+                
+                let gradient = CGGradientCreateWithColors(colorSpace, colors, locations)
+                
+                
+                let startPoint = CGPoint(x: CGRectGetMidX(rect), y: CGRectGetMidY(rect))
+                let endPoint = startPoint
+                
+                let startRadius:CGFloat = 0
+                let endRadius = rect.size.width * 2
+                
+                CGContextDrawRadialGradient(context, gradient, startPoint,
+                                            startRadius, endPoint, endRadius, CGGradientDrawingOptions(rawValue: 1))
+            }
+            
+            drawRadialInRect(context, rect: fillRect)
+            
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            return image
+            
+        }
+
     }
 
     struct ButtonConfigs {
@@ -43,7 +96,6 @@ struct Utils {
             guard let context = UIGraphicsGetCurrentContext() else {
                 return UIImage.init()
             }
-            
             
             func drawRadialInRect(context: CGContextRef, rect: CGRect) {
                 let locations: [CGFloat] = [0.0, 1.0]
@@ -67,7 +119,6 @@ struct Utils {
                                             startRadius, endPoint, endRadius, CGGradientDrawingOptions(rawValue: 1))
             }
             
-            
             drawRadialInRect(context, rect: fillRect)
             
             baseColor.setStroke()
@@ -79,6 +130,7 @@ struct Utils {
             return image
             
         }
+    
         
         func getAttributedTitle(title: String) -> NSAttributedString {
             let size: CGFloat = 20.0
@@ -87,21 +139,13 @@ struct Utils {
             return NSAttributedString(string: title, attributes: attribs)
         }
         
-        func getAttributedBodyText(text: String) -> NSAttributedString {
-            let size = UIFont.systemFontSize()
-            let font = UIFont(name: "Futura", size: size)!
-            
-            let attribs = [NSFontAttributeName:font, NSForegroundColorAttributeName:selectedColor]
-            
-            return NSAttributedString(string:text, attributes: attribs)
-        }
         
     }
     
     struct Palette {
         static func getTheme() -> UIColor {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let raw = defaults.integerForKey(Constants.Identifiers.colorTheme)
+            let raw = defaults.integerForKey(Identifiers.colorTheme)
             
             let col = ColorPalette(rawValue: raw)!
             return col.color
@@ -109,7 +153,7 @@ struct Utils {
         
         static func getSelectedIndex() -> Int {
             let defaults = NSUserDefaults.standardUserDefaults()
-            return defaults.integerForKey(Constants.Identifiers.colorTheme)
+            return defaults.integerForKey(Identifiers.colorTheme)
         }
         
         static func getColorForRaw(raw:Int) -> UIColor {
@@ -120,7 +164,7 @@ struct Utils {
         
         static func getThemeInnerGradient() -> UIColor {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let raw = defaults.integerForKey(Constants.Identifiers.colorTheme)
+            let raw = defaults.integerForKey(Identifiers.colorTheme)
             
             let col = ColorPalette(rawValue: raw)!
             
@@ -165,21 +209,20 @@ struct Utils {
         
     }
     
-    struct Constants {
-        struct Identifiers {
-            static let colorTheme = "theme"
-            static let symbolSetKey = "symbolSet"
-            static let soundKey = "sound"
-            
-            static let coreDataModuleName = "SamuraiSudokuBot"
-            
-            static let easyPuzzleKey = "Easy"
-            static let mediumPuzzleKey = "Medium"
-            static let hardPuzzleKey = "Hard"
-            static let insanePuzzleKey = "Insane"
-            static let customPuzzleKey = "Custom"
-        }
+    struct Identifiers {
+        static let colorTheme = "theme"
+        static let symbolSetKey = "symbolSet"
+        static let soundKey = "sound"
+        
+        static let coreDataModuleName = "SamuraiSudokuBot"
+        
+        static let easyPuzzleKey = "Easy"
+        static let mediumPuzzleKey = "Medium"
+        static let hardPuzzleKey = "Hard"
+        static let insanePuzzleKey = "Insane"
+        static let customPuzzleKey = "Custom"
     }
+
     
     struct Sounds {
         
@@ -191,6 +234,9 @@ struct Utils {
             case HintGiven
             case GiveUp
             case UndoRedo
+            case StartOver
+            case DiscardPuzzle
+    
         
             
             var url: NSURL {
@@ -213,6 +259,10 @@ struct Utils {
                         path = bundle.pathForResource("give_up", ofType: "caf")!
                     case .UndoRedo:
                         path = bundle.pathForResource("undo_redo", ofType: "caf")!
+                    case .DiscardPuzzle:
+                        path = bundle.pathForResource("discard_puzzle", ofType: "caf")!
+                    case .StartOver:
+                        path = bundle.pathForResource("start_over", ofType: "caf")!
                     }
                     
                  
@@ -320,6 +370,7 @@ func cellNodeDictFromNodes(nodes: [LinkedNode<PuzzleKey>]) -> [PuzzleCell: Linke
     return dict
 }
 
+/*
 func tileForConstraint(node: PuzzleKey, tiles:[Tile]) -> Tile? {
     if let cRow = node.cell?.row {
         if let cCol = node.cell?.column {
@@ -356,7 +407,7 @@ func cellsFromTiles(tiles:[Tile]) -> [PuzzleCell] {
     
     return cells
 }
-
+*/
 // other utils
 
 var GlobalMainQueue: dispatch_queue_t {

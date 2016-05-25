@@ -28,7 +28,7 @@ class SudokuNumberPad: UIView {
     var symbolSet: SymbolSet {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let symType = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
+            let symType = defaults.integerForKey(Utils.Identifiers.symbolSetKey)
             switch symType {
             case 0:
                 return .Standard

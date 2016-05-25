@@ -22,9 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let defaults = NSUserDefaults.standardUserDefaults()
         
-        let colorID = Utils.Constants.Identifiers.colorTheme
-        let symbID = Utils.Constants.Identifiers.symbolSetKey
-        let soundKey = Utils.Constants.Identifiers.soundKey
+        let colorID = Utils.Identifiers.colorTheme
+        let symbID = Utils.Identifiers.symbolSetKey
+        let soundKey = Utils.Identifiers.soundKey
         
         if defaults.objectForKey(symbID) == nil {
             defaults.setInteger(0, forKey: symbID)

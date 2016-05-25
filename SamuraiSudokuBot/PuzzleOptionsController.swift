@@ -13,7 +13,7 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     var soundOn: Bool {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let soundKey = Utils.Constants.Identifiers.soundKey
+            let soundKey = Utils.Identifiers.soundKey
             guard let soundOn = defaults.objectForKey(soundKey) as? Bool else {
                 return false
             }
@@ -22,7 +22,7 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         }
         set {
             let defaults = NSUserDefaults.standardUserDefaults()
-            let soundKey = Utils.Constants.Identifiers.soundKey
+            let soundKey = Utils.Identifiers.soundKey
             defaults.setBool(!soundOn, forKey: soundKey)
 
             let sections = NSIndexSet(index: 2)
@@ -73,47 +73,42 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         tableView.allowsMultipleSelection = true
         tableView.registerClass(ColorPickerCell.self, forCellReuseIdentifier: "ColorPickerCell")
         
-        tableView.rowHeight = 44
-        tableView.sectionHeaderHeight = 35
+        tableView.sectionHeaderHeight = preferredContentSize.height * 1/8
 
         
     }
     
-    func calculateHeight() -> CGFloat {
-        let numSects = numberOfSectionsInTableView(tableView)
-        let sections = CGFloat(numSects)
+    
+    func calculateCellHeight() -> CGFloat {
+
+        let numSects = CGFloat(self.tableView.numberOfSections)
         
-        let headerHeight = sections * tableView.sectionHeaderHeight
-        //let footerHeight = tableView(tableView, heightForFooterInSection: numSects-1)
+        let cellsCount = countCells()
         
+        return (preferredContentSize.height - (numSects * tableView.sectionHeaderHeight) - (tableView.layoutMargins.top/2) ) / CGFloat(cellsCount)
+    }
+    
+    func countCells() -> Int {
+        
+        let numSects = CGFloat(self.tableView.numberOfSections)
         var cellsCount = 0
         
-        for index in  0...numSects-1 {
-            cellsCount += tableView.numberOfRowsInSection(index)
+        for index in  0...Int(numSects-1) {
+            cellsCount += self.tableView(tableView, numberOfRowsInSection: index)
         }
         
-        let cellsHeight = CGFloat(cellsCount) * tableView.rowHeight
-        
-        print("header height: \(headerHeight) cellsHeight: \(cellsHeight)")
-        
-        return 6 + headerHeight + cellsHeight
+        return cellsCount
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
-        let height = calculateHeight()
-        
-        self.preferredContentSize = CGSize(width: self.preferredContentSize.width, height: height)
-        
-
         
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         let defaults = NSUserDefaults.standardUserDefaults()
-        let selected = defaults.integerForKey(Utils.Constants.Identifiers.symbolSetKey)
+        let selected = defaults.integerForKey(Utils.Identifiers.symbolSetKey)
         
         let index = NSIndexPath(forRow: selected, inSection: 0)
         selectedIndex = index
@@ -121,6 +116,10 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         tableView.selectRowAtIndexPath(selectedIndex, animated: false, scrollPosition: UITableViewScrollPosition.None)
         
        
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return calculateCellHeight()
     }
     
     override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -216,17 +215,15 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 0 {
             selectedIndex = indexPath
-        } else if indexPath.section == 2 {
-            print("uh oh")
         }
     }
     
     override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         if indexPath.section == 1 {
-            return tableView.indexPathForSelectedRow
+            return selectedIndex
         } else if indexPath.section == 2 {
             soundOn = !soundOn
-            return tableView.indexPathForSelectedRow
+            return selectedIndex
         }
         
 
@@ -250,10 +247,9 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     
     func updateColor() {
         
-        
         let defaults = NSUserDefaults.standardUserDefaults()
         
-        let colorID = Utils.Constants.Identifiers.colorTheme
+        let colorID = Utils.Identifiers.colorTheme
         defaults.setInteger(selectedColor, forKey: colorID)
         
         let color = Utils.Palette.getTheme()
@@ -277,9 +273,8 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         let selected = selectedIndex.row
         let defaults = NSUserDefaults.standardUserDefaults()
         
-        defaults.setInteger(selected, forKey: Utils.Constants.Identifiers.symbolSetKey)
+        defaults.setInteger(selected, forKey: Utils.Identifiers.symbolSetKey)
     }
     
-    // saving changes
     
 }

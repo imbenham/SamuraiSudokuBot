@@ -55,7 +55,7 @@ class PopUpTableViewController: UITableViewController {
         tableView.layer.borderWidth = 6.0
         tableView.separatorStyle = .None
         
-        view.layoutMargins = UIEdgeInsetsMake(11, 11, 11, 11)
+        view.layoutMargins = UIEdgeInsetsMake(11, 11, 0, 11)
         
         
         
@@ -81,14 +81,20 @@ class PopUpTableViewController: UITableViewController {
             cell.layer.borderWidth = 0
         }
         
+        if let selected = selectedIndex {
+            if indexPath == selected {
+                self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+            }
+        }
+        
         return cell
     }
     
-    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    /*override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         var frame = view.frame
         frame = CGRectInset(frame, 5, 0)
         view.frame = frame
-    }
+    }*/
     
     func animateWithDelay(delay: Double, closure:()->()) {
         dispatch_after(
