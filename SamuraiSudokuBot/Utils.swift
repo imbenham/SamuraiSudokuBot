@@ -13,10 +13,20 @@ import AVFoundation
 
 struct Utils {
     
-    //static let ButtonConfigs = ButtonConfig()
+    // global queues
+    
+    static var GlobalMainQueue: dispatch_queue_t {
+        return dispatch_get_main_queue()
+    }
+    
+    static var GlobalBackgroundQueue: dispatch_queue_t {
+        return dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.rawValue), 0)
+    }
+    
+    static let ConcurrentPuzzleQueue = dispatch_queue_create(
+        "com.isaacbenham.SudokuCheat.puzzleQueue", DISPATCH_QUEUE_CONCURRENT)
     
     struct TextConfigs {
-        
         
         static func getAttributedTitle(text: String, withColor color: UIColor) -> NSAttributedString {
             let size: CGFloat = 18.0
@@ -36,12 +46,43 @@ struct Utils {
             return NSAttributedString(string:text, attributes: attribs)
         }
         
+        enum SymbolSet {
+            case Standard, Critters, Flags
+            
+            
+            func getSymbolForTileValue(value: TileValue) -> String {
+                switch self {
+                case Standard:
+                    return String(value.rawValue)
+                case Critters:
+                    let dict:[Int:String] = [1:"🐥", 2:"🙈", 3:"🐼", 4:"🐰", 5:"🐷", 6:"🐘", 7:"🐢", 8:"🐙", 9:"🐌"]
+                    return dict[value.rawValue]!
+                case Flags:
+                    let dict = [1:"🇨🇭", 2:"🇿🇦", 3:"🇨🇱", 4:"🇨🇦", 5:"🇯🇵", 6:"🇹🇷", 7:"🇫🇮", 8:"🇰🇷", 9:"🇲🇽"]
+                    return dict[value.rawValue]!
+                }
+            }
+            
+            func getSymbolForValue(value: Int) -> String {
+                switch self {
+                case Standard:
+                    return String(value)
+                case Critters:
+                    let dict:[Int:String] = [1:"🐥", 2:"🙈", 3:"🐼", 4:"🐰", 5:"🐷", 6:"🐘", 7:"🐢", 8:"🐙", 9:"🐌"]
+                    return dict[value]!
+                case Flags:
+                    let dict = [1:"🇨🇭", 2:"🇸🇪", 3:"🇨🇱", 4:"🇨🇦", 5:"🇯🇵", 6:"🇹🇷", 7:"🇫🇮", 8:"🇰🇷", 9:"🇲🇽"]
+                    return dict[value]!
+                }
+            }
+        }
+        
         
     }
     
     struct TileConfigs {
         
-        static func backgroundImageForSize(size: CGSize, color: UIColor =  UIColor.lightGrayColor()) -> UIImage {
+        static func backgroundImageForSize(size: CGSize, color: UIColor =  UIColor.lightGrayColor(), inverted:Bool = false) -> UIImage {
             let fillRect = CGRect(origin: CGPoint(x: 0,y: 0), size: size)
             
             UIGraphicsBeginImageContextWithOptions(fillRect.size, true, 0.0)
@@ -54,8 +95,8 @@ struct Utils {
                 let locations: [CGFloat] = [0.0, 1.0]
                 let colorSpace =  CGColorSpaceCreateDeviceRGB()
                 
-                let outerGradientColor = color.CGColor
-                let innerGradientColor = UIColor.whiteColor().CGColor
+                let outerGradientColor = !inverted ? color.CGColor : UIColor.whiteColor().CGColor
+                let innerGradientColor = !inverted ? UIColor.whiteColor().CGColor : color.CGColor
                 
                 let colors = [innerGradientColor, outerGradientColor]
                 
@@ -221,6 +262,8 @@ struct Utils {
         static let hardPuzzleKey = "Hard"
         static let insanePuzzleKey = "Insane"
         static let customPuzzleKey = "Custom"
+        
+        static let boardCoordinatesPropertyListExtension = "/BoardCoordinates.plist"
     }
 
     
@@ -274,74 +317,63 @@ struct Utils {
             
         }
     }
+    
+    
+    struct BoardCoordinates {
+        
+        // row/column -> TileIndex ((Box: 0-8, Tile: 0-8))
+        static func getTileIndex(row: Int, column: Int) -> TileIndex {
+            let key = String(row) + String(column)
+            
+            let pListPath = NSBundle.mainBundle().pathForResource("BoardCoordinates", ofType: "plist")!
+            
+            let pList = NSDictionary(contentsOfFile: pListPath)!
+            
+            let tIndexDict = pList as! [String: [String: Int]]
+            
+            let tupDict = tIndexDict[key]!
+            
+            return (tupDict["box"]!, tupDict["tile"]!)
+            
+        }
+    }
+    
+    
    
 }
 
-// row/column -> TileIndex ((Box: 0-8, Tile: 0-8))
-func getBox(column: Int, row: Int) -> Int {
-    switch column {
-    case 1, 2, 3:
-        switch row {
-        case 1,2,3:
-            return 1
-        case 4,5,6:
-            return 4
-        default:
-            return 7
-        }
-    case 4,5,6:
-        switch row {
-        case 1,2,3:
-            return 2
-        case 4,5,6:
-            return 5
-        default:
-            return 8
-        }
-    default:
-        switch row {
-        case 1,2,3:
-            return 3
-        case 4,5,6:
-            return 6
-        default:
-            return 9
-        }
+
+// globals until we can find them a better home
+typealias TileIndex = (Box:Int, Tile:Int)
+
+enum TileValue:Int {
+    case One = 1
+    case Two = 2
+    case Three = 3
+    case Four = 4
+    case Five = 5
+    case Six = 6
+    case Seven = 7
+    case Eight = 8
+    case Nine = 9
+    case Nil = 0
+    
+    
+    static func getFullSet()->Set<TileValue>{
+        return [TileValue.One, TileValue.Two, TileValue.Three, TileValue.Four, TileValue.Five, TileValue.Six, TileValue.Seven, TileValue.Eight, TileValue.Nine]
+        
     }
+    
+    func description() -> String {
+        return "\(self.rawValue)"
+    }
+    
+    
 }
 
-func getTileIndex(row: Int, column: Int) -> TileIndex {
-    let box = getBox(column, row: row)
-    switch row {
-    case 1,4,7:
-        switch column {
-        case 1,4,7:
-            return (box, 0)
-        case 2,5,8:
-            return (box, 1)
-        default:
-            return (box, 2)
-        }
-    case 2,5,8:
-        switch column {
-        case 1,4,7:
-            return (box, 3)
-        case 2,5,8:
-            return (box, 4)
-        default:
-            return (box, 5)
-        }
-    default:
-        switch column {
-        case 1,4,7:
-            return (box, 6)
-        case 2,5,8:
-            return (box, 7)
-        default:
-            return (box, 8)
-        }
-    }
-}
+// legacy stuff to keep around for now
+
+/*
 
 
 // Nodes <-> Cells
@@ -368,7 +400,7 @@ func cellNodeDictFromNodes(nodes: [LinkedNode<PuzzleKey>]) -> [PuzzleCell: Linke
         dict[cell] = node
     }
     return dict
-}
+}*/
 
 /*
 func tileForConstraint(node: PuzzleKey, tiles:[Tile]) -> Tile? {
@@ -408,11 +440,8 @@ func cellsFromTiles(tiles:[Tile]) -> [PuzzleCell] {
     return cells
 }
 */
-// other utils
 
-var GlobalMainQueue: dispatch_queue_t {
-    return dispatch_get_main_queue()
-}
+// other utils
 
 /*var GlobalUserInteractiveQueue: dispatch_queue_t {
  return dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.rawValue), 0)
@@ -426,12 +455,7 @@ var GlobalMainQueue: dispatch_queue_t {
  return dispatch_get_global_queue(Int(QOS_CLASS_UTILITY.rawValue), 0)
  }*/
 
-var GlobalBackgroundQueue: dispatch_queue_t {
-    return dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.rawValue), 0)
-}
 
-let concurrentPuzzleQueue = dispatch_queue_create(
-    "com.isaacbenham.SudokuCheat.puzzleQueue", DISPATCH_QUEUE_CONCURRENT)
 
 /*let concurrentPuzzleQueue1 = dispatch_queue_create(
  "com.isaacbenham.SudokuCheat.puzzleQueue1", DISPATCH_QUEUE_CONCURRENT)
@@ -446,110 +470,135 @@ let concurrentPuzzleQueue = dispatch_queue_create(
 
 //let concurrentBackupQueue = dispatch_queue_create("com.isaacbenham.SudokuCheat.backupQueue", DISPATCH_QUEUE_CONCURRENT)
 
-extension UIButton {
-    convenience init(tag: Int) {
-        self.init()
-        self.tag = tag
-    }
-}
-
-extension UIView {
-    convenience init(tag: Int) {
-        self.init()
-        self.tag = tag
-    }
-}
 
 // user default constants
 
 
 
-let currentHardPuzzleKey = "currentHardPuzzle"
-let currentEasyPuzzleKey = "currentEasyPuzzle"
-let currentMediumPuzzleKey = "currentMediumPuzzle"
-let currentInsanePuzzleKey = "currentInsanePuzzle"
-let currentPuzzleKey = "currentPuzzle"
-
-let cachedNotification = "puzzleCached"
-
-let easyCacheFilePath = (NSFileManager.defaultManager().URLsForDirectory(.LibraryDirectory, inDomains: .UserDomainMask)[0] as NSURL).URLByAppendingPathComponent("easy/puzzle_cache.plist")
-
-let mediumCacheFilePath = (NSFileManager.defaultManager().URLsForDirectory(.LibraryDirectory, inDomains: .UserDomainMask)[0] as NSURL).URLByAppendingPathComponent("medium/puzzle_cache.plist")
-
-let hardCacheFilePath = (NSFileManager.defaultManager().URLsForDirectory(.LibraryDirectory, inDomains: .UserDomainMask)[0] as NSURL).URLByAppendingPathComponent("hard/puzzle_cache.plist")
-
-let insaneCacheFilePath = (NSFileManager.defaultManager().URLsForDirectory(.LibraryDirectory, inDomains: .UserDomainMask)[0] as NSURL).URLByAppendingPathComponent("insane/puzzle_cache.plist")
-
-enum SymbolSet {
-    case Standard, Critters, Flags
-    
-    
-    func getSymbolForTyleValue(value: TileValue) -> String {
-        switch self {
-        case Standard:
-            return String(value.rawValue)
-        case Critters:
-            let dict:[Int:String] = [1:"🐥", 2:"🙈", 3:"🐼", 4:"🐰", 5:"🐷", 6:"🐘", 7:"🐢", 8:"🐙", 9:"🐌"]
-            return dict[value.rawValue]!
-        case Flags:
-            let dict = [1:"🇨🇭", 2:"🇿🇦", 3:"🇨🇱", 4:"🇨🇦", 5:"🇯🇵", 6:"🇹🇷", 7:"🇫🇮", 8:"🇰🇷", 9:"🇲🇽"]
-            return dict[value.rawValue]!
-        }
-    }
-    
-    func getSymbolForValue(value: Int) -> String {
-        switch self {
-        case Standard:
-            return String(value)
-        case Critters:
-            let dict:[Int:String] = [1:"🐥", 2:"🙈", 3:"🐼", 4:"🐰", 5:"🐷", 6:"🐘", 7:"🐢", 8:"🐙", 9:"🐌"]
-            return dict[value]!
-        case Flags:
-            let dict = [1:"🇨🇭", 2:"🇸🇪", 3:"🇨🇱", 4:"🇨🇦", 5:"🇯🇵", 6:"🇹🇷", 7:"🇫🇮", 8:"🇰🇷", 9:"🇲🇽"]
-            return dict[value]!
-        }
-    }
-}
-
-extension TileValue {
-    func getSymbolForTyleValueforSet(symSet: SymbolSet) -> String {
-        switch symSet {
-        case .Standard:
-            return String(self.rawValue)
-        case .Critters:
-            let dict:[Int:String] = [1:"🐥", 2:"🙈", 3:"🐼", 4:"🐰", 5:"🐷", 6:"🐘", 7:"🐢", 8:"🐙", 9:"🐌"]
-            return dict[self.rawValue]!
-        case .Flags:
-            let dict = [1:"🇨🇭", 2:"🇿🇦", 3:"🇨🇱", 4:"🇨🇦", 5:"🇯🇵", 6:"🇹🇷", 7:"🇫🇮", 8:"🇰🇷", 9:"🇲🇽"]
-            return dict[self.rawValue]!
-        }
-    }
-    
-}
-
-//let cachableDifficulties: [PuzzleDifficulty] = [.Easy, .Medium, .Hard, .Insane]
-extension UIView {
-    
-    func removeConstraints() {
-        if let superView = self.superview {
-            self.removeFromSuperview()
-            superView.addSubview(self)
-        }
-    }
-    
-    
-    
-}
 
 
 /*
+ 
+ old implementation of BoardCoordinates - useful for recreating property list
+ static var sharedConverter = BoardCoordinates()
+ 
+ private static func getBox(column: Int, row: Int) -> Int {
+ switch column {
+ case 1, 2, 3:
+ switch row {
+ case 1,2,3:
+ return 1
+ case 4,5,6:
+ return 4
+ default:
+ return 7
+ }
+ case 4,5,6:
+ switch row {
+ case 1,2,3:
+ return 2
+ case 4,5,6:
+ return 5
+ default:
+ return 8
+ }
+ default:
+ switch row {
+ case 1,2,3:
+ return 3
+ case 4,5,6:
+ return 6
+ default:
+ return 9
+ }
+ }
+ }
+ 
+ private static func getTileIndex(row: Int, column: Int) -> TileIndex {
+ let box = getBox(column, row: row)
+ switch row {
+ case 1,4,7:
+ switch column {
+ case 1,4,7:
+ return (box, 0)
+ case 2,5,8:
+ return (box, 1)
+ default:
+ return (box, 2)
+ }
+ case 2,5,8:
+ switch column {
+ case 1,4,7:
+ return (box, 3)
+ case 2,5,8:
+ return (box, 4)
+ default:
+ return (box, 5)
+ }
+ default:
+ switch column {
+ case 1,4,7:
+ return (box, 6)
+ case 2,5,8:
+ return (box, 7)
+ default:
+ return (box, 8)
+ }
+ }
+ }
+ 
+ lazy var tileIndexDict: [String: TileIndex] = {
+ var dict: [String: TileIndex] = [:]
+ for column in 1...9 {
+ for row in 1...9 {
+ let tileIndex = BoardCoordinates.getTileIndex(row, column: column)
+ let key = String(row) + String(column)
+ dict[key] = tileIndex
+ }
+ }
+ return dict
+ }()
+ 
+ 
+ if let path = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first {
+ let pListPath = path + "/BoardCoordinates.plist"
+ print("original plist path: \(pListPath)")
+ 
+ let pList = NSMutableDictionary()
+ 
+ for item in Utils.BoardCoordinates.sharedConverter.tileIndexDict {
+ 
+ //let dict: [NSString: NSNumber] = [NSString(string: "box"): NSNumber(integer: (item.1.Box)), NSString(string:"tile"): NSNumber(integer: item.1.Tile)]
+ let dict:[String: Int] = ["box": item.1.Box, "tile": item.1.Tile]
+ pList.setObject(dict, forKey: item.0)
+ }
+ 
+ 
+ if NSPropertyListSerialization.propertyList(pList, isValidForFormat: NSPropertyListFormat.XMLFormat_v1_0) {
+ do {
+ let pListData = try NSPropertyListSerialization.dataWithPropertyList(pList, format: .XMLFormat_v1_0, options: 0)
+ do {
+ try pListData.writeToFile(pListPath, options: .AtomicWrite)
+ print("wrote data to path")
+ } catch {
+ print("couldn't write to file. error: \(error)")
+ }
+ 
+ } catch {
+ fatalError("couldn't make property list data. error: \(error)")
+ }
+ 
+ }
+ } else {
+ print("no path")
+ }
+ 
+ */
 
-extension UIViewController {
-    func sections() -> Int {
-        return 0
-    }
-    
-    func rowsForSection(section: Int) -> Int {
-        return 3
-    }
-}*/
+
+
+
+
+
+
+

@@ -41,7 +41,6 @@ class SSBBackgroundView: UIView {
         
         var nodePoints: [CGPoint] = []
         
-        print(index)
         let path = UIBezierPath()
         let startPoint = CGPoint(x: 0, y: patternSize * 0.15)
         path.moveToPoint(startPoint)

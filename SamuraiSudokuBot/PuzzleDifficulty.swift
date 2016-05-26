@@ -69,7 +69,7 @@ enum PuzzleDifficulty: Equatable, Hashable {
         }
     }
     
-    var currentKey: String? {
+    /*var currentKey: String? {
         switch self {
         case .Easy:
             return currentEasyPuzzleKey
@@ -82,7 +82,7 @@ enum PuzzleDifficulty: Equatable, Hashable {
         default:
             return nil
         }
-    }
+    }*/
     
     var hashValue: Int {
         get {

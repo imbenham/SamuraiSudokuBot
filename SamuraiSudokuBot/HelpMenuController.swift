@@ -149,14 +149,12 @@ class HelpMenuController: PopUpTableViewController {
         let animations: () -> () = {
             self.instructionView.frame = defaultRect
             self.preferredContentSize = defaultSize
-            //self.tableView.reloadData()
         }
         
         let emptyRect = CGRectMake(defaultRect.origin.x, defaultRect.height, defaultRect.width, 0)
         
         let animations2: () -> () = {
             self.instructionView.frame = emptyRect
-            //self.tableView.reloadData()
         }
         
         UIView.animateWithDuration(0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.25, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in

@@ -42,7 +42,7 @@ class PopOverMenuHeader: UIView {
         
         self.addConstraints([leftPin, rightPin, topPin, bottomPin])
         
-        titleLabel.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(6.25, 16, 0, 6))
+        
         titleLabel.layer.borderColor = UIColor.whiteColor().CGColor
         titleLabel.layer.borderWidth = borderWidth
         titleLabel.numberOfLines = 2

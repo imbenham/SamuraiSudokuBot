@@ -374,7 +374,7 @@ extension PlayPuzzleDelegate {
         
         defaults.setBool(placekeeper, forKey: Utils.Identifiers.soundKey)
         
-        dispatch_async(concurrentPuzzleQueue, {self.playPuzzleFetched()})
+        dispatch_async(Utils.ConcurrentPuzzleQueue, {self.playPuzzleFetched()})
         
         userSolvedPuzzle = nil
 
@@ -392,6 +392,19 @@ extension PlayPuzzleDelegate {
                 CoreDataStack.sharedStack.managedObjectContext.processPendingChanges()
                 undoManager.removeAllActions()
             }
+        }
+        
+        var allButOne = puzzle!.solutionArray()
+        
+        let count = allButOne.count
+        
+        allButOne.removeRandom(count-50)
+        
+        
+        //test
+        for cell in allButOne {
+            
+            cell.assignValue(cell.value.integerValue)
         }
         
     }
@@ -430,12 +443,11 @@ extension PlayPuzzleDelegate {
         
         let tile = nils[Int(arc4random_uniform((UInt32(nils.count))))]
         
-        dispatch_async(concurrentPuzzleQueue, {self.playHintGiven()})
+        dispatch_async(Utils.ConcurrentPuzzleQueue, {self.playHintGiven()})
         
         let context = CoreDataStack.sharedStack.managedObjectContext
         if context.undoManager!.undoRegistrationEnabled {
             context.processPendingChanges()
-            context.undoManager?.removeAllActions()
             context.undoManager!.disableUndoRegistration()
         }
         
@@ -580,7 +592,7 @@ extension PlayPuzzleDelegate {
             }
         }
 
-        dispatch_async(concurrentPuzzleQueue, {
+        dispatch_async(Utils.ConcurrentPuzzleQueue, {
             self.playStartOver()
         })
         for tile in self.startingNilTiles {
@@ -611,7 +623,7 @@ extension PlayPuzzleDelegate {
             }
         }
         
-        dispatch_async(concurrentPuzzleQueue, {
+        dispatch_async(Utils.ConcurrentPuzzleQueue, {
             self.playDiscardPuzzle()
         })
         
@@ -679,16 +691,7 @@ extension PlayPuzzleDelegate {
     
     func giveUp() {
         
-        
-        let context = CoreDataStack.sharedStack.managedObjectContext
-        
-        if context.undoManager!.undoRegistrationEnabled {
-            context.processPendingChanges()
-            context.undoManager!.removeAllActions()
-            context.undoManager!.disableUndoRegistration()
-            context.processPendingChanges()
-        }
-
+        CoreDataStack.sharedStack.disableAndClearUndoRegistration()
         
         deactivateInterface()
         var lastTile: Tile?
@@ -707,7 +710,7 @@ extension PlayPuzzleDelegate {
             
         }
         
-        dispatch_async(concurrentPuzzleQueue, {self.playGiveUp()})
+        dispatch_async(Utils.ConcurrentPuzzleQueue, {self.playGiveUp()})
         
         for nilTile in nilTiles {
             if nilTile == lastTile {
@@ -764,30 +767,39 @@ extension PlayPuzzleDelegate {
         numPad.userInteractionEnabled = false
         
         for tile in tiles {
-            tile.userInteractionEnabled = false
-            //tile.backgroundColor = tile.defaultBackgroundColor
+            UIView.animateWithDuration(0.15, animations: {
+                 tile.prepareForPuzzleSolvedAnimation()
+            }) { completed in
+                if completed {
+                     tile.userInteractionEnabled = false
+                }
+            }
+           
+           
         }
         
+        
+        CoreDataStack.sharedStack.disableAndClearUndoRegistration()
         
         var doneCount = 0
         func flashBoxAnimationsWithBoxes(boxes: [Box]) {
             var boxes = boxes
             let tiles = boxes[0].boxes
-            UIView.animateWithDuration(0.15, animations: {
+            UIView.animateWithDuration(0.25, animations: {
                 for tile in tiles {
-                    tile.prepareForPuzzleSolvedAnimation()
+                    tile.finishPuzzleSolvedAnimation()
                 }
             }) { finished in
                 boxes.removeAtIndex(0)
                 if finished {
-                    UIView.animateWithDuration(0.15, animations: {
+                    UIView.animateWithDuration(0.25, animations: {
                         for tile in tiles {
                             tile.prepareForPuzzleSolvedAnimation()
                         }
                     }) { finished in
                         if finished {
                             if boxes.isEmpty {
-                                UIView.animateWithDuration(0.15, animations: {
+                                UIView.animateWithDuration(0.25, animations: {
                                     for tile in self.tiles {
                                          tile.finishPuzzleSolvedAnimation()
                                     }

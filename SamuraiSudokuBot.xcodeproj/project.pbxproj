@@ -28,8 +28,8 @@
 		360018AF1CF5DF89001D9696 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2CB1CC95935004D65C8 /* CoreDataStack.swift */; };
 		360018B01CF5DF9D001D9696 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2BE1CC9560E004D65C8 /* Utils.swift */; };
 		360018B11CF5E0A5001D9696 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EFEE771CF10819006B58EC /* Extensions.swift */; };
+		360018B71CF678BD001D9696 /* BoardCoordinates.plist in Resources */ = {isa = PBXBuildFile; fileRef = 360018B61CF678BD001D9696 /* BoardCoordinates.plist */; };
 		360361051CC94A69005F6A9F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361041CC94A69005F6A9F /* AppDelegate.swift */; };
-		360361071CC94A69005F6A9F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360361061CC94A69005F6A9F /* ViewController.swift */; };
 		3603610D1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3603610B1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodeld */; };
 		3603610F1CC94A69005F6A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3603610E1CC94A69005F6A9F /* Assets.xcassets */; };
 		3638F2A51CC94FE8004D65C8 /* BackingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3638F2A11CC94FE8004D65C8 /* BackingCell.swift */; };
@@ -95,9 +95,9 @@
 		360018811CF565E4001D9696 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		3600189A1CF5DCEF001D9696 /* SamuraiSudokuBotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SamuraiSudokuBotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3600189C1CF5DCEF001D9696 /* SamuraiSudokuBotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamuraiSudokuBotTests.swift; sourceTree = "<group>"; };
+		360018B61CF678BD001D9696 /* BoardCoordinates.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = BoardCoordinates.plist; path = ../BoardCoordinates.plist; sourceTree = "<group>"; };
 		360361011CC94A68005F6A9F /* SamuraiSudokuBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamuraiSudokuBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		360361041CC94A69005F6A9F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		360361061CC94A69005F6A9F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3603610C1CC94A69005F6A9F /* SamuraiSudokuBot.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SamuraiSudokuBot.xcdatamodel; sourceTree = "<group>"; };
 		3603610E1CC94A69005F6A9F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		360361131CC94A69005F6A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -191,10 +191,21 @@
 			name = HeaderAndFooters;
 			sourceTree = "<group>";
 		};
-		360360F81CC94A68005F6A9F = {
+		360018B81CF726BB001D9696 /* AppResources */ = {
 			isa = PBXGroup;
 			children = (
 				36EFEE661CEE0792006B58EC /* AVFoundation.framework */,
+				360018B61CF678BD001D9696 /* BoardCoordinates.plist */,
+				360361131CC94A69005F6A9F /* Info.plist */,
+				3603610E1CC94A69005F6A9F /* Assets.xcassets */,
+				36EFEE681CEE0812006B58EC /* Sounds */,
+			);
+			name = AppResources;
+			sourceTree = "<group>";
+		};
+		360360F81CC94A68005F6A9F = {
+			isa = PBXGroup;
+			children = (
 				360361031CC94A69005F6A9F /* SamuraiSudokuBot */,
 				3603611B1CC94A69005F6A9F /* SamuraiSudokuBotTests */,
 				360361261CC94A69005F6A9F /* SamuraiSudokuBotUITests */,
@@ -214,18 +225,15 @@
 		360361031CC94A69005F6A9F /* SamuraiSudokuBot */ = {
 			isa = PBXGroup;
 			children = (
-				36EFEE681CEE0812006B58EC /* Sounds */,
 				360361041CC94A69005F6A9F /* AppDelegate.swift */,
-				360361061CC94A69005F6A9F /* ViewController.swift */,
-				3603610E1CC94A69005F6A9F /* Assets.xcassets */,
-				360361131CC94A69005F6A9F /* Info.plist */,
+				360018B81CF726BB001D9696 /* AppResources */,
 				3638F2C01CC95749004D65C8 /* Controllers */,
 				3638F29F1CC94EE9004D65C8 /* Model */,
+				369A9FD71CEB4EA600D81B68 /* Persistence */,
 				3638F2CD1CC959EB004D65C8 /* PuzzleStore */,
 				3638F2AA1CC951B6004D65C8 /* SudokuLogic */,
 				3638F2D01CC95A45004D65C8 /* UI */,
 				3638F2BD1CC955F0004D65C8 /* Utils */,
-				369A9FD71CEB4EA600D81B68 /* Persistence */,
 			);
 			path = SamuraiSudokuBot;
 			sourceTree = "<group>";
@@ -353,9 +361,9 @@
 			isa = PBXGroup;
 			children = (
 				36AD45C31CC9721D00CC4768 /* Main.storyboard */,
+				360018811CF565E4001D9696 /* Launch Screen.storyboard */,
 				360018B21CF61DF6001D9696 /* CustomViews */,
 				36AD45AF1CC95CFF00CC4768 /* SudokuViews */,
-				360018811CF565E4001D9696 /* Launch Screen.storyboard */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -507,6 +515,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				360018B71CF678BD001D9696 /* BoardCoordinates.plist in Resources */,
 				3600187F1CF50BD6001D9696 /* start_over.caf in Resources */,
 				360018801CF50BD6001D9696 /* discard_puzzle.caf in Resources */,
 				360018761CF3F0B0001D9696 /* undo_redo.caf in Resources */,
@@ -554,7 +563,6 @@
 				3638F2AE1CC952BA004D65C8 /* LinkedList_and_Nodes.swift in Sources */,
 				3638F2BA1CC9549D004D65C8 /* SudokuMatrix.swift in Sources */,
 				36AD45B11CC95D3F00CC4768 /* SudokuViewObjects.swift in Sources */,
-				360361071CC94A69005F6A9F /* ViewController.swift in Sources */,
 				3638F2CF1CC95A2E004D65C8 /* PuzzleStore.swift in Sources */,
 				369A9FD01CE92E4300D81B68 /* ColorPickerCell.swift in Sources */,
 				3638F2BF1CC9560E004D65C8 /* Utils.swift in Sources */,
@@ -676,7 +684,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -716,8 +724,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;

@@ -202,11 +202,10 @@ class ChoosePuzzleController: PopUpTableViewController {
             
             UIView.animateWithDuration(0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.25, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.preferredContentSize.height += self.footerHeight
-                footer.hidden = false
-                
                 }, completion: {completed in
                     if completed {
                         self.tableView.reloadData()
+                        footer.hidden = false
                     }
             })
         }

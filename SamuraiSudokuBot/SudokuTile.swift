@@ -11,9 +11,10 @@ import UIKit
 class Tile: SudokuItem {
     
     var defaultImage: UIImage!
+    var valueGivenImage: UIImage!
     var selectedImage: UIImage!
     var noteModeImage: UIImage!
-    var valueAssignedImage: UIImage!
+    var valueCorrectImage: UIImage!
     
     override var controller: SudokuControllerDelegate? {
         get {
@@ -61,6 +62,7 @@ class Tile: SudokuItem {
             }
             if newValue == true {
                 backingCell?.revealed = true
+                clearNoteValues()
                 userInteractionEnabled = false
             } else {
                 backingCell?.revealed = false
@@ -81,7 +83,7 @@ class Tile: SudokuItem {
             return false
         }
     }
-    var symbolSet: SymbolSet {
+    var symbolSet: Utils.TextConfigs.SymbolSet {
         get {
             let defaults = NSUserDefaults.standardUserDefaults()
             let symType = defaults.integerForKey(Utils.Identifiers.symbolSetKey)
@@ -208,9 +210,10 @@ class Tile: SudokuItem {
         let configs = Utils.TileConfigs.self
         
         defaultImage = configs.backgroundImageForSize(size)
+        valueGivenImage = configs.backgroundImageForSize(size, color: UIColor.darkGrayColor(), inverted: true)
         selectedImage = configs.backgroundImageForSize(size, color: UIColor(red: 0.1, green: 0.1, blue: 0.9, alpha: 1.0))
         noteModeImage = configs.backgroundImageForSize(size, color: UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0))
-        valueAssignedImage = configs.backgroundImageForSize(size, color:UIColor(red: 0.0, green: 1.0, blue: 0, alpha: 1.0))
+        valueCorrectImage = configs.backgroundImageForSize(size, color:UIColor(red: 0.0, green: 1.0, blue: 0, alpha: 1.0))
        
         
         self.layer.cornerRadius = 3.0
@@ -243,11 +246,12 @@ class Tile: SudokuItem {
     }
     
     func getValueText()->String {
-        return self.displayValue != .Nil ? symbolSet.getSymbolForTyleValue(displayValue) : ""
+        return self.displayValue != .Nil ? symbolSet.getSymbolForTileValue(displayValue) : ""
     }
     
     
     func refreshLabel() {
+        
         guard let backingCell = backingCell else {
             valueLabel.text = ""
             refreshBackground()
@@ -257,10 +261,12 @@ class Tile: SudokuItem {
         if backingCell.revealed.boolValue {
             valueLabel.textColor = chosenTextColor
             userInteractionEnabled = false
-        } else {
+        } else if backingCell.puzzleSolution != nil{
             valueLabel.textColor = labelColor
             userInteractionEnabled = true
             
+        } else {
+            valueLabel.textColor = UIColor.whiteColor()
         }
         
         valueLabel.text = noteMode ? "" : self.getValueText()
@@ -269,6 +275,11 @@ class Tile: SudokuItem {
     }
     
     private func refreshBackground() {
+        guard let backingCell = backingCell else {
+            backgroundImageView.image = defaultImage
+            return
+        }
+        
         if noteMode {
             if selected {
                 backgroundImageView.image = noteModeImage
@@ -279,13 +290,12 @@ class Tile: SudokuItem {
             }
         }
         
-        if displayValue != .Nil && solutionValue != nil {
-            backgroundImageView.image = selected ? selectedImage : valueAssignedImage
-        } else if revealed {
-            backgroundImageView.image = defaultImage
+        if backingCell.puzzleInitial != nil {
+            backgroundImageView.image = valueGivenImage
         } else {
             backgroundImageView.image = selected ? selectedImage : defaultImage
         }
+        
         
         for lv in noteLabels {
             lv.layer.borderWidth = 0.0
@@ -298,6 +308,11 @@ class Tile: SudokuItem {
         newNotes.removeAtIndex(index)
         backingCell!.notesArray = newNotes
         configureNoteViews()
+    }
+    
+    func clearNoteValues() {
+        backingCell?.notesArray = []
+        //configureNoteViews()
     }
     
     func addNoteValue(value: Int) {
@@ -346,7 +361,7 @@ class Tile: SudokuItem {
             if symbolSet != .Standard {
                 noteLabel.label?.text = ""
             } else {
-                noteLabel.label?.text = index < numNotes ? symbolSet.getSymbolForTyleValue(tvNoteValues[index]) : ""
+                noteLabel.label?.text = index < numNotes ? symbolSet.getSymbolForTileValue(tvNoteValues[index]) : ""
             }
             
         }
@@ -357,7 +372,7 @@ class Tile: SudokuItem {
     }
     
     func finishPuzzleSolvedAnimation() {
-        backgroundImageView.image = valueAssignedImage
+        backgroundImageView.image = valueCorrectImage
     }
 }
 

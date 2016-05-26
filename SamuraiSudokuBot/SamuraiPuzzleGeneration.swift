@@ -275,7 +275,7 @@ class SamuraiMatrix: Matrix {
     
     
     
-    // handy debugging function
+    /* debugging function for development
     func printCompanions() -> Int {
         var current = matrix.verticalHead
         
@@ -295,8 +295,7 @@ class SamuraiMatrix: Matrix {
         
         return count
     }
-    
-    
+    */
     // puzzle algorithm
     
     override internal func findNextRowChoice()->(Node: LinkedNode<PuzzleKey>, Root:Int)? {

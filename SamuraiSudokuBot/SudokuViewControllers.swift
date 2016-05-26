@@ -91,7 +91,6 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
             }
             
             if let selected = selectedTile {
-                print(selected.displayValue)
                 selected.refreshLabel()
             }
             
@@ -128,7 +127,7 @@ class SudokuController: UIViewController, SudokuControllerDelegate, NumPadDelega
         
         
         // register to receive notifications when user defaults change
-        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Identifiers.symbolSetKey, options: .New, context: nil)
+        NSUserDefaults.standardUserDefaults().addObserver(self, forKeyPath: Utils.Identifiers.symbolSetKey, options: [.New, .Prior], context: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -549,7 +548,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     
     
     func handleManagedObjectChange(notification: NSNotification) {
-        print("handled change to managed object: \(notification)")
+        // implement for future release
     }
     
     
@@ -752,7 +751,7 @@ class BasicSudokuController: SudokuController, PlayPuzzleDelegate {
     }
     
     func cleanUp() {
-        print("clean up called")
+        // implement for future release
     }
     
     

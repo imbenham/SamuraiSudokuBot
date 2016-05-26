@@ -37,10 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             defaults.setBool(true, forKey: soundKey)
         }
         
-        // initialize the matrix so it's ready to crank out puzzles
-       // SamuraiMatrix.prepareMatrix()
-        
-        
         return true
         
     }
@@ -77,10 +73,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let puzzleController = rootView?.topViewController as? SudokuController {
             puzzleController.wakeFromBackground()
         }
-        
-      /*  if !SamuraiMatrix.isReady() {
-            SamuraiMatrix.prepareMatrix()
-        }*/
         
     }
     
@@ -122,10 +114,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             
         }
-    }
-    
-    func saveCurrentPuzzleForController(controller: PlayPuzzleDelegate) {
-        // save using core data
     }
     
 }

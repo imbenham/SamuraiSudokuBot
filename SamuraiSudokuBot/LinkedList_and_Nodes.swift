@@ -247,7 +247,10 @@ class SudokuMatrix<T:Equatable where T:Hashable>: LaterallyLinkable, VerticallyL
         
     }
     
-    func printRows() {
+   /* 
+     debugging functions for development
+     
+     func printRows() {
         var current = verticalHead
         let last = verticalHead.up!.vertOrder
         
@@ -346,6 +349,21 @@ class SudokuMatrix<T:Equatable where T:Hashable>: LaterallyLinkable, VerticallyL
         
         print("total:\(total)")
     }
+     
+     func countAllRows() {
+     
+     var current = verticalHead
+     var total = 0
+     
+     repeat {
+     print("row: \(current.vertOrder) has \(countRow(current)) nodes")
+     current = current.down!
+     total += 1
+     } while current.vertOrder != 0
+     print("total:\(total)")
+     }
+     
+     */
     
     func countColumn(node: LinkedNode<T>) -> Int {
         
@@ -360,18 +378,6 @@ class SudokuMatrix<T:Equatable where T:Hashable>: LaterallyLinkable, VerticallyL
         return count
     }
     
-    func countAllRows() {
-        
-        var current = verticalHead
-        var total = 0
-        
-        repeat {
-            print("row: \(current.vertOrder) has \(countRow(current)) nodes")
-            current = current.down!
-            total += 1
-        } while current.vertOrder != 0
-        print("total:\(total)")
-    }
     
     func countRow(node: LinkedNode<T>) -> Int {
         var current = node.right!

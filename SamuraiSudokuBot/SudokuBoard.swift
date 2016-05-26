@@ -140,7 +140,6 @@ class SudokuBoard: SudokuItem, Nester {
                 tileMap[String(tile.getRowIndex()) + String(tile.getColumnIndex())] = tile
             }
             
-            print(tileMap.count)
             if let cntrlr = self.controller {
                 cntrlr.boardReady()
             }
@@ -163,7 +162,7 @@ extension SudokuBoard {
         }
         
         for cell in valueList {
-            let index = getTileIndex(cell.row, column: cell.column)
+            let index = Utils.BoardCoordinates.getTileIndex(cell.row, column: cell.column)
             self.tileAtIndex(index).backingCell?.assignValue(cell.value)
         }
         
@@ -185,5 +184,7 @@ extension SudokuBoard {
     func getNilTiles() -> [Tile] {
         return tiles.filter(({$0.displayValue == .Nil}))
     }
+    
+    
     
 }

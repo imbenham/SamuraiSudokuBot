@@ -72,12 +72,12 @@ class BackingCell: NSManagedObject {
         let rowIndex = Int(self.row)
         let columnIndex = Int(self.column)
         
-        return getTileIndex(rowIndex, column: columnIndex)
+        return Utils.BoardCoordinates.getTileIndex(rowIndex, column: columnIndex)
     }
     
     func assignValue(value: Int) {
         assignedValue = NSNumber(integer: value)
-        
+        notesArray = []
     }
     
     

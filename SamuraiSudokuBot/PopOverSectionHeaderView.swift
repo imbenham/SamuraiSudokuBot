@@ -30,7 +30,7 @@ class PopOverSectionHeaderView: UIView {
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
        
-        let leftPin = NSLayoutConstraint(item: titleLabel, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1, constant: 6)
+        let leftPin = NSLayoutConstraint(item: titleLabel, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1, constant: 16)
         let rightPin = NSLayoutConstraint(item: titleLabel, attribute: .Right, relatedBy: .Equal, toItem: self, attribute: .Right, multiplier: 1, constant: -6)
         let topPin = NSLayoutConstraint(item: titleLabel, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: 6)
         let bottomPin = NSLayoutConstraint(item: titleLabel, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1, constant: 0)
@@ -38,7 +38,7 @@ class PopOverSectionHeaderView: UIView {
         self.addConstraints([leftPin, rightPin, topPin, bottomPin])
         
         
-        titleLabel.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(6, 16, 0, 6))
+        //titleLabel.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(6, 16, 0, 6))
         titleLabel.numberOfLines = 1
         titleLabel.textAlignment = .Left
     }

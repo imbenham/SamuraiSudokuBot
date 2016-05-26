@@ -284,10 +284,8 @@ class Matrix {
             let target = rawDifficultyForPuzzle
             var score = scorePuzzle(givens)
             
-            print("givens count: \(givens.count)")
             
             while score > target {  // target > solution
-                print(score)
                 if givens.count == 0 {
                     switch PuzzleStore.sharedInstance.difficulty {
                     case .Hard:
@@ -303,20 +301,15 @@ class Matrix {
                     let delta = score - target
                     switch delta {
                     case 1000...3000:
-                        givens += solution.removeRandom(80)
-                        print("first case")
+                        givens += solution.removeRandom(70)
                     case 500...999:
                         givens += solution.removeRandom(25)
-                        print("second case")
                     case 199...499:
                         givens += solution.removeRandom(12)
-                        print("third case")
                     case 119...198:
                         givens += solution.removeRandom(5)
-                        print("fourth case")
                     default:
                         givens += solution.removeRandom()
-                        print("base case")
                         
                     }
                 }
@@ -325,7 +318,6 @@ class Matrix {
                 score = scorePuzzle(givens)
             }
             
-            print("target = \(target) vs. score = \(score)")
             return (givens, solution, score)
         }
         

@@ -69,7 +69,8 @@ class PuzzleStore: NSObject {
             
             controller.prepareForLongFetch()
             
-            dispatch_async(concurrentPuzzleQueue) {
+            
+            dispatch_async(Utils.ConcurrentPuzzleQueue) {
                 self.completionHandler = handler
                 SamuraiMatrix().generatePuzzle()
                 
@@ -110,7 +111,7 @@ class PuzzleStore: NSObject {
         
         CoreDataStack.sharedStack.saveMainContext()
         
-        dispatch_async(GlobalMainQueue) {
+        dispatch_async(Utils.GlobalMainQueue) {
             self.completionHandler!(puzz)
             self.completionHandler = nil
         }

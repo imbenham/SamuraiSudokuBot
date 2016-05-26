@@ -45,7 +45,8 @@ class PuzzleOptionsViewController: PopUpTableViewController {
                     let cell = tableView.cellForRowAtIndexPath(selectedIndex)
                     cell?.accessoryType = .Checkmark
                     cell?.textLabel?.textColor = UIColor.blackColor()
-                    dispatch_async(concurrentPuzzleQueue){
+                    
+                    if oldValue != nil {
                         self.updateSymbols()
                     }
                     
@@ -85,7 +86,7 @@ class PuzzleOptionsViewController: PopUpTableViewController {
         
         let cellsCount = countCells()
         
-        return (preferredContentSize.height - (numSects * tableView.sectionHeaderHeight) - (tableView.layoutMargins.top/2) ) / CGFloat(cellsCount)
+        return (preferredContentSize.height - (numSects * tableView.sectionHeaderHeight) ) / CGFloat(cellsCount)
     }
     
     func countCells() -> Int {
@@ -207,13 +208,12 @@ class PuzzleOptionsViewController: PopUpTableViewController {
             cell.textLabel?.text = soundOn ? "ON" : "OFF"
         }
         
-        print(cell.frame.height)
         return cell
         
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 0 {
+        if indexPath.section == 0 && indexPath != selectedIndex {
             selectedIndex = indexPath
         }
     }
@@ -266,14 +266,19 @@ class PuzzleOptionsViewController: PopUpTableViewController {
     }
     
     func updateSymbols() {
+        
         guard let selectedIndex = selectedIndex else {
             return
         }
         
-        let selected = selectedIndex.row
+        
         let defaults = NSUserDefaults.standardUserDefaults()
         
-        defaults.setInteger(selected, forKey: Utils.Identifiers.symbolSetKey)
+        dispatch_async(Utils.ConcurrentPuzzleQueue) {
+            defaults.setInteger(selectedIndex.row, forKey: Utils.Identifiers.symbolSetKey)
+        }
+        
+        
     }
     
     
