@@ -394,19 +394,6 @@ extension PlayPuzzleDelegate {
             }
         }
         
-        var allButOne = puzzle!.solutionArray()
-        
-        let count = allButOne.count
-        
-        allButOne.removeRandom(count-50)
-        
-        
-        //test
-        for cell in allButOne {
-            
-            cell.assignValue(cell.value.integerValue)
-        }
-        
     }
     
     //MARK: hints
